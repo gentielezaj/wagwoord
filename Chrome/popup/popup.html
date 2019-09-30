@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="../assests/css/app-defaults.css" rel="stylesheet">
+  <link href="../assests/css/main.css" rel="stylesheet">
+  <link href="../assests/css/password.css" rel="stylesheet">
+  <link href="popup.css" rel="stylesheet">
+</head>
+
+<body ng-app="wwapp">
+  <div ng-controller="PopUpMainController as vm">
+
+    <section id="app-section">
+      <div clss="section-content" ng-view></div>
+    </section>
+    <footer class="actions">
+      <button ng-click="vm.edit()">
+        <settings-icon></settings-icon>
+      </button>
+    </footer>
+  </div>
+  <script src="../libs/dexie.min.js"></script>
+  <script src="../libs/aes-min.js"></script>
+  <script src="../libs/angular.min.js"></script>
+  <script src="../libs/angular-route.min.js"></script>
+  <script src="popup.js"></script>
+
+  <script src="../src/directives/icons/edit-icon.directive.js"></script>
+  <script src="../src/directives/icons/copy-icon.directive.js"></script>
+  <script src="../src/directives/icons/show-hide-icon.directive.js"></script>
+  <script src="../src/directives/icons/settings-icon.directive.js"></script>
+  <script src="../src/directives/icons/delete-icon.directive.js"></script>
+  <script src="../src/directives/notfication/notifications.directive.js"></script>
+  <script src="../src/directives/notfication/notification.service.js"></script>
+  <script src="../src/directives/loaders/loader.directive.js"></script>
+
+  <script src="../src/passwords/services/password.service.js"></script>
+  <script src="../src/passwords/form/password-form.controller.js"></script>
+  <script src="../src/passwords/list/password-list.controller.js"></script>
+
+  <script src="../src/settings/service/settings.service.js"></script>
+  <script src="../src/util/database.service.js"></script>
+  <script src="../src/util/proxy.service.js"></script>
+  <script src="../src/util/encryption.service.js"></script>
+</body>
+
+</html>

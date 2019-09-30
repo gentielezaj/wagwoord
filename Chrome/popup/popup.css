@@ -1,0 +1,27 @@
+
+body {
+    background: var(--wagwoord-main-color);
+    color: var(--wagwoord-color);
+    width: 15rem;
+    max-height: 25rem;
+    min-height: 10rem;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    padding: 0;
+    margin: 0;
+}
+
+section .password-list .data-container {
+    max-height: 25rem;
+}
+
+footer {
+    padding: 0.5rem;
+    background-color: var(--wagwoord-main-color-lighter);
+    right: 0;
+    left: 0;
+    bottom: 0;
+    position: fixed
+}
+
+/* #region header and futter */

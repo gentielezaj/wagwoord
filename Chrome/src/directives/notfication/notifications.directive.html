@@ -1,0 +1,7 @@
+<div id="app-notificaitons" ng-if="notifications && notifications.length">
+    <ul>
+        <li ng-repeat="not in notifications track by $index" ng-class="not.type" ng-click="close(not, $index)">
+            <span>{{not.message}}</span>
+        </li>
+    </ul>
+</div>

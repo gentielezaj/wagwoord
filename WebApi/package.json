@@ -1,0 +1,35 @@
+{
+  "name": "wagwoord-webapi",
+  "version": "0.0.1",
+  "description": "wagwoord webapi",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node ./src/server.ts",
+    "start": "node ./dist/server.js",
+    "server": "ts-node -r tsconfig-paths/register src/server.ts",
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./ormconfig.json"
+  },
+  "author": "Genti Elezaj",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/node": "^12.7.5",
+    "@types/sqlite3": "^3.1.5",
+    "dotenv": "^8.1.0",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nodemon": "^1.19.3",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^4.1.0",
+    "typeorm": "^0.2.19"
+  },
+  "engines": {
+    "node": "10.x"
+  }
+}

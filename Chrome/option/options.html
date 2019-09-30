@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Wagwoord</title>
+  <link href="../assests/css/app-defaults.css" rel="stylesheet">
+  <link href="../assests/css/main.css" rel="stylesheet">
+  <link href="../assests/css/password.css" rel="stylesheet">
+  <link href="options.css" rel="stylesheet">
+</head>
+
+<body ng-app="wwapp">
+  <notifications></notifications>
+  <nav id="app-nav" ng-controller="NavController as vm">
+    <ul>
+      <li data-page="passwords">
+        <div ng-click="vm.toggleCollapsed()" ng-include="'/src/directives/icons/hamburger-menu.html'"></div>
+        <div class="nav-text">
+          <span>Wagwoord</span>
+        </div>
+      </li>
+      <li data-page="passwords" ng-click="vm.changeTab('/')" ng-class="{'active': vm.isActiveTab('password')}">
+        <password-icon></password-icon>
+        <!-- <object data="../assests/icons/001-copy.svg"></object> -->
+        <div class="nav-text">
+          <span>Passwords</span>
+        </div>
+      </li>
+      <li data-page="address" ng-click="vm.changeTab('address')" ng-class="{'active': vm.isActiveTab('address')}">
+        <address-icon></address-icon>
+        <div class="nav-text">
+          <span>Addresses</span>
+        </div>
+      </li>
+      <li data-page="credit-cards" ng-click="vm.changeTab('credit-cards')" ng-class="{'active': vm.isActiveTab('credit-card')}">
+        <credit-card-icon></credit-card-icon>
+        <div class="nav-text">
+          <span>Credit Cards</span>
+        </div>
+      </li>
+      <li data-page="credit-cards" ng-click="vm.changeTab('code-generators')" ng-class="{'active': vm.isActiveTab('code-generator')}">
+        <credit-card-icon></credit-card-icon>
+        <div class="nav-text">
+          <span>Code generator</span>
+        </div>
+      </li>
+      <li data-page="settings" ng-click="vm.changeTab('settings')" ng-class="{'active': vm.isActiveTab('setting')}">
+        <settings-icon></settings-icon>
+        <div class="nav-text">
+          <span>Settings</span>
+        </div>
+      </li>
+      <li data-page="settings" ng-click="vm.changeTab('demo')" ng-class="{'active': vm.isActiveTab('demo')}">
+        <settings-icon></settings-icon>
+        <div class="nav-text">
+          <span>Demo</span>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <section id="app-section">
+    <div clss="section-content" ng-view></div>
+  </section>
+</body>
+
+<!-- #region js -->
+
+<script src="../libs/dexie.min.js"></script>
+<script src="../libs/crypto-js-aes.js"></script>
+
+<script src="../libs/angular.min.js"></script>
+<script src="../libs/angular-route.min.js"></script>
+<script src="options.js"></script>
+<script src="../src/nav/nav.controller.js"></script>
+
+<script src="../src/passwords/services/password.service.js"></script>
+<script src="../src/passwords/main/passwords.controller.js"></script>
+<script src="../src/passwords/form/password-form.controller.js"></script>
+<script src="../src/passwords/list/password-list.controller.js"></script>
+
+<script src="../src/settings/settings.controller.js"></script>
+<script src="../src/settings/settings-passowrd/settings-password.controller.js"></script>
+<script src="../src/settings/settings-sync/settings-sync.controller.js"></script>
+<script src="../src/settings/settings-encryption/settings-encryption.controlle.js"></script>
+<script src="../src/settings/service/settings.service.js"></script>
+
+<script src="../src/addresses/address.controller.js"></script>
+
+<script src="../src/credit-cards/credit-card.controller.js"></script>
+
+<script src="../src/code-generator/code-generator.controller.js"></script>
+
+<script src="../src/demo/demo.controller.js"></script>
+
+<script src="../src/directives/notfication/notifications.directive.js"></script>
+<script src="../src/directives/notfication/notification.service.js"></script>
+
+
+<script src="../src/directives/icons/password-icon.directive.js"></script>
+<script src="../src/directives/icons/credit-card-icon.directive.js"></script>
+<script src="../src/directives/icons/address-icon.directive.js"></script>
+<script src="../src/directives/icons/settings-icon.directive.js"></script>
+<script src="../src/directives/icons/show-hide-icon.directive.js"></script>
+<script src="../src/directives/icons/delete-icon.directive.js"></script>
+<script src="../src/directives/icons/edit-icon.directive.js"></script>
+<script src="../src/directives/icons/copy-icon.directive.js"></script>
+<script src="../src/directives/inputs/from-field.directive.js"></script>
+
+
+
+<script src="../src/directives/loaders/loader.directive.js"></script>
+
+<script src="../src/directives/inputs/file-upload/file-upload.directive.js"></script>
+
+<script src="../src/util/database.service.js"></script>
+<script src="../src/util/proxy.service.js"></script>
+<script src="../src/util/encryption.service.js"></script>
+<!-- #endregion js -->
+
+</html>

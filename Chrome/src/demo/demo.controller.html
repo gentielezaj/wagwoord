@@ -1,0 +1,63 @@
+<style>
+    .demo {
+        overflow: auto;
+    }
+
+    .demo div.content {
+        padding: 2rem;
+    }
+</style>
+
+<div ng-controller="DemoController as vm" class="demo">
+    {{vm.title}}
+    <br>
+    <progress style="width: 250px; height: 20px;" value="50" min="0" max="100"></progress>
+
+    <div class="content">
+        <button>Default</button>
+        <button disabled>Default disabled</button>
+
+        <button class="success">success</button>
+        <button class="success" disabled>Default disabled</button>
+
+        <button class="error">error</button>
+        <button class="error" disabled>Default disabled</button>
+
+        <button class="info">info</button>
+        <button class="info" disabled>Default disabled</button>
+        <br>
+    </div>
+    <div class="content">
+        <div style="width: 50%" class="search-input">
+            <div class="input-container">
+                <input type="text" id="searchModel" name="searchModel" ng-model="vm.searchModel" ng-change="vm.refreshPasswords()" placeholder="search">
+                <span ng-show="vm.showLoader" class="loader"></span>
+                <button class="input-sufix" id='clear-search' ng-click="vm.searchModel = ''; vm.refreshPasswords()">x</button>
+            </div>
+        </div>
+
+        <div style="width: 50%" class="search-input">
+            <div class="input-container">
+                <input type="text" id="searchModel" name="searchModel" ng-model="vm.searchModel" ng-change="vm.refreshPasswords()" placeholder="search">
+                <span ng-show="vm.showLoader" class="loader"></span>
+            </div>
+        </div>
+
+        <button ng-click="vm.showLoader = !vm.showLoader" class="info loader">
+            toggle louder
+            <span ng-show="vm.showLoader" class="loader"></span>
+        </button>
+    </div>
+
+    <div class="content">
+        <button ng-click="vm.setPassword($event)" id="open-opup" class="info">
+            open opup
+        </button>
+        <button ng-click="vm.encriptMessage($event)" id="open-opup" class="info">
+            encript
+        </button>
+        <button ng-click="vm.encriptMessage($event, true)" id="open-opup" class="info">
+            decript
+        </button>
+    </div>
+</div>

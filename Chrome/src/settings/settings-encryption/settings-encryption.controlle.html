@@ -1,0 +1,10 @@
+<div ng-controller="SettingsEncryptionController as vm">
+    <div class="form-item">
+        <label for="settings-enctipyion-key">Encription key</label>
+        <div class="input-container">
+            <textarea id="settings-enctipyion-key" ng-form-field placeholder="Leave it blank to disable" name="encryptionKey" ng-blur="vm.saveSettings('encryptionKey')" ng-model="vm.model.encryptionKey">
+            </textarea>
+            <span ng-show="vm.savingencryptionKey" class="loader"></span>
+        </div>
+    </div>
+</div>

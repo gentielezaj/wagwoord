@@ -1,0 +1,298 @@
+body {
+    background: var(--wagwoord-main-color);
+    color: var(--wagwoord-color);
+    --navigation-width: 14rem;
+    --navigation-width-collapsed: 3rem;
+    transition: width 0.2s;
+    scroll-behavior: smooth;
+}
+
+/* #region notifications */
+
+#app-notificaitons {
+    z-index: 9999;
+    position: fixed;
+    padding: 2rem;
+    right: 0;
+    top: 0;
+    color: #fff;
+}
+
+#app-notificaitons ul {
+    text-decoration: none;
+    list-style-type: none;
+}
+
+#app-notificaitons ul li {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    max-width: 15rem;
+    font-size: 0.8rem;
+    text-align: end;
+    cursor: pointer;
+}
+
+
+#app-notificaitons ul li span {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    max-width: 15rem;
+    font-size: 0.8rem;
+    text-align: end;
+}
+
+#app-notificaitons ul li.info span {
+    background-color: var(--wagwoord-color-info);
+}
+
+#app-notificaitons ul li.success span {
+    background-color: var(--wagwoord-color-success);
+}
+
+#app-notificaitons ul li.error span {
+    background-color: var(--wagwoord-color-error);
+}
+
+/* #endregion notifications */
+
+/* #region navigation */
+
+nav {
+    position: fixed;
+    width: var(--navigation-width);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--wagwoord-main-color-light);
+    transition: width 0.2s;
+}
+
+nav ul {
+    padding: 0;
+    text-decoration: none;
+    list-style-type: none;
+    font-size: 1rem;
+}
+
+nav ul li {
+    padding: 1rem;
+    border: none;
+    display: flex
+}
+
+nav ul li span {
+    padding: 0.5rem 1rem;
+}
+
+nav ul li.active,
+nav ul li:hover,
+nav ul li:focus,
+nav ul li:active {
+    background: var(--wagwoord-main-color);
+    cursor: pointer;
+}
+
+nav ul li:first-child,
+nav ul li:first-child:hover,
+nav ul li:first-child:focus,
+nav ul li:first-child:active {
+    background: transparent;
+    cursor: default;
+    border-bottom: 1px var(--wagwoord-main-color-lighter) solid;
+}
+
+
+nav ul li:first-child svg,
+nav ul li:first-child:hover svg,
+nav ul li:first-child:focus svg,
+nav ul li:first-child:active svg {
+    cursor: pointer;
+}
+
+nav.collapsed {
+    width: var(--navigation-width-collapsed);
+}
+
+nav.collapsed ul li div.nav-text {
+    display: none;
+}
+
+nav.collapsed ul li:hover div.nav-text {
+    display: block;
+    background: var(--wagwoord-main-color);
+    /* padding: 0.5rem; */
+    position: absolute;
+    margin-left: 2rem;
+    padding: 1rem 0;
+    margin-top: -1rem;
+    border: 1px var(--wagwoord-main-color-lighter) solid;
+    border-left: none;
+    width: max-content;
+}
+
+/* #endregion navigation */
+/* #region section */
+
+section {
+    margin-left: var(--navigation-width);
+    width: calc(100% - var(--navigation-width));
+    transition: width 0.2s;
+    scroll-behavior: smooth;
+}
+
+section.collapsed {
+    margin-left: var(--navigation-width-collapsed);
+    width: calc(100% - var(--navigation-width-collapsed));
+}
+
+section .scroll {
+    height: 95vh;
+    overflow: auto;
+}
+
+section header {
+    height: 4.5rem;
+    line-height: 4.5rem;
+    border-bottom: 1px var(--wagwoord-main-color-lighter) solid;
+    top: 0;
+    right: 0;
+    left: calc(var(--navigation-width) + 1rem);
+    position: fixed;
+    background-color: var(--wagwoord-main-color);
+    /* margin-left: var(--navigation-width); */
+    width: calc(100% - var(--navigation-width) - 2rem);
+    z-index: 9998;
+}
+
+section header h2{
+    margin: 0;
+}
+
+section .content {
+    margin-top: 4.5rem;
+}
+
+/* #endregion section */
+
+/* #region passwords */
+.password-list .search-input {
+    padding: 2.5rem 0 0.5rem 0;
+    top: 4.5rem;
+}
+
+section .password-list .data-container {
+    padding-top: 2.5rem; 
+}
+
+/* #endregion passwords */
+
+/* #region content */
+
+.columns {
+    display: flex;
+    width: 100%;
+}
+
+.column {
+    display: block;
+    width: 50%;
+    padding: 2rem;
+}
+
+.column.full {
+    width: 100%;
+}
+
+.column.xl {
+    width: 60%;
+}
+
+.column.m {
+    width: 40%;
+}
+
+/* #endregion content */
+
+/* #region settings */
+
+.settings-content {
+    display: inline;
+    padding: 0 2rem;
+}
+
+.settings-content .column{
+    padding: 1rem 2rem;
+}
+
+.settings-content .settings-title {
+    border-bottom: 1px var(--wagwoord-main-color-lighter) solid;
+    padding: 1rem 0;
+}
+
+.settings-content .settings-title h2 {
+    margin: 0;
+}
+
+.settings-content .form-item {
+    padding-top: 1.5rem
+}
+
+.settings-content .form-item .input-container {
+    width: 50%;
+}
+
+ul.settings-navigation{
+    text-decoration: none;
+    list-style-type: none;
+    position: fixed;
+    right: 4rem;
+    font-size: 1rem;
+}
+
+/* #region drag n drop */
+
+.drag-drop {
+    width: 100%;
+    min-height: 8rem;
+    background-color: var(--wagwoord-main-color-light);
+    text-align: center;
+    font-size: 1rem;
+    user-select: none;
+}
+
+.drag-drop.empty {
+    cursor: pointer;
+    line-height: 8rem;
+}
+
+.drag-drop.empty span.error {
+    display: none;
+}
+
+.drag-drop.empty.error {
+    border: 1px var(--wagwoord-color-error) solid;
+}
+
+.drag-drop.empty:hover,
+#import-passwords-container.hover .drag-drop {
+    background-color: var(--wagwoord-main-color-lighter);
+}
+
+.drag-drop.full {
+    line-height: 2.9rem;
+}
+
+/* #endregion drag n drop */
+
+.settings .password-settings {
+    width: 50%;
+    margin: 1rem 0;
+    border-top: 1px solid var(--wagwoord-main-color-light);
+    border-bottom: 1px solid var(--wagwoord-main-color-light);
+}
+
+.settings .password-settings .form-item .input-container {
+    width: 100%;
+}
+
+/* #endregion settings */

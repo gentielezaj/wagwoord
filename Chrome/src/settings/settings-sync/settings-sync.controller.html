@@ -1,0 +1,21 @@
+<div ng-controller="SettingsSyncController as vm" class="">
+    <div class="form-item">
+        <label for="settings-sync-domain">Sync Domain</label>
+        <div class="input-container">
+            <input id="settings-sync-domain" type="url" list="seturla" ng-form-field placeholder="Leave it blank for not sync" valid="vm.fieldSettings.domain" name="domain" ng-blur="vm.saveSettings('domain')" ng-model="vm.model.domain">
+            <button class="input-sufix" id='clear-search' ng-if="vm.model.domain" ng-click="vm.model.domain = ''; vm.saveSettings('domain')">x</button>
+            <span ng-show="vm.savingdomain" class="loader"></span>
+            <datalist id="seturla">
+                <option value="http://localhost:4848/api">
+            </datalist>
+        </div>
+    </div>
+    <div class="form-item">
+        <label for="settings-sync-headers">Domain headers</label>
+        <div class="input-container">
+            <textarea id="settings-sync-headers" ng-form-field placeholder="Leave it blank for not sync" valid="vm.fieldSettings.headers" name="headers" ng-blur="vm.saveSettings('headers')" ng-model="vm.model.headers">
+                </textarea>
+            <span ng-show="vm.savingheaders" class="loader"></span>
+        </div>
+    </div>
+</div>

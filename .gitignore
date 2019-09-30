@@ -1,0 +1,12 @@
+﻿/WebApi/passwords.js
+/WebApi/node_modules
+/WebApi/testdata
+/WebApi/src/database..
+/WebApi/.vs
+*/node_modules
+*/*.database
+*/*.db
+*/*.sql
+*/*.sqlite
+Chrome/libs/components
+*/dist

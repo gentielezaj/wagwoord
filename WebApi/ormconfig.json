@@ -1,0 +1,9 @@
+{
+    "type": "sqlite",
+    "database": "testdata/wagwoord.sqlite",
+    "entities": ["src/database/models/*.ts"],
+    "migrations": ["migrations/*.ts"],
+    "cli": {
+        "migrationsDir": "migrations"
+    }
+}

@@ -1,0 +1,2 @@
+npm run typeorm:cli -- migration:run
+npm run typeorm:cli -- migration:create -n AddEnctyptionToPasswordTable

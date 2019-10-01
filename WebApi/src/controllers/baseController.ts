@@ -2,9 +2,7 @@ import { BaseEntity } from "database/models/baseEntity";
 import { Request, Response, Application, response } from "express";
 import { ObjectType } from "typeorm";
 import { BaseRepository, IBaseRepository } from "../database/repositories/baseRepository";
-import { isArray, isString } from "util";
-import { Logger } from "../utils/logger";
-import { PasswordEntity } from "database/models/passwordEntity";
+import { AppLogger } from "../utils/appLogger";
 
 export abstract class BaseController<TEntity extends BaseEntity> {
     protected entity: ObjectType<TEntity>;
@@ -22,27 +20,27 @@ export abstract class BaseController<TEntity extends BaseEntity> {
         app.use((req: Request, res: Response, next: any) => this.checkAccess(req, res, next));
 
         app.post('/api/' + this.controller, (req: Request, res: Response) => {
-            this.save(req, res).then().catch(e => Logger.logError(e, this.controller + ' post'));
+            this.save(req, res).then().catch(e => AppLogger.logError(this.controller + ' post', e));
         });
 
         app.put('/api/' + this.controller, (req: Request, res: Response) => {
-            this.save(req, res).then().catch(e => Logger.logError(e, this.controller + ' put'));
+            this.save(req, res).then().catch(e => AppLogger.logError(this.controller + ' put', e));
         });
 
         app.get('/api/' + this.controller, (req: Request, res: Response) => {
-            this.getAll(req, res).then().catch(e => Logger.logError(e, this.controller + ' get'));
+            this.getAll(req, res).then().catch(e => AppLogger.logError(this.controller + ' get', e));
         });
 
         app.patch(`/api/${this.controller}/:lastModified`, (req: Request, res: Response) => {
-            this.getLastModified(req, res).then().catch(e => Logger.logError(e, this.controller + ' patch'));
+            this.getLastModified(req, res).then().catch(e => AppLogger.logError(this.controller + ' patch', e));
         });
 
         app.get(`/api/${this.controller}/:id`, (req: Request, res: Response) => {
-            this.getById(req, res).then().catch(e => Logger.logError(e, this.controller + ' get/' + req.params.id));
+            this.getById(req, res).then().catch(e => AppLogger.logError(this.controller + ' get/' + req.params.id, e));
         });
 
         app.delete(`/api/${this.controller}/:id`, (req: Request, res: Response) => {
-            this.delete(req, res).then().catch(e => Logger.logError(e, this.controller + ' delete/' + req.params.id));
+            this.delete(req, res).then().catch(e => AppLogger.logError(this.controller + ' delete/' + req.params.id, e));
         });
     }
 
@@ -147,7 +145,7 @@ export abstract class BaseController<TEntity extends BaseEntity> {
 
     // #region response
     protected sendErrorResponse(res: Response, code: number, exeption?: any, error?: string): void {
-        if (exeption) Logger.logError(exeption);
+        if (exeption) AppLogger.logError('creating error response', exeption);
         this.sendResponse(res, null, code, error);
     }
 

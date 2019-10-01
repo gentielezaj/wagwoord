@@ -4,7 +4,7 @@
   "description": "wagwoord webapi",
   "main": "index.js",
   "scripts": {
-    "build": "npm run typeorm:cli -- migration:run && tsc",
+    "build": "tsc",
     "dev": "ts-node ./src/server.ts",
     "start": "npm run build && node ./dist/server.js",
     "server": "ts-node -r tsconfig-paths/register src/server.ts",

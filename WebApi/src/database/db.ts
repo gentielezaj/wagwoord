@@ -1,7 +1,7 @@
 import { ConnectionOptions, createConnection, Connection, Repository, ObjectType } from "typeorm";
 import { BaseEntity } from "./models/baseEntity";
 import { PasswordEntity } from "./models/passwordEntity";
-import { Logger } from "../utils/logger";
+import { AppLogger } from "../utils/appLogger";
 
 const databasePath = process.env.DATABASE_PATH;
 export const options: ConnectionOptions = {
@@ -43,7 +43,7 @@ export class Db {
             return model;
         } catch (error) {
             this.connection.close();
-            Logger.logError(error);
+            AppLogger.logError(error);
         }
     }
 
@@ -57,7 +57,7 @@ export class Db {
             return res;
         } catch (error) {
             this.connection.close();
-            Logger.logError(error);
+            AppLogger.logError(error);
         }
     }
 
@@ -70,7 +70,7 @@ export class Db {
             return new Array<T>();
         } catch (error) {
             this.connection.close();
-            Logger.logError(error);
+            AppLogger.logError(error);
         }
     }
     

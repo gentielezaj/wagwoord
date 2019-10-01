@@ -1,39 +1,37 @@
 import "reflect-metadata";
 import app from "./app";
-import { existsSync, writeFileSync } from 'fs';
-import { Database, OPEN_CREATE } from 'sqlite3';
-import { Logger } from "./utils/logger";
-import { options } from "./database/db"
-import { createConnection } from "typeorm";
-import { inherits } from "util";
+import { createConnection, ConnectionOptions, Logger } from "typeorm";
+import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions";
+import { AppLogger } from "./utils/appLogger";
 require('dotenv').config();
 
-const PORT = process.env.OPENSHIFT_NODEJS_PORT ? parseInt(process.env.OPENSHIFT_NODEJS_PORT) : 4040;
-const serverAddress = process.env.OPENSHIFT_NODEJS_IP || 'localhost'
+const PORT = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || '4040';
+const serverAddress = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || 'localhost';
 
 async function init() {
-    console.log('run at ' + (process.env.DEBUG == 'true' ? 'debugger' : 'production') + ' mode');
-    if (process.env.DEBUG == 'true')
-        await createConnection({
-            "type": "sqlite",
-            "database": "testdata/wagwoord.sqlite",
-            "entities": ["src/database/models/*.ts"],
-            "migrations": ["migrations/*.ts"]
-        });
-    else
-        await createConnection({
-            "type": "sqlite",
-            "database": "testdata/wagwoord.sqlite",
-            "entities": ["dist/database/models/*.js"]
-        });
+    
+    await createConnection(getTypeOrmConfig());
 
     console.log('db set');
 
-    app.listen(PORT, serverAddress, () => {
+    app.listen(parseInt(PORT), serverAddress, () => {
         console.log('Express server listening on port ' + PORT);
     });
 }
 
-init().then(f => console.log('all set up')).catch(e => Logger.logError(e, 'at app start \n'));
+init().then(f => console.log('all set up')); //.catch(e => Logger.logError(e, 'at app start \n'));
 
-
+function getTypeOrmConfig(): SqliteConnectionOptions {
+    return {
+        "type": "sqlite",
+        "database": process.env.TYPEORM_DATABASE || 'wagwoord.sqlite',
+        "entities": [process.env.TYPEORM_ENTITIES || 'src/database/models/*.ts'],
+        "migrations": [process.env.TYPEORM_MIGRATIONS || 'migrations/*.ts'],
+        "cli": {
+            "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR || 'migrations'
+        },
+        migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || !process.env.TYPEORM_MIGRATIONS_RUN ? true : false,
+        logging: ["error", "migration", "warn"],
+        logger: "file"
+    }
+}

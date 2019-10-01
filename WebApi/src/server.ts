@@ -30,7 +30,7 @@ function getTypeOrmConfig(): SqliteConnectionOptions {
         "cli": {
             "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR || 'migrations'
         },
-        migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || !process.env.TYPEORM_MIGRATIONS_RUN ? true : false,
+        migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || process.env.TYPEORM_MIGRATIONS_RUN == undefined ? true : false,
         logging: ["error", "migration", "warn"],
         logger: "file"
     }

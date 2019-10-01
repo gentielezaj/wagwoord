@@ -4,11 +4,11 @@
   "description": "wagwoord webapi",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run typeorm:cli -- migration:run && tsc",
     "dev": "ts-node ./src/server.ts",
-    "start": "node ./dist/server.js",
+    "start": "npm run build && node ./dist/server.js",
     "server": "ts-node -r tsconfig-paths/register src/server.ts",
-    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./ormconfig.json"
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./migrations/ormconfig.json"
   },
   "author": "Genti Elezaj",
   "license": "MIT",

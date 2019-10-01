@@ -12,8 +12,20 @@ const PORT = process.env.OPENSHIFT_NODEJS_PORT ? parseInt(process.env.OPENSHIFT_
 const serverAddress = process.env.OPENSHIFT_NODEJS_IP || 'localhost'
 
 async function init() {
-
-    await createConnection();
+    console.log('run at ' + (process.env.DEBUG == 'true' ? 'debugger' : 'production') + ' mode');
+    if (process.env.DEBUG == 'true')
+        await createConnection({
+            "type": "sqlite",
+            "database": "testdata/wagwoord.sqlite",
+            "entities": ["src/database/models/*.ts"],
+            "migrations": ["migrations/*.ts"]
+        });
+    else
+        await createConnection({
+            "type": "sqlite",
+            "database": "testdata/wagwoord.sqlite",
+            "entities": ["dist/database/models/*.js"]
+        });
 
     console.log('db set');
 
@@ -22,6 +34,6 @@ async function init() {
     });
 }
 
-init().then(f => console.log('all set up'));
+init().then(f => console.log('all set up')).catch(e => Logger.logError(e, 'at app start \n'));
 
 

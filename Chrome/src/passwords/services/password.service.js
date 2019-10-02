@@ -1,9 +1,11 @@
 wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $encryption) {
     let vm = this;
 
+    const passwordsDeletedUnsyncKey = 'passowrds-deleted-unsync';
     const passwordStore = $database.store('password');
     const passwordProxy = $proxy.init('passwords');
 
+    // #region settings
     vm.settings = function (key) {
         const k = 'password' + (key ? '.' + key : '');
         return $settings.getKey(k);
@@ -12,7 +14,9 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
     vm.saveSettings = function (model) {
         return $settings.save(model, 'password');
     };
+    // #endregion settings
 
+    // #region get
     vm.getName = function (domain) {
         if (!domain || domain.startsWith('android:')) return undefined;
         try {
@@ -77,6 +81,7 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
             }).join('');
         }
     };
+    
     vm.getPasswords = async function (filter) {
         const list = await db('get', filter);
         const total = await db('count', filter);
@@ -86,44 +91,9 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         };
     };
 
-    vm.getPassword = async function (id) {
+    vm.getItem = async function (id) {
         if (!id) return {};
         return await db('getItem', id);
-    };
-
-    vm.validePassword = function (item) {
-        return item.name && item.username && item.password ? true : false;
-    };
-
-    vm.savePassword = async function (item, notlastModified) {
-        if (!vm.validePassword(item)) {
-            return false;
-        }
-
-        if (item.id && item.id > 0 && item.serverId) {
-            item.serverId = vm.getPassword(item.id).serverId;
-        } else {
-            const oldPasseord = await passwordStore.where({
-                domain: item.domain,
-                username: item.username
-            }).first();
-            if (oldPasseord) {
-                item.id = oldPasseord.id;
-                if (!item.serverId) item.serverId = oldPasseord.serverId;
-            }
-        }
-
-        item.searchField = `${item.name.toLowerCase()}-${item.username.toLowerCase()}`;
-        if (!notlastModified || !item.lastModified) item.lastModified = new Date().getTime();
-        return await $database.save('password', item);
-    };
-
-    vm.delete = async function (id) {
-        return await db('delete', id);
-    };
-
-    vm.deleteAll = async function () {
-        return await db('deleteAll');
     };
 
     vm.getItemsForDomain = async function (name, username, eq) {
@@ -140,6 +110,65 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
 
         //return await vm.getPasswords();
     };
+    // #endregion get
+
+    // #region save
+    vm.validePassword = function (item) {
+        return item.name && item.username && item.password ? true : false;
+    };
+
+    vm.savePassword = async function (item, notlastModified) {
+        if (!vm.validePassword(item)) {
+            return false;
+        }
+
+        if (item.id && item.id > 0 && item.serverId) {
+            item.serverId = vm.getItem(item.id).serverId;
+        } else {
+            const oldPasseord = await passwordStore.where({
+                domain: item.domain,
+                username: item.username
+            }).first();
+            if (oldPasseord) {
+                item.id = oldPasseord.id;
+                if (!item.serverId) item.serverId = oldPasseord.serverId;
+            }
+        }
+
+        item.searchField = `${item.name.toLowerCase()}-${item.username.toLowerCase()}`;
+        if (!notlastModified || !item.lastModified) item.lastModified = new Date().getTime();
+        return await $database.save('password', item);
+    };
+    // #endregion save
+
+    // #region delete
+    vm.delete = async function (id) {
+        const password = await vm.getItem(id);
+        let deleted = await db('delete', id);
+        if(deleted && !(await passwordProxy.delete(password.serverId)).success) {
+            let unsyced = localStorage.getItem(passwordsDeletedUnsyncKey);
+            unsyced = unsyced ? unsyced.split[','] : [];
+            unsyced.push(serverId);
+            localStorage.setItem(passwordsDeletedUnsyncKey, unsyced.join(','));
+        }
+
+        return deleted;
+    };
+
+    vm.deleteAll = async function () {
+        if(await db('deleteAll')) {
+            await passwordProxy.deleteAll();
+        }
+    };
+
+    vm.setUnSync = async function() {
+        let ps = await vm.getPasswords();
+        for (const p of ps) {
+            p.
+            await vm.savePassword(p);
+        }
+    };
+    // #endregion delete
 
     async function db(operation, data) {
         return await $database[operation]('password', data);
@@ -166,6 +195,8 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         el.click();
         document.body.removeChild(el);
     };
+
+    // #region server sync
 
     vm.update = async function () {
         await vm.updateFromServer();
@@ -217,8 +248,13 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
             p.password = await $encryption.decrypt(p.password);
         }
         delete p.encrypted;
-        return await vm.savePassword(p, true);
+
+        return await vm.savePassword({
+            serverId: p.id,
+            synced: true
+        }, true);
     }
+    // #endregion server sync
 
     return vm;
 });

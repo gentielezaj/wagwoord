@@ -1,4 +1,4 @@
-wwapp.controller("PasswordListController", function ($scope, $rootScope, $password) {
+wwapp.controller("PasswordListController", function ($scope, $rootScope, $password, $notification) {
   var vm = this;
 
   const takeBase = appenvirement == 'options' ? 50 : 20;
@@ -14,7 +14,7 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
 
   vm.refreshPasswords = function () {
     vm.passwords.loading = true;
-    if(!$scope.$$phase) $scope.$digest();
+    if (!$scope.$$phase) $scope.$digest();
     $password.getPasswords({
       searchText: vm.searchModel,
       take: take
@@ -25,7 +25,7 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
     });
   };
 
-  vm.loadmore = function() {
+  vm.loadmore = function () {
     take += takeBase;
     vm.refreshPasswords();
   };
@@ -67,11 +67,12 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
   };
 
   vm.delete = async function (item) {
-    await $password.delete(item.id);
-    $rootScope.$broadcast('add-nofification', {
-      type: 'success',
-      message: 'Password deleted'
-    });
+    try {
+      await $password.delete(item.id);
+      $notification.success('Password deleted', error);
+    } catch (error) {
+      $notification.error('Error wile deleting password', error);
+    }
 
     vm.refreshPasswords();
   };

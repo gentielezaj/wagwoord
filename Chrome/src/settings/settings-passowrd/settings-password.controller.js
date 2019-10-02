@@ -54,24 +54,28 @@ wwapp.controller("SettingsPasswordController", function ($scope, $password, $not
     };
 
     vm.saveSettings = function (input, setNull) {
-        vm[`saving${input}`] = true;
-        for (let property in vm.fieldSettings) {
-            if (vm.fieldSettings.hasOwnProperty(property)) {
-                if (!vm.fieldSettings[property].valid) {
-                    $notification.error('Input is invalid');
-                    vm[`saving${input}`] = false;
-                    return;
+        try {
+            vm[`saving${input}`] = true;
+            for (let property in vm.fieldSettings) {
+                if (vm.fieldSettings.hasOwnProperty(property)) {
+                    if (!vm.fieldSettings[property].valid) {
+                        $notification.error('Input is invalid');
+                        vm[`saving${input}`] = false;
+                        return;
+                    }
                 }
             }
-        }
 
-        if (setNull && !vm.model[input]) {
-            vm.model[setNull] = undefined;
-        }
+            if (setNull && !vm.model[input]) {
+                vm.model[setNull] = undefined;
+            }
 
-        if ($password.saveSettings(vm.model)) $notification.success('Setting saved');
-        else $notification.error('Error while saving');
-        vm[`saving${input}`] = false;
+            if ($password.saveSettings(vm.model)) $notification.success('Setting saved');
+            else $notification.error('Error while saving');
+        } catch (error) {
+            vm[`saving${input}`] = false;
+            $notification.error('Error while saving', error);
+        }
     };
 
     $scope.$on('refreshSettings', () => {
@@ -80,9 +84,14 @@ wwapp.controller("SettingsPasswordController", function ($scope, $password, $not
 
     vm.downloadPasswords = async function () {
         vm.downloadPasswordsLoader = true;
-        await $password.exportPassword();
-        vm.downloadPasswordsLoader = false;
-        $scope.$digest();
+        try {
+            await $password.exportPassword();
+            vm.downloadPasswordsLoader = false;
+            $scope.$digest();
+        } catch (error) {
+            vm[`saving${input}`] = false;
+            $notification.error('Error while exporting passwords', error);
+        }
     };
 
     vm.deletePasswords = async function (confitmation) {

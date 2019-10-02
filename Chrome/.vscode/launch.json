@@ -7,6 +7,14 @@
         {
             "type": "chrome",
             "request": "attach",
+            "name": "Options",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}",
+            "urlFilter": "chrome-extension://gnnplgnhmhblmmecikcmdbadpkllhpke/*"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
             "name": "Attach",
             "port": 9222,
             "webRoot": "${workspaceFolder}"

@@ -15,11 +15,16 @@ wwapp.factory('$notification', function ($rootScope) {
         }); 
     };
 
-    vm.error = function(message) {
+    vm.error = function(message, error) {
         $rootScope.$broadcast('add-nofification', {
             type: 'error',
             message: message
         }); 
+
+        if(error) {
+            console.error(error);
+            throw new Exeption(error);
+        }
     };
 
     return vm;

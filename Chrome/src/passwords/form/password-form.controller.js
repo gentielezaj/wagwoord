@@ -28,7 +28,7 @@ wwapp.controller("PasswordFormController", function ($scope, $password, $rootSco
         vm.showPassword(true);
         let id = parseInt(password);
         if (id || password.id) {
-            vm.model = await $password.getPassword(id || password.id);
+            vm.model = await $password.getItem(id || password.id);
             if(!$scope.$$phase) $scope.$digest();
         } else {
             password.domain = $password.getDomain(password.domain);

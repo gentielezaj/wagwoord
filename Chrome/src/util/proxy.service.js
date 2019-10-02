@@ -21,40 +21,54 @@ wwapp.factory('$proxy', function ($rootScope, $http, $settings) {
         }
     };
 
+    vm.delete = function (controller, id) {
+        return vm.send('DELETE', `${controller}/${id}`);
+    };
+
     vm.get = function (controller, item) {
         if (parseInt(item)) controller += '/' + item;
-        return vm.send(controller, undefined, 'get');
+        return vm.send('get', controller);
     };
 
     vm.head = function (controller, item) {
         if (parseInt(item)) controller += '/' + item;
-        return vm.send(controller, undefined, 'head');
+        return vm.send('head', controller);
     };
 
     vm.patch = function (controller, item) {
         if (parseInt(item)) controller += '/' + item;
-        return vm.send(controller, undefined, 'PATCH');
+        return vm.send('PATCH', controller);
     };
 
     vm.init = function (controller) {
         return {
             get: (params) => vm.get(controller, params),
-            post: (data) => vm.send(controller, data, 'post'),
+            post: (data) => vm.send('post', controller, data),
             patch: (data) => vm.patch(controller, data),
-            head: (params) => vm.head(controller, params)
+            head: (params) => vm.head(controller, params),
+            delete: (id) => vm.delete(controller, id),
+            deleteAll: () => vm.send('DELETE', controller + '/all')
         };
     };
 
-    vm.send = function (controller, item, method) {
+    vm.send = function (method, controller, item) {
+        if(!settings.proxylink) return {
+            success: true,
+            noLink: true
+        };
         if (controller.startsWith('/')) controller = controller.substring(1);
         return new Promise(resolve => {
             $http({
-                method: method,
-                url: settings.proxylink + controller,
-                headers: settings.headers,
-                data: item
-            })
-            .then(response => resolve(response.data));
+                    method: method,
+                    url: settings.proxylink + controller,
+                    headers: settings.headers,
+                    data: item
+                })
+                .then(response => resolve(response.data))
+                .catch(error => resolve({
+                    success: false,
+                    error: error
+                }));
         });
     };
 

@@ -32,6 +32,7 @@ export class PasswordEntity extends BaseEntity {
         result.id = obj.id;
         result.lastModified = obj.lastModified;
         result.encrypted = obj.encrypted || false;
+        result.deleted = obj.deleted || false;
         return result;
     }
 }

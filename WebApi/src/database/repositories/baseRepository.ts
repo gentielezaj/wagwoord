@@ -1,15 +1,17 @@
-import { ObjectType, getRepository, Repository, DeleteResult } from "typeorm";
+import { ObjectType, getRepository, Repository, DeleteResult, SelectQueryBuilder } from "typeorm";
 import { BaseEntity } from "../models/baseEntity";
+import { AppQueryBuilder, AppQueryChecker } from "../querys/query";
 
 export interface IBaseRepository<TEntity extends BaseEntity> {
-    save(model: TEntity) : Promise<TEntity|undefined>;
-    saveAll(models: Array<TEntity>) : Promise<Array<TEntity | undefined>>
+    save(model: TEntity): Promise<TEntity | undefined>;
+    saveAll(models: Array<TEntity>): Promise<Array<TEntity | undefined>>
 
-    getById(id: number) : Promise<TEntity | undefined>
-    getAll(): Promise<Array<TEntity> | undefined>
+    getById(id: number): Promise<TEntity | undefined>
+    getAll(appQuery?: AppQueryBuilder): Promise<Array<TEntity>>
 
-    delete(id: number|Array<number>): Promise<DeleteResult>;
+    delete(id: number | Array<number>, destroy?: boolean): Promise<DeleteResult>;
     getLastModified(lastModified: number): Promise<Array<TEntity>>;
+    getItem(appQuery: AppQueryBuilder | number): Promise<TEntity | undefined>;
 }
 
 export class BaseRepository<TEntity extends BaseEntity> implements IBaseRepository<TEntity> {
@@ -23,13 +25,13 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
     }
 
     // #region save
-    public async save(model: TEntity) : Promise<TEntity|undefined> {
-        if(!model.lastModified) model.lastModified = new Date().getTime();
+    public async save(model: TEntity): Promise<TEntity | undefined> {
+        if (!model.lastModified) model.lastModified = new Date().getTime();
         return <TEntity | undefined>(await this.dbRepository.save(<any>model));
     }
 
-    public async saveAll(models: Array<TEntity>) : Promise<Array<TEntity | undefined>> {
-        let results = new Array<TEntity|undefined>();
+    public async saveAll(models: Array<TEntity>): Promise<Array<TEntity | undefined>> {
+        let results = new Array<TEntity | undefined>();
 
         for (let index = 0; index < models.length; index++) {
             const model = models[index];
@@ -42,22 +44,78 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
 
     // #region get
     public async getLastModified(lastModified: number): Promise<Array<TEntity>> {
-        return await this.dbRepository.createQueryBuilder('item').where('item.lastModified >= :lastModified', {lastModified: lastModified}).getMany();
+        return await this.dbRepository.createQueryBuilder('item').where('item.lastModified > :lastModified', { lastModified: lastModified }).getMany();
     }
 
-    public async getById(id: number) : Promise<TEntity | undefined> {
+    public async getById(id: number): Promise<TEntity | undefined> {
         const result = await this.dbRepository.findOne(id)
-        return <TEntity|undefined>result;
+        return <TEntity | undefined>result;
     }
 
-    public async getAll(): Promise<Array<TEntity> | undefined> {
-        return await <Array<TEntity>>(await this.dbRepository.find());
+    public async getItem(appQuery: AppQueryBuilder | number): Promise<TEntity | undefined> {
+        if (typeof appQuery == "number") return await this.getById(appQuery);
+        appQuery.skip = undefined;
+        appQuery.take = undefined;
+        let queryBuilder = this.createQueryBuilder(this.dbRepository.createQueryBuilder(), appQuery);
+
+        return await queryBuilder.getOne();
+    }
+
+    public async getAll(appQuery?: AppQueryBuilder): Promise<Array<TEntity>> {
+        let query = this.createQueryBuilder(this.dbRepository.createQueryBuilder(), appQuery || {});
+
+        return await query.getMany();
+    }
+
+    protected createQueryBuilder(queryBuilder: SelectQueryBuilder<TEntity>, appQuery: AppQueryBuilder): SelectQueryBuilder<TEntity> {
+        if (AppQueryChecker.hasQuery(appQuery.select)) {
+            if (typeof appQuery.select == 'string') appQuery.select = [appQuery.select];
+            queryBuilder.select(<string[]>appQuery.select);
+        }
+
+        if (appQuery.take && appQuery.take > 0) {
+            queryBuilder.take(appQuery.take);
+        }
+
+        if (appQuery.skip && appQuery.skip > 0) {
+            queryBuilder.skip(appQuery.skip);
+        }
+
+        if (AppQueryChecker.hasQuery(appQuery.order)) {
+            if (!Array.isArray(appQuery.order)) appQuery.order = [appQuery.order];
+            queryBuilder.orderBy(appQuery.order[0].property, appQuery.order[0].order, appQuery.order[0].nulls)
+            for (let i = 1; i < appQuery.order.length; i++) {
+                queryBuilder = queryBuilder.addOrderBy(appQuery.order[i].property, appQuery.order[i].order, appQuery.order[0].nulls)
+            }
+        }
+
+        if (appQuery.where) {
+            const where = AppQueryChecker.buildWhere(appQuery.where);
+            queryBuilder.where(where.sql, where.params);
+        } 
+
+        return queryBuilder;
     }
     // #endregion get
 
     // #region delete
-    public async delete(id:number|Array<number>): Promise<DeleteResult> {
-        return await this.dbRepository.delete(id);
+    public async delete(id: number | Array<number>, destroy?: boolean): Promise<DeleteResult> {
+        if (destroy)
+            return await this.dbRepository.delete(id);
+        else {
+            if (!Array.isArray(id)) {
+                id = [id];
+            }
+
+            let entities = await this.dbRepository.findByIds(id);
+            for (let entity of entities) {
+                entity.deleted = true;
+                entity.lastModified = new Date().getTime();
+                await this.save(entity);
+            }
+
+            return new DeleteResult();
+        }
     }
     // #endregion delete
 }

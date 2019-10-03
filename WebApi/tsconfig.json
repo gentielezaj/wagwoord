@@ -9,7 +9,7 @@
         "outDir": "./dist",
         "baseUrl": "./src",
         "noImplicitAny": true,
-        "strictNullChecks": true,
+        "strictNullChecks": false,
         "strictPropertyInitialization": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true

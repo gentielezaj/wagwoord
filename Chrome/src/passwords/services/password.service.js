@@ -81,7 +81,7 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
             }).join('');
         }
     };
-    
+
     vm.getPasswords = async function (filter) {
         const list = await db('get', filter);
         const total = await db('count', filter);
@@ -117,7 +117,7 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         return item.name && item.username && item.password ? true : false;
     };
 
-    vm.savePassword = async function (item, notlastModified) {
+    vm.savePassword = async function (item, notlastModified, ignoreServer) {
         if (!vm.validePassword(item)) {
             return false;
         }
@@ -137,7 +137,12 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
 
         item.searchField = `${item.name.toLowerCase()}-${item.username.toLowerCase()}`;
         if (!notlastModified || !item.lastModified) item.lastModified = new Date().getTime();
-        return await $database.save('password', item);
+        item.id = await $database.save('password', item);
+        if(item.id && !ignoreServer) {
+            vm.updateServer(item);
+        }
+
+        return item.id;
     };
     // #endregion save
 
@@ -145,7 +150,7 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
     vm.delete = async function (id) {
         const password = await vm.getItem(id);
         let deleted = await db('delete', id);
-        if(deleted && !(await passwordProxy.delete(password.serverId)).success) {
+        if (deleted && !(await passwordProxy.delete(password.serverId)).success) {
             let unsyced = localStorage.getItem(passwordsDeletedUnsyncKey);
             unsyced = unsyced ? unsyced.split[','] : [];
             unsyced.push(serverId);
@@ -156,16 +161,8 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
     };
 
     vm.deleteAll = async function () {
-        if(await db('deleteAll')) {
+        if (await db('deleteAll')) {
             await passwordProxy.deleteAll();
-        }
-    };
-
-    vm.setUnSync = async function() {
-        let ps = await vm.getPasswords();
-        for (const p of ps) {
-            p.
-            await vm.savePassword(p);
         }
     };
     // #endregion delete
@@ -211,48 +208,79 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         saveServerPasswords(data);
     };
 
-    vm.updateServer = async function () {
-        let passwords = await passwordStore.filter(f => !f.synced).toArray();
-        for (let i = 0; i < passwords.length; i++) {
-            const password = passwords[i];
-            password.id = password.serverId;
-            delete password.synced;
-            delete password.searchField;
+    vm.updateServer = async function (passwords) {
+        if (!passwords) {
+            var res = await passwordProxy.patch();
+            if (!res.success) {
+                throw new Exeption('server error');
+            }
 
-            const ep = await $encryption.encrypt(password.password);
-            if (ep != password.password) {
-                password.password = ep;
-                password.encrypted = true;
+            passwords = await passwordStore.where('lastModified').above(res.data).toArray();
+        } else if (!Array.isArray(passwords)) {
+            passwords = [passwords];
+        }
+
+        if (!passwords.length) return;
+
+        for (let i = 0; i < passwords.length; i++) {
+            passwords[i] = {
+                domain: passwords[i].domain,
+                name: passwords[i].name,
+                username: passwords[i].username,
+                password: passwords[i].password,
+                searchField: passwords[i].searchField,
+                lastModified: passwords[i].lastModified,
+                id: passwords[i].serverId,
+            };
+
+            const ep = await $encryption.encrypt(passwords[i].password);
+            if (ep != passwords[i].password) {
+                passwords[i].password = ep;
+                passwords[i].encrypted = true;
             } else {
-                password.encrypted = false;
+                passwords[i].encrypted = false;
             }
         }
 
-        var presults = await passwordProxy.post(passwords);
+        let presults = await passwordProxy.post(passwords);
         saveServerPasswords(presults);
     };
 
     async function saveServerPasswords(data) {
         if (data.success === true) {
-            for (let ps in data.data) {
-                saveServerPassword(data.data[ps]);
-            }
+            if (Array.isArray(data.data))
+                for (let ps in data.data) {
+                    saveServerPassword(data.data[ps]);
+                }
+            else saveServerPassword(data.data);
         }
     }
 
     async function saveServerPassword(p) {
-        p.serverId = p.id;
-        p.synced = true;
-        delete p.id;
-        if (p.encrypted) {
-            p.password = await $encryption.decrypt(p.password);
+        if(p.deleted == 1) {
+            const item = await passwordStore.where({serverId: p.id}).first();
+            if(item) await vm.delete();
+            return p.id;
         }
-        delete p.encrypted;
 
-        return await vm.savePassword({
+        let rp = {
+            domain: p.domain,
+            name: p.name,
+            username: p.username,
+            password: p.password,
+            searchField: p.searchField,
+            lastModified: p.lastModified,
             serverId: p.id,
-            synced: true
-        }, true);
+            synced: true,
+            encrypted: p.encrypted
+        };
+
+        if (rp.encrypted) {
+            rp.password = await $encryption.decrypt(rp.password);
+            rp.encrypted = false;
+        }
+
+        return await vm.savePassword(rp, true, true);
     }
     // #endregion server sync
 

@@ -36,7 +36,7 @@ wwapp.factory('$proxy', function ($rootScope, $http, $settings) {
     };
 
     vm.patch = function (controller, item) {
-        if (parseInt(item)) controller += '/' + item;
+        if (item && parseInt(item)) controller += '/' + item;
         return vm.send('PATCH', controller);
     };
 

@@ -2,11 +2,12 @@ import "reflect-metadata";
 import app from "./app";
 import { createConnection } from "typeorm";
 import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions";
+import { AppLogger } from "./utils/appLogger";
 
 const PORT = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || '4040';
 const serverAddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || 'localhost';
 
-if(process.env.NODE_ENV === 'dev') {
+if(process.env.NODE_ENV === undefined || process.env.NODE_ENV === 'dev') {
     require('dotenv').config();
 }
 
@@ -21,7 +22,7 @@ async function init() {
     });
 }
 
-init().then(f => console.log('all set up')); //.catch(e => Logger.logError(e, 'at app start \n'));
+init().then(f => console.log('all set up')).catch(e => AppLogger.logError(e, 'at app start \n'));
 
 function getTypeOrmConfig(): SqliteConnectionOptions {
     return {

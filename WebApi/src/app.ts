@@ -16,7 +16,7 @@ class App {
     }
 
     private initControllers() {
-        new PasswordController(this.app);
+        this.app.use('/api/passwords', new PasswordController().GetRouter());
     }
 
     private config(): void{

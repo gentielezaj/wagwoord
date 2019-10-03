@@ -1,6 +1,6 @@
 import { BaseEntity } from "database/models/baseEntity";
-import { Request, Response, Application, response } from "express";
-import { ObjectType } from "typeorm";
+import { Request, Response, Application, response, Router } from "express";
+import { ObjectType, SelectQueryBuilder, QueryBuilder } from "typeorm";
 import { BaseRepository, IBaseRepository } from "../database/repositories/baseRepository";
 import { AppLogger } from "../utils/appLogger";
 
@@ -9,39 +9,47 @@ export abstract class BaseController<TEntity extends BaseEntity> {
     protected repository: IBaseRepository<TEntity>;
     controller: string
 
-    constructor(app: Application, entity: ObjectType<TEntity>, controller: string) {
+    constructor(entity: ObjectType<TEntity>, controller: string) {
         this.entity = entity;
         this.repository = new BaseRepository<TEntity>(this.entity);
         this.controller = controller;
-        this.init(app);
     }
 
-    protected init(app: Application) {
-        app.use((req: Request, res: Response, next: any) => this.checkAccess(req, res, next));
+    public GetRouter(): Router {
 
-        app.post('/api/' + this.controller, (req: Request, res: Response) => {
+        let router = Router();
+
+        router.use((req: Request, res: Response, next: any) => this.checkAccess(req, res, next));
+
+        router.post('/', (req: Request, res: Response) => {
             this.save(req, res).then().catch(e => AppLogger.logError(this.controller + ' post', e));
         });
 
-        app.put('/api/' + this.controller, (req: Request, res: Response) => {
-            this.save(req, res).then().catch(e => AppLogger.logError(this.controller + ' put', e));
-        });
-
-        app.get('/api/' + this.controller, (req: Request, res: Response) => {
+        router.get('/', (req: Request, res: Response) => {
             this.getAll(req, res).then().catch(e => AppLogger.logError(this.controller + ' get', e));
         });
 
-        app.patch(`/api/${this.controller}/:lastModified`, (req: Request, res: Response) => {
-            this.getLastModified(req, res).then().catch(e => AppLogger.logError(this.controller + ' patch', e));
-        });
-
-        app.get(`/api/${this.controller}/:id`, (req: Request, res: Response) => {
+        router.get('/:id', (req: Request, res: Response) => {
             this.getById(req, res).then().catch(e => AppLogger.logError(this.controller + ' get/' + req.params.id, e));
         });
 
-        app.delete(`/api/${this.controller}/:id`, (req: Request, res: Response) => {
+        router.patch('/:lastModified', (req: Request, res: Response) => {
+            this.getLastModified(req, res).then().catch(e => AppLogger.logError(this.controller + ' patch', e));
+        });
+
+        router.patch('/', (req: Request, res: Response) => {
+            this.getLastModifiedValue(req, res).then().catch(e => AppLogger.logError(this.controller + '/getLastModifiedValue patch', e));
+        });
+
+        router.delete('/all', (req: Request, res: Response) => {
+            this.deleteAll(req, res).then().catch(e => AppLogger.logError(this.controller + ' delete/all', e));
+        });
+
+        router.delete('/:id', (req: Request, res: Response) => {
             this.delete(req, res).then().catch(e => AppLogger.logError(this.controller + ' delete/' + req.params.id, e));
         });
+
+        return router;
     }
 
     protected checkAccess(req: Request, res: Response, next: any) {
@@ -100,6 +108,15 @@ export abstract class BaseController<TEntity extends BaseEntity> {
     // #endregion save
 
     // #region get
+
+    public async getLastModifiedValue(req: Request, res: Response) {
+        try {
+            var item = await this.repository.getItem({ order: { property: "lastModified", order:"DESC" } });
+            this.sendResponse(res, item ? item.lastModified : 0);
+        } catch (error) {
+            this.sendErrorResponse(res, 500, error);
+        }
+    }
 
     public async getLastModified(req: Request, res: Response): Promise<void> {
         try {
@@ -172,9 +189,9 @@ export abstract class BaseController<TEntity extends BaseEntity> {
         }
 
         let count = 0;
-        if(body) {
+        if (body) {
             count = 1;
-            if(Array.isArray(body)) {
+            if (Array.isArray(body)) {
                 count = body.length;
             }
         }
@@ -192,7 +209,20 @@ export abstract class BaseController<TEntity extends BaseEntity> {
 
     // #region delete
 
-    public async delete(req: Request, res: Response) {
+    public async deleteAll(req: Request, res: Response): Promise<void> {
+        try {
+            const entities = await this.repository.getAll();
+            for (const entity of entities) {
+                await this.repository.delete(entity.id, true);
+            }
+
+            this.sendResponse(res, true);
+        } catch (error) {
+            this.sendErrorResponse(res, 500, error);
+        }
+    }
+
+    public async delete(req: Request, res: Response): Promise<void> {
         try {
             let ids: Array<number> | undefined = new Array<number>();
             if (req.params.id.indexOf(',') > -1) {

@@ -28,7 +28,8 @@ wwapp.controller("SettingsPasswordController", function ($scope, $password, $not
                     domain: $password.getDomain(item.domain),
                     name: $password.getName(item.domain) || item.name,
                     username: item.username,
-                    password: item.password
+                    password: item.password,
+                    synced: true
                 });
                 progress.value = index + 1;
             }
@@ -44,7 +45,8 @@ wwapp.controller("SettingsPasswordController", function ($scope, $password, $not
                     domain: $password.getDomain(getProperty(item, 'url')),
                     name: $password.getName(getProperty(item, 'url')) || getProperty(item, 'name'),
                     username: getProperty(item, 'username'),
-                    password: getProperty(item, 'password')
+                    password: getProperty(item, 'password'),
+                    synced: true
                 });
                 progress.value = index + 1;
             }

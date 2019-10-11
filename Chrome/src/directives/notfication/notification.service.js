@@ -23,9 +23,10 @@ wwapp.factory('$notification', function ($rootScope) {
 
         if(error) {
             console.error(error);
-            throw new Exeption(error);
         }
     };
+
+    vm.log = (message) => console.log(message);
 
     return vm;
 });

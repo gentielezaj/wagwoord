@@ -1,6 +1,8 @@
 wwapp.controller("PasswordFormController", function ($scope, $password, $rootScope, $notification, $location) {
     var vm = this;
-    vm.model = {};
+    vm.model = {
+        synced: true
+    };
 
     vm.showButtonLabel = false;
 
@@ -54,7 +56,7 @@ wwapp.controller("PasswordFormController", function ($scope, $password, $rootSco
         }
 
         vm.savingForm = true;
-
+        vm.model.synced = vm.model.synced || false;
         try {
             await $password.savePassword(vm.model);
             $notification.success('Password saved');

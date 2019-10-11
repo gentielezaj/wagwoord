@@ -1,13 +1,23 @@
-wwapp.controller("PasswordsMainController", function ($scope,$location) {
+wwapp.controller("PasswordsMainController", function ($scope, $location, $password, $notification) {
   var vm = this;
   vm.name = 'fgsfgsdfgsd';
 
-  vm.toggleMenu = function () {
-    const element = document.getElementById('section-menu-dialog-password');
-    element.open = element.open ? false : true;
+  vm.goToSettings = function () {
+    $location.path('settings');
   };
 
-  vm.goToSettings = function() {
-    $location.path('settings');
+  vm.sync = async function () {
+    vm.passwordSyncLoader = true;
+    try {
+      if (await $password.update())
+        $notification.success('synched');
+      else
+        $notification.success('could not sync');
+    } catch (err) {
+      $notification.error('server error', err);
+    }
+
+    vm.passwordSyncLoader = false;
+    $scope.$digest();
   };
 });

@@ -228,12 +228,12 @@ export abstract class BaseController<TEntity extends BaseEntity> {
             if (req.params.id.indexOf(',') > -1) {
                 let splited = req.params.id.split(',');
                 for (const s in splited) {
-                    const id = parseInt(s);
+                    const id = parseInt(splited[s]);
                     if (!id) {
                         ids = undefined;
                         break;
                     }
-                    ids.push(parseInt(s))
+                    ids.push(id);
                 }
             } else {
                 const id = parseInt(req.params.id);

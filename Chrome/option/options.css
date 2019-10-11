@@ -164,8 +164,27 @@ section header {
     z-index: 9998;
 }
 
-section header h2{
+section header ul{
+    padding: 0 2rem 0 0;
     margin: 0;
+    text-decoration: none;
+    list-style: none;
+    list-style-type: none;
+    width: 100%;
+    display: table;
+}
+
+section header ul li {
+    display: table-cell;
+    padding: 0.5rem;
+}
+
+section header h2 {
+    margin: 0;
+}
+
+section header ul li.title {
+    width: inherit;
 }
 
 section .content {

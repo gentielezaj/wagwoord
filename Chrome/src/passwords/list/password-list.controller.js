@@ -2,6 +2,7 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
   var vm = this;
 
   const takeBase = appenvirement == 'options' ? 50 : 20;
+  vm.appenvirement = appenvirement;
 
   vm.searchModel = '';
   let take = takeBase;
@@ -69,7 +70,7 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
   vm.delete = async function (item) {
     try {
       await $password.delete(item.id);
-      $notification.success('Password deleted', error);
+      $notification.success('Password deleted');
     } catch (error) {
       $notification.error('Error wile deleting password', error);
     }

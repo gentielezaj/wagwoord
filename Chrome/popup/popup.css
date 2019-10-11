@@ -3,7 +3,7 @@ body {
     background: var(--wagwoord-main-color);
     color: var(--wagwoord-color);
     width: 15rem;
-    max-height: 25rem;
+    /* max-height: 25rem; */
     min-height: 10rem;
     overflow: hidden;
     scroll-behavior: smooth;
@@ -12,7 +12,7 @@ body {
 }
 
 section .password-list .data-container {
-    max-height: 25rem;
+    padding: 2.1rem 0;
 }
 
 footer {

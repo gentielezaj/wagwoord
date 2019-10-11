@@ -1,7 +1,8 @@
-wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $encryption) {
+wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $encryption, $notification) {
     let vm = this;
 
     const passwordsDeletedUnsyncKey = 'passowrds-deleted-unsync';
+    const passowrdsLastModifiedKey = 'passowrds-lastModified';
     const passwordStore = $database.store('password');
     const passwordProxy = $proxy.init('passwords');
 
@@ -136,10 +137,12 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         }
 
         item.searchField = `${item.name.toLowerCase()}-${item.username.toLowerCase()}`;
+        item.synced = item.synced || false;
         if (!notlastModified || !item.lastModified) item.lastModified = new Date().getTime();
         item.id = await $database.save('password', item);
-        if(item.id && !ignoreServer) {
-            vm.updateServer(item);
+        if(item.id && !ignoreServer && item.synced === true) {
+            const ps = vm.updateServer(item);
+            await vm.saveServerPasswords(ps);
         }
 
         return item.id;
@@ -150,10 +153,10 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
     vm.delete = async function (id) {
         const password = await vm.getItem(id);
         let deleted = await db('delete', id);
-        if (deleted && !(await passwordProxy.delete(password.serverId)).success) {
+        if (deleted && password.serverId && !(await passwordProxy.delete(password.serverId)).success) {
             let unsyced = localStorage.getItem(passwordsDeletedUnsyncKey);
-            unsyced = unsyced ? unsyced.split[','] : [];
-            unsyced.push(serverId);
+            unsyced = unsyced ? unsyced.split(',') : [];
+            unsyced.push(password.serverId);
             localStorage.setItem(passwordsDeletedUnsyncKey, unsyced.join(','));
         }
 
@@ -162,8 +165,11 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
 
     vm.deleteAll = async function () {
         if (await db('deleteAll')) {
-            await passwordProxy.deleteAll();
+            let res = await passwordProxy.deleteAll();
+            return res.success;
         }
+
+        return false;
     };
     // #endregion delete
 
@@ -196,31 +202,46 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
     // #region server sync
 
     vm.update = async function () {
-        await vm.updateFromServer();
-        await vm.updateServer();
+        const deleted = await vm.updateDeleted();
+        const local = await vm.updateFromServer();
+        const server = await vm.updateServer();
+        return deleted && local && server ? true : false;
+    };
+
+    vm.updateDeleted = async function() {
+        let deleted = localStorage.getItem(passwordsDeletedUnsyncKey);
+        if(!deleted || !deleted.length) return true;
+        let result = await passwordProxy.delete(deleted);
+        if(result.success === true) {
+            localStorage.removeItem(passwordsDeletedUnsyncKey);
+        }
+        return result.success;
     };
 
     vm.updateFromServer = async function () {
-        const lastModified = await passwordStore.orderBy('lastModified').reverse().first();
-        if (!lastModified) return;
+        let password = (await passwordStore.orderBy('lastModified').reverse().first()) || {};
+        let localStorageLastModified = localStorage.getItem(passowrdsLastModifiedKey);
+        const lastModified = password.lastModified > localStorageLastModified ? password.lastModified : localStorageLastModified;
+        if (!lastModified) return true;
 
-        const data = await passwordProxy.patch(lastModified.lastModified || 0);
-        saveServerPasswords(data);
+        const data = await passwordProxy.patch(lastModified || 0);
+        const result = saveServerPasswords(data);
+        return result;
     };
 
     vm.updateServer = async function (passwords) {
         if (!passwords) {
             var res = await passwordProxy.patch();
             if (!res.success) {
-                throw new Exeption('server error');
+                return false;
             }
 
-            passwords = await passwordStore.where('lastModified').above(res.data).toArray();
+            passwords = await passwordStore.filter(p => p.lastModified > res.data && p.synced).toArray(); // await passwordStore.where('lastModified').above(res.data).and('synced').equals(true).toArray();
         } else if (!Array.isArray(passwords)) {
             passwords = [passwords];
         }
 
-        if (!passwords.length) return;
+        if (!passwords.length) return true;
 
         for (let i = 0; i < passwords.length; i++) {
             passwords[i] = {
@@ -242,8 +263,7 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
             }
         }
 
-        let presults = await passwordProxy.post(passwords);
-        saveServerPasswords(presults);
+        return await passwordProxy.post(passwords);
     };
 
     async function saveServerPasswords(data) {
@@ -253,13 +273,22 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
                     saveServerPassword(data.data[ps]);
                 }
             else saveServerPassword(data.data);
+
+            return true;
         }
+        return false;
     }
 
     async function saveServerPassword(p) {
         if(p.deleted == 1) {
             const item = await passwordStore.where({serverId: p.id}).first();
             if(item) await vm.delete();
+
+            let lastModified = localStorage.getItem(passowrdsLastModifiedKey);
+            if(lastModified < p.lastModified) {
+                localStorage.setItem(passowrdsLastModifiedKey, p.lastModified);
+            }
+
             return p.id;
         }
 

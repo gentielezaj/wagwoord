@@ -1,6 +1,6 @@
 {
   "name": "wagwoord-webapi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "wagwoord webapi",
   "main": "index.js",
   "scripts": {

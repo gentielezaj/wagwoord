@@ -24,4 +24,8 @@ footer {
     position: fixed
 }
 
+section .password-list .data-container ul li .domain.title {
+    font-size: unset;
+}
+
 /* #region header and futter */

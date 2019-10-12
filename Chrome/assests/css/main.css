@@ -100,9 +100,21 @@ input[type=button].info:focus:not(:disabled) {
     background: var(--wagwoord-color-info-secend);
 }
 
+button.icon {
+    display: flex;
+}
+
+button.icon .pre svg {
+    padding-right: 0.5rem;
+}
+
+button.icon .suffix svg {
+    padding-left: 0.5rem;
+}
+
 button.icon svg {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.6rem;
+    height: 0.7rem;
 }
 
 button.icon.text span {
@@ -112,6 +124,22 @@ button.icon.text span {
 button.icon.text:hover span,
 button.icon.text:active span {
     display: inline;
+}
+
+
+button.icon.text .suffix svg,
+button.icon.text .pre svg {
+    padding: 0;
+}
+
+button.icon.text:hover .pre svg,
+button.icon.text:active .pre svg {
+    padding-right: 0.5rem;
+}
+
+button.icon.text:hover .suffix svg,
+button.icon.text:active .suffix svg {
+    padding-left: 0.5rem;
 }
 
 /* #endregion button */

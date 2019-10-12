@@ -50,6 +50,12 @@
           <span>Settings</span>
         </div>
       </li>
+      <li data-page="blacklist" ng-click="vm.changeTab('blacklist')" ng-class="{'active': vm.isActiveTab('blacklist')}">
+        <password-icon></password-icon>
+        <div class="nav-text">
+          <span>Blacklist</span>
+        </div>
+      </li>
       <li data-page="settings" ng-click="vm.changeTab('demo')" ng-class="{'active': vm.isActiveTab('demo')}">
         <settings-icon></settings-icon>
         <div class="nav-text">
@@ -95,6 +101,7 @@
 <script src="../src/directives/notfication/notifications.directive.js"></script>
 <script src="../src/directives/notfication/notification.service.js"></script>
 
+<script src="../src/blacklist/blacklist.controller.js"></script>
 
 <script src="../src/directives/icons/password-icon.directive.js"></script>
 <script src="../src/directives/icons/credit-card-icon.directive.js"></script>

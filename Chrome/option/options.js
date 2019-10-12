@@ -30,6 +30,10 @@ wwapp.config(function ($routeProvider, $locationProvider) {
             templateUrl: "../src/settings/settings.controller.html",
             tab: 'setting'
         })
+        .when("/blacklist", {
+            templateUrl: "../src/blacklist/blacklist.controller.html",
+            tab: 'blacklist'
+        })
         .when("/demo", {
             templateUrl: "../src/demo/demo.controller.html",
             tab: 'demo'

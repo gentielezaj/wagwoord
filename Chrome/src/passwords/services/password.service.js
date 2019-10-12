@@ -1,4 +1,4 @@
-wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $encryption, $notification) {
+wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $encryption, $notification) {
     let vm = this;
 
     const passwordsDeletedUnsyncKey = 'passowrds-deleted-unsync';
@@ -141,8 +141,7 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         if (!notlastModified || !item.lastModified) item.lastModified = new Date().getTime();
         item.id = await $database.save('password', item);
         if(item.id && !ignoreServer && item.synced === true) {
-            const ps = vm.updateServer(item);
-            await vm.saveServerPasswords(ps);
+            await vm.updateServer(item);
         }
 
         return item.id;
@@ -229,7 +228,7 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         return result;
     };
 
-    vm.updateServer = async function (passwords) {
+    vm.updateServer = async function (passwords, onSaveItem) {
         if (!passwords) {
             var res = await passwordProxy.patch();
             if (!res.success) {
@@ -249,7 +248,6 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
                 name: passwords[i].name,
                 username: passwords[i].username,
                 password: passwords[i].password,
-                searchField: passwords[i].searchField,
                 lastModified: passwords[i].lastModified,
                 id: passwords[i].serverId,
             };
@@ -263,23 +261,28 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
             }
         }
 
-        return await passwordProxy.post(passwords);
+        var result = await passwordProxy.post(passwords);
+        if(result.success) {
+            await saveServerPasswords(result, onSaveItem);
+        }
+
+        return result.success;
     };
 
-    async function saveServerPasswords(data) {
+    async function saveServerPasswords(data, onSaveItem) {
         if (data.success === true) {
             if (Array.isArray(data.data))
                 for (let ps in data.data) {
-                    saveServerPassword(data.data[ps]);
+                    saveServerPassword(data.data[ps], onSaveItem);
                 }
-            else saveServerPassword(data.data);
+            else saveServerPassword(data.data, onSaveItem);
 
             return true;
         }
         return false;
     }
 
-    async function saveServerPassword(p) {
+    async function saveServerPassword(p, onSaveItem) {
         if(p.deleted == 1) {
             const item = await passwordStore.where({serverId: p.id}).first();
             if(item) await vm.delete();
@@ -297,7 +300,6 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
             name: p.name,
             username: p.username,
             password: p.password,
-            searchField: p.searchField,
             lastModified: p.lastModified,
             serverId: p.id,
             synced: true,
@@ -307,6 +309,10 @@ wwapp.factory('$password', function ($rootScope, $database, $settings, $proxy, $
         if (rp.encrypted) {
             rp.password = await $encryption.decrypt(rp.password);
             rp.encrypted = false;
+        }
+
+        if(onSaveItem && angular.isFunction(onSaveItem)) {
+            onSaveItem(rp);
         }
 
         return await vm.savePassword(rp, true, true);

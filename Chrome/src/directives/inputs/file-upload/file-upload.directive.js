@@ -2,6 +2,10 @@ wwapp.directive("ngFileSelect", function () {
     return {
         restrict: 'A',
         require: 'ngModel',
+        scope: {
+            onTextRead: '=?',
+            proccessFileData: '=?'
+        },
         link: function (scope, el, args, ngModel) {
 
             el.bind("change", function (e) {
@@ -14,13 +18,21 @@ wwapp.directive("ngFileSelect", function () {
 
                 let reader = new FileReader();
                 reader.onload = function () {
-                    let data = element.files[0].type == "application/json" ? JSON.parse(reader.result) : reader.result;
                     value = element.files[0];
-                    value.data = element.files[0].type == "application/json" ? data.data : data.split('\n');
-                    if (element.files[0].type == "application/json") {
-                        value.data = value.data.filter(d => d.name);
+                    if(scope.onTextRead && angular.isFunction(scope.onTextRead)) {
+                        scope.onTextRead(reader.result);
+                    }
+
+                    if(scope.proccessFileData && angular.isFunction(scope.proccessFileData)) {
+                        value.data = scope.proccessFileData(reader.result, element.files[0]);
                     } else {
-                        value.data = value.data.filter(d => /(.)+,(.)+,(.)+,(.)+/.test(d));
+                        let data = element.files[0].type == "application/json" ? JSON.parse(reader.result) : reader.result;
+                        value.data = element.files[0].type == "application/json" ? data.data : data.split('\n');
+                        if (element.files[0].type == "application/json") {
+                            value.data = value.data.filter(d => d.name);
+                        } else {
+                            value.data = value.data.filter(d => /(.)+,(.)+,(.)+,(.)+/.test(d));
+                        }
                     }
 
                     scope.$apply(function () {

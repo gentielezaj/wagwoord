@@ -18,40 +18,46 @@ wwapp.controller("SettingsPasswordController", function ($scope, $password, $not
         }
     };
 
-    vm.savePasswords = async function () {
-        vm.saveDisable = true;
+    function onSavePasswordItem(item) {
         let progress = document.getElementById('password-upload-progress');
-        if (vm.model.file.type == "application/json") {
-            for (let index = 0; index < vm.model.file.data.length; index++) {
-                const item = vm.model.file.data[index];
-                await $password.savePassword({
-                    domain: $password.getDomain(item.domain),
-                    name: $password.getName(item.domain) || item.name,
-                    username: item.username,
-                    password: item.password,
-                    synced: true
-                });
-                progress.value = index + 1;
-            }
+        ++progress.value;
+    }
+
+    vm.proccessFileData = function(text, file) {
+        let data = [];
+        if (file.type == "application/json") {
+            data = JSON.parse(text).data.filter(d => d.name);
         } else {
-            const properties = vm.model.file.data[0].replace('\r', '').split(',');
+            let splitText = data.split('\n');
             let getProperty = function (item, property) {
                 let i = properties.indexOf(property);
                 return item[i];
             };
-            for (let index = 1; index < vm.model.file.data.length; index++) {
-                const item = vm.model.file.data[index].replace('\r', '').split(',');
-                await $password.savePassword({
-                    domain: $password.getDomain(getProperty(item, 'url')),
-                    name: $password.getName(getProperty(item, 'url')) || getProperty(item, 'name'),
-                    username: getProperty(item, 'username'),
-                    password: getProperty(item, 'password'),
-                    synced: true
-                });
-                progress.value = index + 1;
+
+            for (let index = 1; index < splitText.length; index++) {
+                if(/(.)+,(.)+,(.)+,(.)+/.test(splitText[i])) {
+                    const item = vm.model.file.data[index].replace('\r', '').split(',');
+                    data.push({
+                        domain: $password.getDomain(getProperty(item, 'url')),
+                        name: $password.getName(getProperty(item, 'url')) || getProperty(item, 'name'),
+                        username: getProperty(item, 'username'),
+                        password: getProperty(item, 'password')
+                    });
+                }
             }
         }
 
+        return data;
+    };
+
+    vm.savePasswords = async function () {
+        vm.saveDisable = true;
+        
+        if(vm.model.file.data && vm.model.file.data.length) {
+            await $password.updateServer(vm.model.file.data, onSavePasswordItem);
+        }
+        
+        vm.saveDisable = false;
         $notification.success("passwords saved successfuly");
     };
 
@@ -118,7 +124,6 @@ wwapp.controller("SettingsPasswordController", function ($scope, $password, $not
         let container = document.getElementById('import-passwords-container');
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             container.addEventListener(eventName, (e) => {
-                console.log('ddddd');
                 e.preventDefault();
                 e.stopPropagation();
             }, false);

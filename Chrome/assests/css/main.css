@@ -442,3 +442,11 @@ dialog .dialog-actions .dialog-action {
 }
 
 /* #endregion dialog */
+
+/* #region cards */
+
+.cards .card {
+    display: flexbox;
+    padding: 0.5rem;
+}
+/* #endregion cards */

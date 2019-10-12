@@ -1,3 +1,5 @@
+
+
 body {
     background: var(--wagwoord-main-color);
     color: var(--wagwoord-color);
@@ -5,12 +7,15 @@ body {
     --navigation-width-collapsed: 3rem;
     transition: width 0.2s;
     scroll-behavior: smooth;
+
+    --zindex-notifications-nav: 9999;
+    --zindex-section-header: 9998
 }
 
 /* #region notifications */
 
 #app-notificaitons {
-    z-index: 9999;
+    z-index: var(--zindex-notifications-nav);
     position: fixed;
     padding: 2rem;
     right: 0;
@@ -58,6 +63,7 @@ body {
 /* #region navigation */
 
 nav {
+    z-index: var(--zindex-notifications-nav);
     position: fixed;
     width: var(--navigation-width);
     top: 0;
@@ -161,7 +167,12 @@ section header {
     background-color: var(--wagwoord-main-color);
     /* margin-left: var(--navigation-width); */
     width: calc(100% - var(--navigation-width) - 2rem);
-    z-index: 9998;
+    z-index: var(--zindex-section-header);
+}
+
+section.collapsed header {
+    width: calc(100% - var(--navigation-width-collapsed) - 2rem);
+    left: calc(var(--navigation-width-collapsed) + 1rem);
 }
 
 section header ul{

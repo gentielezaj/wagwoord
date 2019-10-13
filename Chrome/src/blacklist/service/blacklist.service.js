@@ -12,6 +12,11 @@ wwapp.service('$blacklist', function ($rootScope, $database, $base, $password) {
         item.name = $password.getName(item.name || item.domain);
         item.domain = $password.getDomain(item.domain);
 
+        item.password = item.password ? true : false;
+        item.address = item.address ? true : false;
+        item.creditCard = item.creditCard ? true : false;
+        item.codeGenerator = item.codeGenerator ? true : false;
+
         var oldItem = await db.store.where({name: item.name}).first();
         if(angular.isObject(oldItem)) {
             item.id = oldItem.id;

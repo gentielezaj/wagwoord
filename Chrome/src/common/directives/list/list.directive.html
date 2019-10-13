@@ -26,7 +26,7 @@
       </div>
       <div ng-repeat="column in settings.columns" class="domain" ng-class="column.class">
         <span ng-if="!column.template" class="data-value">{{item[column.property]}}</span>
-        <span ng-if="column.template" ng-inclide="column.view"></span>
+        <div ng-if="column.template" ng-include="column.template"></div>
       </div>
     </li>
     <li ng-if="template" ng-include="template" ng-repeat="item in data.list">

@@ -10,7 +10,7 @@ wwapp.controller("BlacklistController", function ($scope, $location, $notificati
             },
             {
                 property: 'checkboxes',
-                template: '../src/blacklist/views/blacklist-list-item.html'
+                template: '/src/blacklist/views/blacklist-list-item.html'
             }
         ],
         save: vm.save

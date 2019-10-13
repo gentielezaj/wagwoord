@@ -31,7 +31,7 @@ wwapp.service('$base', function ($database, $proxy) {
             }
 
             let old = await vm.getItem(item.id);
-            if (old) {
+            if (old && old.serverId) {
                 item.serverId = item.serverId;
             }
 
@@ -169,7 +169,7 @@ wwapp.service('$base', function ($database, $proxy) {
         abstract.convertLocalToServerEntity = async function (item) {
             if (item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
 
-            item.id = item.serverId;
+            item.id = angular.copy(item.serverId);
             delete item.serverId;
             delete item.synced;
 
@@ -179,7 +179,7 @@ wwapp.service('$base', function ($database, $proxy) {
         abstract.convertServerToLocalEntity = async function (item) {
             if (item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
 
-            item.serverId = item.id;
+            item.serverId = angular.copy(item.id);
             item.synced = true;
             delete item.id;
 

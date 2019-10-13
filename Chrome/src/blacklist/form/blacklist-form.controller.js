@@ -9,6 +9,7 @@ wwapp.controller("BlacklistFormController", function ($scope, $notification, $bl
     };
 
     vm.save = async function (form) {
+        alert('TODO:check save');
         if (form.$invalid) {
             $notification.error('invalide form');
             return;

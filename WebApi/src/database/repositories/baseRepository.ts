@@ -26,8 +26,15 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
 
     // #region save
     public async save(model: TEntity): Promise<TEntity | undefined> {
+        let oldItem = await this.getSavedItem(model);
+        if(oldItem.lastModified > model.lastModified) return oldItem;
         if (!model.lastModified) model.lastModified = new Date().getTime();
         return <TEntity | undefined>(await this.dbRepository.save(<any>model));
+    }
+
+    protected async getSavedItem(model: TEntity): Promise<TEntity | undefined> {
+        if(model.id > 0) return undefined;
+        return await this.getById(model.id);
     }
 
     public async saveAll(models: Array<TEntity>): Promise<Array<TEntity | undefined>> {

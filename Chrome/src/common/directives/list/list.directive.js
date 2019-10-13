@@ -1,4 +1,4 @@
-wwapp.directive('wwap-list', function ($notification, $injector) {
+wwapp.directive('appList', function ($notification, $injector) {
     return {
         restrict: 'EA',
         templateUrl: '../src/common/directives/list/list.directive.html',
@@ -48,6 +48,7 @@ wwapp.directive('wwap-list', function ($notification, $injector) {
             scope.$on('refresh', () => scope.settings.refresh());
 
             scope.settings.delete = async function (item) {
+                alert('TODO:add confimation ao app-list');
                 try {
                     await $service.delete(item.id);
                     $notification.success('Item deleted');

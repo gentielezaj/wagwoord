@@ -1,7 +1,7 @@
 wwapp.directive('notifications', function () {
     return {
         restrict: 'EA',
-        templateUrl: '../src/directives/notfication/notifications.directive.html',
+        templateUrl: '../src/common/directives/notfication/notifications.directive.html',
         link: function(scope) {
             scope.notifications = [];
 

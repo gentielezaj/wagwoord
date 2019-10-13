@@ -14,7 +14,7 @@
   <nav id="app-nav" ng-controller="NavController as vm">
     <ul>
       <li data-page="passwords">
-        <div ng-click="vm.toggleCollapsed()" ng-include="'/src/directives/icons/hamburger-menu.html'"></div>
+        <div ng-click="vm.toggleCollapsed()" ng-include="'/src/common/directives/icons/hamburger-menu.html'"></div>
         <div class="nav-text">
           <span>Wagwoord</span>
         </div>
@@ -80,6 +80,7 @@
 <script src="../src/nav/nav.controller.js"></script>
 
 <script src="../src/common/base.service.js"></script>
+<script src="../src/common/controllers/base-list.controller.js"></script>
 
 <script src="../src/passwords/services/password.service.js"></script>
 <script src="../src/passwords/main/passwords.controller.js"></script>
@@ -100,27 +101,27 @@
 
 <script src="../src/demo/demo.controller.js"></script>
 
-<script src="../src/directives/notfication/notifications.directive.js"></script>
-<script src="../src/directives/notfication/notification.service.js"></script>
+<script src="../src/common/directives/notfication/notifications.directive.js"></script>
+<script src="../src/common/directives/notfication/notification.service.js"></script>
 
 <script src="../src/blacklist/blacklist.controller.js"></script>
 
-<script src="../src/directives/icons/password-icon.directive.js"></script>
-<script src="../src/directives/icons/credit-card-icon.directive.js"></script>
-<script src="../src/directives/icons/address-icon.directive.js"></script>
-<script src="../src/directives/icons/settings-icon.directive.js"></script>
-<script src="../src/directives/icons/show-hide-icon.directive.js"></script>
-<script src="../src/directives/icons/delete-icon.directive.js"></script>
-<script src="../src/directives/icons/edit-icon.directive.js"></script>
-<script src="../src/directives/icons/copy-icon.directive.js"></script>
-<script src="../src/directives/inputs/from-field.directive.js"></script>
-<script src="../src/directives/icons/sync-icon.directive.js"></script>
+<script src="../src/common/directives/icons/password-icon.directive.js"></script>
+<script src="../src/common/directives/icons/credit-card-icon.directive.js"></script>
+<script src="../src/common/directives/icons/address-icon.directive.js"></script>
+<script src="../src/common/directives/icons/settings-icon.directive.js"></script>
+<script src="../src/common/directives/icons/show-hide-icon.directive.js"></script>
+<script src="../src/common/directives/icons/delete-icon.directive.js"></script>
+<script src="../src/common/directives/icons/edit-icon.directive.js"></script>
+<script src="../src/common/directives/icons/copy-icon.directive.js"></script>
+<script src="../src/common/directives/inputs/from-field.directive.js"></script>
+<script src="../src/common/directives/icons/sync-icon.directive.js"></script>
 
 
 
-<script src="../src/directives/loaders/loader.directive.js"></script>
+<script src="../src/common/directives/loaders/loader.directive.js"></script>
 
-<script src="../src/directives/inputs/file-upload/file-upload.directive.js"></script>
+<script src="../src/common/directives/inputs/file-upload/file-upload.directive.js"></script>
 
 <script src="../src/util/database.service.js"></script>
 <script src="../src/util/proxy.service.js"></script>

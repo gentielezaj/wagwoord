@@ -58,7 +58,7 @@ wwapp.controller("PasswordFormController", function ($scope, $password, $rootSco
         vm.savingForm = true;
         vm.model.synced = vm.model.synced || false;
         try {
-            await $password.savePassword(vm.model);
+            await $password.save(vm.model);
             $notification.success('Password saved');
             $rootScope.$broadcast('refresh');
             vm.resetForm();

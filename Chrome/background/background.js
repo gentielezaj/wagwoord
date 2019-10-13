@@ -9,7 +9,7 @@ var wwapp = angular.module("wwapp", []);
 wwapp.controller("BackgroudController", function ($scope, $password, $settings) {
 
   async function getData(url) {
-    let passwords = url.startsWith('file://') ? (await $password.getPasswords({take: 2})).data : await $password.getItemsForDomain($password.getName(url));
+    let passwords = url.startsWith('file://') ? await $password.get({take: 2}) : await $password.getItemsForDomain($password.getName(url));
     let settings = await $settings.get();
 
     return {

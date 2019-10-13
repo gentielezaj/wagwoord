@@ -9,14 +9,14 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
 
   vm.passwords = {
     loading: true,
-    data: [],
+    list: [],
     total: 0,
   };
 
   vm.refreshPasswords = function () {
     vm.passwords.loading = true;
     if (!$scope.$$phase) $scope.$digest();
-    $password.getPasswords({
+    $password.getList({
       searchText: vm.searchModel,
       take: take
     }).then(res => {

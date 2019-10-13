@@ -10,6 +10,10 @@ wwapp.factory('$database', function ($rootScope) {
                 password: '++id,name,domain,username,searchField,serverId,lastModified,encrypted,synced'
             });
 
+            db.version(2).stores({
+                blacklist: '++id,name,domain,serverId,lastModified,synced'
+            });
+
             return db;
         } catch (error) {
             console.error('error opeing database ' + dbName);
@@ -48,23 +52,23 @@ wwapp.factory('$database', function ($rootScope) {
     vm.get = async function (store, query) {
         try {
             let os = vm.store(store);
-            if(!query) {
+            if (!query) {
                 return await os.toArray();
             }
-            if(query.searchText) {
+            if (query.searchText) {
                 query.searchText = query.searchText.toLowerCase();
                 os = os.filter(i => i.searchField.indexOf(query.searchText) > -1);
             }
-            if(query.skip > 0) {
+            if (query.skip > 0) {
                 os = os.offset(query.take);
             }
-            if(query.take > 0) {
+            if (query.take > 0) {
                 os = os.limit(query.take);
             }
-            if(query.order) {
-                if(typeof query.order === 'string' || query.order.property) 
+            if (query.order) {
+                if (typeof query.order === 'string' || query.order.property)
                     os.orderBy(query.order.property || query.order);
-                if(query.order.desc)
+                if (query.order.desc)
                     os.reverse();
             }
 
@@ -79,10 +83,10 @@ wwapp.factory('$database', function ($rootScope) {
     vm.count = async function (store, query) {
         try {
             let os = vm.store(store);
-            if(!query) {
+            if (!query) {
                 return await os.toArray();
             }
-            if(query.searchText) {
+            if (query.searchText) {
                 query.searchText = query.searchText.toLowerCase();
                 os = os.filter(i => i.searchField.indexOf(query.searchText) > -1);
             }
@@ -95,19 +99,21 @@ wwapp.factory('$database', function ($rootScope) {
         }
     };
 
-    vm.getList = async function(store, query) {
+    vm.getList = async function (store, query) {
         let list = await vm.get(store, query);
         let count = await vm.count(store, query);
 
         return {
             list: list,
-            count: count
+            total: count
         };
     };
 
     vm.getItem = async function (store, id) {
         try {
-            return await vm.store(store).where({id: id}).first();
+            return await vm.store(store).where({
+                id: id
+            }).first();
         } catch (error) {
             console.error(`error geting item ${store} id:${id}`);
             console.log(error);
@@ -128,7 +134,7 @@ wwapp.factory('$database', function ($rootScope) {
         }
     };
 
-    vm.deleteAll = async function(store) {
+    vm.deleteAll = async function (store) {
         try {
             await vm.store(store).clear();
             return true;
@@ -139,6 +145,24 @@ wwapp.factory('$database', function ($rootScope) {
         }
     };
     // #endregion delete
+
+    vm.init = function (store) {
+        return {
+            delete: (id) => vm.delete(store, id),
+            deleteAll: () => vm.deleteAll(store),
+
+            getList: (query) => vm.getList(store, query),
+            getItem: (id) => vm.getItem(store, id),
+            count: (query) => vm.count(store, query),
+            get: (query) => vm.get(store, query),
+
+            save: (model) => vm.save(store, model),
+
+            get store() {
+                return vm.store(store);
+            }
+        };
+    };
 
     return vm;
 });

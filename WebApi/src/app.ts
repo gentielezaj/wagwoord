@@ -17,7 +17,7 @@ class App {
     }
 
     private initControllers() {
-        this.app.use('/api/passwords', new PasswordController().GetRouter());
+        this.app.use('/api/password', new PasswordController().GetRouter());
         this.app.use('/api/blacklist', new BlacklistController().GetRouter());
     }
 

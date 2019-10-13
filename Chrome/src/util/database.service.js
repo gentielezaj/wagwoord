@@ -11,7 +11,7 @@ wwapp.factory('$database', function ($rootScope) {
             });
 
             db.version(2).stores({
-                blacklist: '++id,name,domain,serverId,lastModified,synced'
+                blacklist: '++id,name,domain,serverId,lastModified,synced,password,address,codeGenerator,creditCard'
             });
 
             return db;
@@ -146,20 +146,20 @@ wwapp.factory('$database', function ($rootScope) {
     };
     // #endregion delete
 
-    vm.init = function (store) {
+    vm.init = function (s) {
         return {
-            delete: (id) => vm.delete(store, id),
-            deleteAll: () => vm.deleteAll(store),
+            delete: (id) => vm.delete(s, id),
+            deleteAll: () => vm.deleteAll(s),
 
-            getList: (query) => vm.getList(store, query),
-            getItem: (id) => vm.getItem(store, id),
-            count: (query) => vm.count(store, query),
-            get: (query) => vm.get(store, query),
+            getList: (query) => vm.getList(s, query),
+            getItem: (id) => vm.getItem(s, id),
+            count: (query) => vm.count(s, query),
+            get: (query) => vm.get(s, query),
 
-            save: (model) => vm.save(store, model),
+            save: (model) => vm.save(s, model),
 
             get store() {
-                return vm.store(store);
+                return vm.store(s);
             }
         };
     };

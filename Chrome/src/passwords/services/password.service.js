@@ -1,8 +1,8 @@
 wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $encryption, $base) {
-    const deletedUnsyncStorageKey = 'passowrds-deleted-unsync';
-    const lastModifiedStorageKey = 'passowrds-lastModified';
+    const deletedUnsyncStorageKey = 'passowrd-deleted-unsync';
+    const lastModifiedStorageKey = 'passowrd-lastModified';
     const db = $database.init('password');
-    const proxy = $proxy.init('passwords');
+    const proxy = $proxy.init('password');
 
     let vm = this;
 
@@ -90,7 +90,7 @@ wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $
     };
 
     vm.getItemsForDomain = async function (name, username, eq) {
-        let store = db.store();
+        let store = db.store;
         if (eq == true) {
             store = store.where('name').equalsIgnoreCase(name);
             if (username) store = store.where('username').equalsIgnoreCase(name);
@@ -156,6 +156,7 @@ wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $
 
     // #region server sync
     async function convertLocalToServerEntity(item) {
+        if(item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
         let result = {
             domain: item.domain,
             name: item.name,
@@ -177,6 +178,7 @@ wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $
     }
 
     async function convertServerToLocalEntity(item) {
+        if(item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
         let result = {
             domain: item.domain,
             name: item.name,
@@ -198,30 +200,13 @@ wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $
     // #endregion server sync
 
     // #region extend
-
-    // baseService = angular.copy($base);
-
-    // baseService.abstract = angular.merge(baseService.abstract, {
-    //     deletedUnsyncStorageKey: deletedUnsyncStorageKey,
-    //     lastModifiedStorageKey: lastModifiedStorageKey,
-    //     db: db,
-    //     proxy: proxy,
-    //     convertServerToLocalEntity: convertServerToLocalEntity,
-    //     convertLocalToServerEntity: convertLocalToServerEntity,
-    //     valideItem: valideItem,
-    //     preSave: preSave
-    // });
-
-    vm = angular.merge($base({
-        deletedUnsyncStorageKey: deletedUnsyncStorageKey,
-        lastModifiedStorageKey: lastModifiedStorageKey,
-        db: db,
-        proxy: proxy,
+    vm = $base(vm, {
+        service: 'password',
         convertServerToLocalEntity: convertServerToLocalEntity,
         convertLocalToServerEntity: convertLocalToServerEntity,
         valideItem: valideItem,
         preSave: preSave
-    }), this);
+    });
     // #endregion extend
     return vm;
 });

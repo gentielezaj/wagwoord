@@ -4,7 +4,7 @@ wwapp.service('$base', function ($database, $proxy) {
         let abstract = {};
 
         // #region get
-        vm.getItems = function (filter) {
+        vm.getItems = function (filter) { 
             return abstract.db.get(filter);
         };
 

@@ -1,19 +1,16 @@
-wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $encryption, $base) {
-    const deletedUnsyncStorageKey = 'passowrd-deleted-unsync';
-    const lastModifiedStorageKey = 'passowrd-lastModified';
-    const db = $database.init('password');
-    const proxy = $proxy.init('password');
-
+wwapp.service('$password', function ($rootScope, $database, $settings,$encryption, $base) {
     let vm = this;
+    vm.name = 'password';
+    const db = $database.init(vm.name);
 
     // #region settings
     vm.settings = function (key) {
-        const k = 'password' + (key ? '.' + key : '');
+        const k = vm.name + (key ? '.' + key : '');
         return $settings.getKey(k);
     };
 
     vm.saveSettings = function (model) {
-        return $settings.save(model, 'password');
+        return $settings.save(model, vm.name);
     };
     // #endregion settings
 
@@ -201,7 +198,7 @@ wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $
 
     // #region extend
     vm = $base(vm, {
-        service: 'password',
+        service: vm.name,
         convertServerToLocalEntity: convertServerToLocalEntity,
         convertLocalToServerEntity: convertLocalToServerEntity,
         valideItem: valideItem,

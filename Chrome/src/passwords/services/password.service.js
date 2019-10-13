@@ -236,6 +236,8 @@ wwapp.service('$password', function ($rootScope, $database, $settings, $proxy, $
             }
 
             passwords = await passwordStore.filter(p => p.lastModified > res.data && p.synced).toArray(); // await passwordStore.where('lastModified').above(res.data).and('synced').equals(true).toArray();
+        } else if (passwords === 'all') {
+            passwords = await passwordStore.toArray();
         } else if (!Array.isArray(passwords)) {
             passwords = [passwords];
         }

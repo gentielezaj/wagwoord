@@ -1,4 +1,4 @@
-wwapp.factory('$encryption', function ($rootScope) {
+wwapp.service('$encryption', function ($rootScope) {
     let vm = this;
     const encryptionKeyName = 'encryptionKey';
     

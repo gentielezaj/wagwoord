@@ -1,10 +1,31 @@
 <div ng-controller="SettingsEncryptionController as vm">
-    <div class="form-item">
+    <!-- <div class="form-item">
         <label for="settings-enctipyion-key">Encription key</label>
         <div class="input-container">
-            <textarea id="settings-enctipyion-key" ng-form-field placeholder="Leave it blank to disable" name="encryptionKey" ng-blur="vm.saveSettings('encryptionKey')" ng-model="vm.model.encryptionKey">
+            <textarea id="settings-enctipyion-key" ng-readonly="vm.savingencryptionKey" ng-form-field placeholder="Leave it blank to disable" name="encryptionKey" ng-blur="vm.saveSettings('encryptionKey')" ng-model="vm.model.encryptionKey">
             </textarea>
             <span ng-show="vm.savingencryptionKey" class="loader"></span>
         </div>
-    </div>
+    </div> -->
+
+    <button ng-click="vm.dialog(true)">Edit encription key</button>
+
+    <dialog id="{{vm.dialogId}}">
+        <div class="form-item">
+            <label for="settings-enctipyion-key">
+                <span>Encription key</span>
+                <span ng-show="vm.savingencryptionKey" class="loader right"></span>
+            </label>
+            <div class="input-container">
+                <textarea id="settings-enctipyion-key" ng-readonly="vm.savingencryptionKey" ng-form-field placeholder="Leave it blank to disable" name="encryptionKey" ng-model="vm.model.encryptionKey">
+                </textarea>
+            </div>
+        </div>
+        <div class="dialog-actions">
+            <input ng-click="vm.saveSettings('encryptionKey')" type="button" class="success dialog-action" value="Save">
+            <input ng-click="vm.saveSettings('encryptionKey', true)" type="button" class="success dialog-action" value="Save and update">
+            <input ng-click="vm.model.encryptionKey = ''" type="button" class="error dialog-action" value="Clear">
+            <input ng-click="vm.dialog(false)" type="button" class="error dialog-action" value="Reject">
+        </div>
+    </dialog>
 </div>

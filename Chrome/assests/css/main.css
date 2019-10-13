@@ -456,6 +456,11 @@ span.loader {
 
 /* #region dialog */
 dialog {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    left: 50%;
+    bottom: 50%;
     text-align: center;
     background: var(--wagwoord-main-color-light);
     color: var(--wagwoord-color);
@@ -469,6 +474,17 @@ dialog .dialog-actions {
 
 dialog .dialog-actions .dialog-action {
     margin: 0.5rem;
+}
+
+dialog .form-item {
+    padding: 0 !important;
+    text-align: left;
+}
+
+dialog .input-container,
+dialog .form-item .input-container {
+    border: 1px var(--wagwoord-main-color) solid;
+    width: 100% !important;
 }
 
 /* #endregion dialog */

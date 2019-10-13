@@ -39,7 +39,7 @@ wwapp.service('$base', function ($database, $proxy) {
             if (!notlastModified || !item.lastModified) item.lastModified = new Date().getTime();
             item.id = await abstract.db.save(item);
             if (item.id && !ignoreServer && item.synced === true) {
-                await vm.updateServer(item);
+                await vm.updateServer(angular.copy(item));
             }
 
             if (onSaveItem && angular.isFunction(onSaveItem)) {

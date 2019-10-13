@@ -43,7 +43,9 @@ wwapp.controller("PasswordFormController", function ($scope, $password, $rootSco
     };
 
     vm.resetForm = function (form) {
-        vm.model = {};
+        vm.model = {
+            synced: true
+        };
         vm.showPassword(true);
         form.$setUntouched();
         if(!$scope.$$phase) $scope.$digest();

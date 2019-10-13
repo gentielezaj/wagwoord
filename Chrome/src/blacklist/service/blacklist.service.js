@@ -24,8 +24,6 @@ wwapp.service('$blacklist', function ($rootScope, $database, $base, $password) {
     // #region extend
     vm = $base(vm, {
         service: vm.name,
-        convertServerToLocalEntity: convertServerToLocalEntity,
-        convertLocalToServerEntity: convertLocalToServerEntity,
         valideItem: valideItem,
         preSave: preSave
     });

@@ -1,0 +1,42 @@
+<div class="search-input">
+  <div class="input-container">
+    <input type="text" id="searchModel" name="searchModel" ng-model="searchModel" autocomplete="off" aria-autocomplete="none" ng-change="settings.refresh()" placeholder="search">
+    <span ng-show="data.loading" class="loader"></span>
+    <button class="input-sufix" id='clear-search' ng-click="searchModel = ''; settings.refresh()">x</button>
+  </div>
+</div>
+<div class="data-container">
+  <ul id="password-list">
+    <li class="text-center" ng-if="!data.list.length && !data.loading">
+      <h2>No data!</h2>
+    </li>
+    <li ng-if="!template" ng-repeat="item in data.list">
+      <div class="item-actions right">
+        <button ng-click="settings.edit(item)" class="icon text">
+          <span>edit</span>
+          <edit-icon class="suffix"></edit-icon>
+        </button>
+        <button ng-click="settings.delete(item)" ng-if="appenvirement != 'popup'" class="icon text">
+          <span>delete</span>
+          <delete-icon class="suffix"></delete-icon>
+        </button>
+      </div>
+      <div class="hidden">
+        <span class="data-value">{{item.id}}</span>
+      </div>
+      <div ng-repeat="column in settings.columns" class="domain" ng-class="column.class">
+        <span ng-if="!column.template" class="data-value">{{item[column.property]}}</span>
+        <span ng-if="column.template" ng-inclide="column.view"></span>
+      </div>
+    </li>
+    <li ng-if="template" ng-include="template" ng-repeat="item in data.list">
+    </li>
+    <li class="text-center" ng-show="data.loading">
+      <loader size="10"></loader>
+    </li>
+    <li class="loadmore">
+      <input type="button" ng-if="data.list.length != data.total" ng-click="loadmore()" value="Load more">
+      <span class="right">{{data.list.length}}/{{data.total}}</span>
+    </li>
+  </ul>
+</div>

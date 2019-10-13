@@ -1,16 +1,19 @@
 wwapp.controller("BlacklistController", function ($scope, $location, $notification) {
     var vm = this;
     vm.title = "Blacklist";
+    vm.dialogId = 'blacklist-form-dialog';
 
-    vm.blacklist = {
-        data: [{
-            name: 'account.google.com',
-            password: true
-        }, {
-            name: 'name1'
-        }],
-        total: 2,
-        loading: false
+    vm.listOptions = {
+        columns: [{
+                property: 'name',
+                class: 'title'
+            },
+            {
+                property: 'checkboxes',
+                template: '../src/blacklist/views/blacklist-list-item.html'
+            }
+        ],
+        save: vm.save
     };
 
     vm.goToSettings = function () {
@@ -18,7 +21,7 @@ wwapp.controller("BlacklistController", function ($scope, $location, $notificati
     };
 
     vm.save = function (item) {
-        console.log(item);
-        $notification.success('TODO: implement save');
+        const dialog = document.getElementById(vm.dialogId);
+        dialog.open = true;
     };
 });

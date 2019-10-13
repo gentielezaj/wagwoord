@@ -19,7 +19,7 @@ export class BlacklistEntity extends BaseEntity {
     public codeGenerator: boolean;
 
     static create(obj: any) : BlacklistEntity |undefined {
-        if(!obj || !obj.name || !obj.domain || !obj.password) return undefined;
+        if(!obj || !obj.name) return undefined;
         let result = new BlacklistEntity();
         result.name = obj.name;
         result.password = obj.password || false;

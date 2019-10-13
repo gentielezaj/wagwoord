@@ -1,0 +1,48 @@
+<div ng-controller="BlacklistFormController as vm">
+    <h2>Add Blacklist</h2>
+    <form id="blacklistForm" name="blacklistForm" novalidate>
+        <div class="form-item">
+            <label for="blacklist-form-id">id</label>
+            <div class="input-container">
+                <input readonly name="id" ng-model="vm.item.id" id="blacklist-form-id" type="text">
+            </div>
+        </div>
+        <div class="form-item">
+            <label for="blacklist-form-name">name</label>
+            <div class="input-container">
+                <input id="blacklist-form-name" maxlength="64" minlength="2" name="name" required ng-form-field ng-model="vm.item.name" type="text">
+            </div>
+        </div>
+        <div class="form-item">
+            <div class="item-actions flex">
+                <div class="form-item cbx">
+                    <input type="checkbox" ng-model="vm.item.password" name="password" class="cbx hidden" id="blacklist-form-password">
+                    <span class="lbl" ng-click="vm.item.password = !vm.item.password"></span>
+                    <label for="blacklist-form-password" class="">Password</label>
+                </div>
+                <div class="form-item cbx">
+                    <input type="checkbox" ng-model="vm.item.address" name="address" class="cbx hidden" id="blacklist-form-address">
+                    <span class="lbl" ng-click="vm.item.address = !vm.item.address"></span>
+                    <label for="blacklist-form-address" class="">Address</label>
+                </div>
+                <div class="form-item cbx">
+                    <input type="checkbox" ng-model="vm.item.creditCard" name="creditCard" class="cbx hidden" id="blacklist-form-creditCard">
+                    <span class="lbl" ng-click="vm.item.creditCard = !vm.item.creditCard"></span>
+                    <label for="blacklist-form-creditCard" class="">Credit card</label>
+                </div>
+                <div class="form-item cbx">
+                    <input type="checkbox" ng-model="vm.item.codeGenerator" name="codeGenerator" class="cbx hidden" id="blacklist-form-codeGenerator">
+                    <span class="lbl" ng-click="vm.item.codeGenerator = !vm.item.codeGenerator"></span>
+                    <label for="blacklist-form-codeGenerator" class="">Code generator</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions right">
+            <button type="submit" ng-disabled="vm.savingForm" id="blacklist-form-save" class="success loader" ng-click="vm.save(blacklistForm)">
+                <span>Save</span>
+                <span ng-show="vm.savingForm" class="loader"></span>
+            </button>
+            <button id="blacklist-form-reset" ng-click="vm.resetForm(blacklistForm)" class="error">Reset</button>
+        </div>
+    </form>
+</div>

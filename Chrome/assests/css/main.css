@@ -6,6 +6,10 @@
     float: right;
 }
 
+.flex {
+    display: flex;
+}
+
 .text-center {
     text-align: center;
 }
@@ -283,6 +287,16 @@ a:active {
     padding-left: 0.5rem
 }
 
+form .form-actions {
+    display: -webkit-box;
+    padding: 1rem .5rem;
+}
+
+form .form-actions button,
+form .form-actions input {
+    margin-left: 1rem;
+}
+
 /* #endregion check box */
 
 /* #endregion form item */
@@ -468,6 +482,14 @@ dialog {
     box-shadow: 0 0 4px var(--wagwoord-color);
 }
 
+dialog.l {
+    width: 50rem;
+}
+
+dialog.main-color{
+    background: var(--wagwoord-main-color);
+}
+
 dialog .dialog-actions {
     margin-top: .5rem;
 }
@@ -477,7 +499,6 @@ dialog .dialog-actions .dialog-action {
 }
 
 dialog .form-item {
-    padding: 0 !important;
     text-align: left;
 }
 

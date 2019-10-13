@@ -27,13 +27,16 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
     // #region save
     public async save(model: TEntity): Promise<TEntity | undefined> {
         let oldItem = await this.getSavedItem(model);
-        if(oldItem.lastModified > model.lastModified) return oldItem;
+        if (oldItem) {
+            if (oldItem.lastModified > model.lastModified) return oldItem;
+            model.id = oldItem.id;
+        }
         if (!model.lastModified) model.lastModified = new Date().getTime();
         return <TEntity | undefined>(await this.dbRepository.save(<any>model));
     }
 
     protected async getSavedItem(model: TEntity): Promise<TEntity | undefined> {
-        if(model.id > 0) return undefined;
+        if (model.id > 0) return undefined;
         return await this.getById(model.id);
     }
 
@@ -99,7 +102,7 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
         if (appQuery.where) {
             const where = AppQueryChecker.buildWhere(appQuery.where);
             queryBuilder.where(where.sql, where.params);
-        } 
+        }
 
         return queryBuilder;
     }

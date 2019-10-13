@@ -1,5 +1,5 @@
 import { BaseRepository } from "./baseRepository";
-import { BlacklistEntity } from "database/models/blacklistEntity";
+import { BlacklistEntity } from "../models/blacklistEntity";
 
 export class BlacklistRepository extends BaseRepository<BlacklistEntity> {
     constructor() {

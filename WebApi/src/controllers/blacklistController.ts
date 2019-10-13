@@ -1,6 +1,6 @@
 import { BlacklistEntity } from "../database/models/blacklistEntity";
 import { BaseController } from "./baseController";
-import { BlacklistRepository } from "database/repositories/blacklistRepository";
+import { BlacklistRepository } from "../database/repositories/blacklistRepository";
 
 export class BlacklistController extends BaseController<BlacklistEntity> {
 

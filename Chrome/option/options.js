@@ -1,5 +1,3 @@
-const appenvirement = 'options';
-
 if (localStorage.getItem('nav-collapsed')) {
     var navElement = document.getElementById('app-nav');
     var selection = document.getElementById('app-section');
@@ -38,4 +36,8 @@ wwapp.config(function ($routeProvider, $locationProvider) {
             templateUrl: "../src/demo/demo.controller.html",
             tab: 'demo'
         });
+});
+
+wwapp.constant('app', {
+    envirement: 'options'
 });

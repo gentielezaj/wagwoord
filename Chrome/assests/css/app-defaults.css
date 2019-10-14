@@ -10,6 +10,8 @@
     --wagwoord-color-success: #004d00;
     --wagwoord-color-info: rgb(0, 5, 68);
     --wagwoord-color-info-secend: #000080;
+
+    --dialog-zindex: 99999
 }
 
 /* #endregion variables */

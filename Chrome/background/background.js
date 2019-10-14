@@ -6,15 +6,17 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 var wwapp = angular.module("wwapp", []);
 
-wwapp.controller("BackgroudController", function ($scope, $password, $settings) {
+wwapp.controller("BackgroudController", function ($scope, $password, $settings, $blacklist) {
 
   async function getData(url) {
     let passwords = url.startsWith('file://') ? await $password.get({take: 2}) : await $password.getItemsForDomain($password.getName(url));
     let settings = await $settings.get();
+    let blacklist = await $blacklist.getForDomain(url);
 
     return {
       passwords: passwords,
-      settings: settings
+      settings: settings,
+      blacklist: blacklist
     };
   }
 

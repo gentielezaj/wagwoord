@@ -19,7 +19,8 @@ chrome.runtime.sendMessage({
 }, function (response) {
     const model = {
         passwords: response && response.passwords ? response.passwords : [],
-        settings: response && response.settings ? response.settings : []
+        settings: response && response.settings ? response.settings : [],
+        blacklist: response ? response.blacklist : false
     };
     let elBody = document.getElementsByTagName('body')[0];
 

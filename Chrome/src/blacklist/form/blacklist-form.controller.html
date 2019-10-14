@@ -1,4 +1,4 @@
-<div ng-controller="BlacklistFormController as vm">
+<!-- <div ng-controller="BlacklistFormController as vm"> -->
     <h2>Add Blacklist</h2>
     <form id="blacklistForm" name="blacklistForm" novalidate>
         <div class="form-item">
@@ -42,7 +42,7 @@
                 <span>Save</span>
                 <span ng-show="vm.savingForm" class="loader"></span>
             </button>
-            <button id="blacklist-form-reset" ng-click="vm.resetForm(blacklistForm)" class="error">Reset</button>
+            <button id="blacklist-form-reset" ng-click="vm.reject(blacklistForm)" class="error">Reset</button>
         </div>
     </form>
-</div>
+<!-- </div> -->

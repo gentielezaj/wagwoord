@@ -5,15 +5,21 @@
                 <h2>Blacklist</h2>
             </li>
             <li>
-                <button class="icon">
-                    <settings-icon class="pre" ng-click="vm.save()"></settings-icon>
-                    <span>+Add</span>
+                <button class="icon" ng-click="vm.add()">
+                    <span class="pre">+</span>
+                    <span>Add</span>
                 </button>
             </li>
             <li>
                 <button class="icon" ng-click="vm.goToSettings()">
                     <settings-icon class="pre"></settings-icon>
                     <span>Settings</span>
+                </button>
+            </li>
+            <li>
+                <button class="error loader" ng-click="vm.deleteAll()">
+                   <span class="text">Delete all</span>
+                   <span ng-show="vm.deleteAllLoader" class="loader"></span>
                 </button>
             </li>
         </ul>
@@ -24,8 +30,8 @@
             </div>
         </div>
     </div>
-
-    <dialog class="l main-color" style="width: 50rem;" id="{{vm.dialogId}}">
-        <div ng-include="'/src/blacklist/form/blacklist-form.controller.html'"></div>
+    <dialog class="l main-color" id="{{vm.dialogId}}">
+        <blacklist-form on-submit="vm.onFormSubmit()"></blacklist-form>
     </dialog>
+    <confirmation-dialog message="Delete all? really?!" dialog-id="{{vm.deleteConfirmationDialogId}}" on-response="vm.deleteAll(response)"></confirmation-dialog>
 </div>

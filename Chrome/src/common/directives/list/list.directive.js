@@ -1,4 +1,4 @@
-wwapp.directive('appList', function ($notification, $injector) {
+wwapp.directive('appList', function ($notification, $injector, app, $rootScope) {
     return {
         restrict: 'EA',
         templateUrl: '../src/common/directives/list/list.directive.html',
@@ -7,10 +7,11 @@ wwapp.directive('appList', function ($notification, $injector) {
             template: '@?',
             options: '=?'
         },
-        link: function (scope) {
+        link: function (scope, element, attribures) {
             const $service = $injector.get('$' + scope.service);
-            const takeBase = appenvirement == 'options' ? 50 : 20;
-            scope.appenvirement = appenvirement;
+            const takeBase = app.envirement == 'options' ? 50 : 20;
+            scope.appenvirement = app.envirement;
+            scope.confirmationDialogId = 'confirmation-delete-item-dialog-' + new Date().getTime();
 
             scope.searchModel = '';
             let take = takeBase;
@@ -47,8 +48,13 @@ wwapp.directive('appList', function ($notification, $injector) {
 
             scope.$on('refresh', () => scope.settings.refresh());
 
-            scope.settings.delete = async function (item) {
-                alert('TODO:add confimation ao app-list');
+            scope.settings.delete = async function (del, item) {
+                if(del !== true) {
+                    scope.deleteResponseParams = del;
+                    document.getElementById(scope.confirmationDialogId).open = true;
+                    return;
+                }
+
                 try {
                     await $service.delete(item.id);
                     $notification.success('Item deleted');
@@ -56,7 +62,7 @@ wwapp.directive('appList', function ($notification, $injector) {
                     $notification.error('Error wile deleting item', error);
                 }
 
-                scope.refresh();
+                scope.settings.refresh();
             };
 
             function digest() {

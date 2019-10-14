@@ -1,5 +1,3 @@
-var appenvirement = 'popup';
-
 var wwapp = angular.module("wwapp", ["ngRoute"]);
 wwapp.config(function ($routeProvider) {
     $routeProvider
@@ -17,12 +15,25 @@ wwapp.config(function ($routeProvider) {
         });
 });
 
-wwapp.controller("PopUpMainController", function ($scope) {
-    var vm = this;
+wwapp.constant('app', {
+    envirement: 'popup'
+});
+
+wwapp.controller("PopUpMainController", function ($scope, $blacklist) {
+    let vm = this;
 
     vm.edit = function (item) {
         chrome.tabs.create({
             'url': "option/options.html" + (item && item.id ? '?itemId=' + item.id : '')
+        });
+    };
+
+    vm.addTabToBlackList = function () {
+        chrome.tabs.getSelected(null, function (tab) {
+            $blacklist.addTab(tab.url).then(r => {
+                let code = 'window.location.reload();';
+                chrome.tabs.reload(tab.id);
+            });
         });
     };
 });

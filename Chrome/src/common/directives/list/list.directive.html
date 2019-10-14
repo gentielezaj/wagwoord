@@ -12,11 +12,11 @@
     </li>
     <li ng-if="!template" ng-repeat="item in data.list">
       <div class="item-actions right">
-        <button ng-click="settings.edit(item)" class="icon text">
+        <button ng-click="settings.edit(item, $event)" class="icon text">
           <span>edit</span>
           <edit-icon class="suffix"></edit-icon>
         </button>
-        <button ng-click="settings.delete(item)" ng-if="appenvirement != 'popup'" class="icon text">
+        <button ng-click="settings.delete(item, $event)" ng-if="appenvirement != 'popup'" class="icon text">
           <span>delete</span>
           <delete-icon class="suffix"></delete-icon>
         </button>
@@ -40,3 +40,5 @@
     </li>
   </ul>
 </div>
+
+<confirmation-dialog message="Delete item?" dialog-id="{{confirmationDialogId}}" params="deleteResponseParams" on-response="settings.delete(response, params)"></confirmation-dialog>

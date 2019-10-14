@@ -28,7 +28,9 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
     public async save(model: TEntity): Promise<TEntity | undefined> {
         let oldItem = await this.getSavedItem(model);
         if (oldItem) {
-            if (oldItem.lastModified > model.lastModified) return oldItem;
+            if (oldItem && model.lastModified && oldItem.lastModified > model.lastModified) 
+                return oldItem;
+                
             model.id = oldItem.id;
         }
         if (!model.lastModified) model.lastModified = new Date().getTime();

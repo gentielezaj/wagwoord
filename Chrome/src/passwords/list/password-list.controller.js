@@ -1,8 +1,9 @@
-wwapp.controller("PasswordListController", function ($scope, $rootScope, $password, $notification) {
+wwapp.controller("PasswordListController", function ($scope, $rootScope, $password, $notification, app) {
   var vm = this;
+  vm.confirmationDialogId = 'delete-password-confiration-dialog' + new Date().getTime();
 
-  const takeBase = appenvirement == 'options' ? 50 : 20;
-  vm.appenvirement = appenvirement;
+  const takeBase = app.envirement == 'options' ? 50 : 20;
+  vm.appenvirement = app.envirement;
 
   vm.searchModel = '';
   let take = takeBase;
@@ -32,7 +33,7 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
   };
 
   vm.edit = function (item) {
-    if (appenvirement == 'options') {
+    if (app.envirement == 'options') {
       $rootScope.$broadcast('edit-password', item);
     } else {
       chrome.tabs.create({
@@ -67,7 +68,13 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
     item.showPassword = item.showPassword ? false : true;
   };
 
-  vm.delete = async function (item) {
+  vm.delete = async function (confirm, item) {
+    if (confirm !== true) {
+      vm.deleteResponseParams = confirm;
+      document.getElementById(vm.confirmationDialogId).open = true;
+      return;
+    }
+
     try {
       await $password.delete(item.id);
       $notification.success('Password deleted');
@@ -78,7 +85,7 @@ wwapp.controller("PasswordListController", function ($scope, $rootScope, $passwo
     vm.refreshPasswords();
   };
 
-  if (appenvirement == "popup") {
+  if (app.envirement == "popup") {
     chrome.tabs.getSelected(null, function (tab) {
       if (tab.url != 'newtab' && !tab.url.startsWith('chrome-extension')) {
         const domain = $password.getName(tab.url);

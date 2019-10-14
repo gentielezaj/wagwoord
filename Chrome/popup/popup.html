@@ -15,7 +15,10 @@
       <div clss="section-content" ng-view></div>
     </section>
     <footer class="actions">
-      <button ng-click="vm.edit()">
+      <button ng-click="vm.addTabToBlackList()" ng-disable="vm.tabBlacklisted" aria-label="Add to blacklist">
+        <delete-icon></delete-icon>
+      </button>
+      <button ng-click="vm.edit()" aria-label="Settings" aria-details="Go to settings">
         <settings-icon></settings-icon>
       </button>
     </footer>
@@ -39,6 +42,8 @@
   <script src="../src/passwords/services/password.service.js"></script>
   <script src="../src/passwords/form/password-form.controller.js"></script>
   <script src="../src/passwords/list/password-list.controller.js"></script>
+
+  <script src="../src/blacklist/service/blacklist.service.js"></script>
 
   <script src="../src/settings/service/settings.service.js"></script>
   <script src="../src/util/database.service.js"></script>

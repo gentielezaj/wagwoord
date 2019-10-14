@@ -19,9 +19,10 @@ const htmlElementIds = {
 };
 
 export class PasswordHandler {
-    constructor(passwords, settings) {
+    constructor(passwords, settings, blacklist) {
         this.passwords = passwords || [];
         this.settings = settings || {};
+        this.blacklist = blacklist || false;
 
         this.waitTime = 0;
         passwords.forEach(element => {
@@ -34,7 +35,8 @@ export class PasswordHandler {
     }
 
     init() {
-        setTimeout(() => this.coreinitForm(), this.waitTime || 0);
+        if(!this.blacklist || !this.blacklist.password)
+            setTimeout(() => this.coreinitForm(), this.waitTime || 0);
     }
 
     // #region from

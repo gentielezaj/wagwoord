@@ -365,6 +365,10 @@ input[button].loader span.loader {
     margin: .1rem 0rem .1rem 1rem;
 }
 
+button.loader span.text {
+    width: max-content;
+}
+
 span.loader:last-child {
     margin: .5rem .6rem;
 }
@@ -480,6 +484,11 @@ dialog {
     color: var(--wagwoord-color);
     border: none;
     box-shadow: 0 0 4px var(--wagwoord-color);
+    z-index: var(--dialog-zindex);
+}
+
+dialog .message{
+    font-size: 1rem;
 }
 
 dialog.l {

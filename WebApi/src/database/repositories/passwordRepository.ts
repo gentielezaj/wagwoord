@@ -7,26 +7,24 @@ export class PasswordRepository extends BaseRepository<PasswordEntity> {
     }
 
     // #region save
-    public async save(model: PasswordEntity): Promise<PasswordEntity | undefined> {
+    // public async save(model: PasswordEntity): Promise<PasswordEntity | undefined> {
 
-        const oldModel = await this.passwordExists(model);
-        if (oldModel) model.id = oldModel.id;
-        if (oldModel && model.lastModified && oldModel.lastModified > model.lastModified) {
-            model = oldModel;
-        }
+    //     const oldModel = await this.passwordExists(model);
+    //     if (oldModel) model.id = oldModel.id;
+    //     if (oldModel && model.lastModified && oldModel.lastModified > model.lastModified) {
+    //         model = oldModel;
+    //     }
 
-        return await super.save(model);
-    }
+    //     return await super.save(model);
+    // }
 
-    public async passwordExists(model: PasswordEntity): Promise<PasswordEntity | undefined> {
-        let passowrd = await this.dbRepository.find({
+    public async getSavedItem(model: PasswordEntity): Promise<PasswordEntity | undefined> {
+        return await this.dbRepository.findOne({
             where: [{
                 domain: model.domain,
                 username: model.username,
             }]
         });
-
-        return passowrd.length ? passowrd[0] : undefined;
     }
     // #endregion save
 }

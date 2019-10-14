@@ -1,6 +1,6 @@
 wwapp.service('$base', function ($database, $proxy) {
     return function (extender, a) {
-        let vm = this;
+        let vm = extender;
         let abstract = {};
 
         // #region get
@@ -200,7 +200,6 @@ wwapp.service('$base', function ($database, $proxy) {
             abstract.proxy = $proxy.init(service);
         }
 
-        vm = angular.merge(vm, extender);
         return vm;
         // #endregion return
     };

@@ -1,0 +1,13 @@
+{
+    "button-loader": {
+        "prefix": "button-loader",
+        "scope": "html",
+        "description": "button-loader",
+        "body": [
+            "<button class=\"${1} loader\">",
+            "   <span class='text'>${2}</span>",
+            "   <span ng-show=\"${3}\" class=\"loader\"></span>",
+            "</button>"
+        ]
+    },
+}

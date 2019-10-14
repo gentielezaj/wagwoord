@@ -9,7 +9,7 @@ body {
     scroll-behavior: smooth;
 
     --zindex-notifications-nav: 9999;
-    --zindex-section-header: 9998
+    --zindex-section-header: 9998;
 }
 
 /* #region notifications */

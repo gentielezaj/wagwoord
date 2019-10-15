@@ -120,11 +120,11 @@ wwapp.service('$base', function ($database, $proxy) {
                 const localItem = await abstract.db.store.where({
                     serverId: item.id
                 }).first();
-                if (localItem) await vm.delete();
+                if (localItem) await vm.delete(localItem.id);
 
                 let lastModified = localStorage.getItem(abstract.lastModifiedStorageKey);
-                if (lastModified < localItem.lastModified) {
-                    localStorage.setItem(abstract.lastModifiedStorageKey, localItem.lastModified);
+                if (lastModified < item.lastModified) {
+                    localStorage.setItem(abstract.lastModifiedStorageKey, item.lastModified);
                 }
 
                 return item.id;

@@ -63,16 +63,13 @@ wwapp.controller("PasswordFormController", function ($scope, $password, $rootSco
             await $password.save(vm.model);
             $notification.success('Password saved');
             $rootScope.$broadcast('refresh');
-            vm.resetForm();
+            vm.resetForm(form);
         } catch (error) {
-            console.log(error);   
-            $rootScope.$broadcast('add-nofification', {
-                type: 'error',
-                message: 'form invalide'
-            }); 
+            $notification.error('Error while saving', error);
         }
         
         vm.savingForm = false;
+        $password.updateView($scope);
     };
 
     if($location.$$absUrl.indexOf('itemId=') > -1) {

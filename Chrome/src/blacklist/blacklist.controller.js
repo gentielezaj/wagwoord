@@ -13,17 +13,32 @@ wwapp.controller("BlacklistController", function ($scope, $location, $notificati
         dialog.open = true;
     };
 
-    vm.deleteAll = async function(response) {
+    vm.sync = async function () {
+        vm.blacklistSyncLoader = true;
+        try {
+            let result = await $blacklist.update();
+            if (result) {
+                $notification.success('Synced');
+            } else $notification.error('Error while sync blacklist');
+        } catch (error) {
+            $notification.error('Error while sync blacklist', error);
+        }
+
+        vm.blacklistSyncLoader = false;
+        $blacklist.updateView($scope);
+    };
+    
+    vm.deleteAll = async function (response) {
         vm.deleteAllLoader = true;
         const deleteDialog = document.getElementById(vm.deleteConfirmationDialogId);
-        if(response === undefined) {
+        if (response === undefined) {
             deleteDialog.open = true;
             return;
         }
 
-        if(response) {
+        if (response) {
             try {
-                if(await $blacklist.deleteAll()) 
+                if (await $blacklist.deleteAll())
                     $notification.success('Blacklist deleted');
                 else $notification.error('Error while deleting');
             } catch (error) {
@@ -35,7 +50,7 @@ wwapp.controller("BlacklistController", function ($scope, $location, $notificati
         $scope.$broadcast('refresh');
     };
 
-    vm.onFormSubmit = function() {
+    vm.onFormSubmit = function () {
         const dialog = document.getElementById(vm.dialogId);
         dialog.open = false;
         $scope.$broadcast('refresh');

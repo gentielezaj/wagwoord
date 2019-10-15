@@ -9,7 +9,9 @@ var wwapp = angular.module("wwapp", []);
 wwapp.controller("BackgroudController", function ($scope, $password, $settings, $blacklist) {
 
   async function getData(url) {
-    let passwords = url.startsWith('file://') ? await $password.get({take: 2}) : await $password.getItemsForDomain($password.getName(url));
+    let passwords = url.startsWith('file://') ? await $password.get({
+      take: 2
+    }) : await $password.getItemsForDomain($password.getName(url));
     let settings = await $settings.get();
     let blacklist = await $blacklist.getForDomain(url);
 
@@ -29,6 +31,14 @@ wwapp.controller("BackgroudController", function ($scope, $password, $settings, 
 
       return true;
     });
+
+  async function update() {
+    await $password.update();
+    await $blacklist.update();
+    setTimeout(() => update(), 60000);
+  }
+
+  update().then();
 });
 
 // chrome.runtime.onInstalled.addListener(function () {

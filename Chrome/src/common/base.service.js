@@ -3,6 +3,14 @@ wwapp.service('$base', function ($database, $proxy) {
         let vm = extender;
         let abstract = {};
 
+        // #region helpers
+
+        vm.updateView = function(scope) {
+            if(!scope.$$phase) scope.$digest();
+        };
+        
+        // #endregion helpers
+
         // #region get
         vm.getItems = function (filter) { 
             return abstract.db.get(filter);
@@ -79,7 +87,8 @@ wwapp.service('$base', function ($database, $proxy) {
             const deleted = await vm.updateDeleted();
             const local = await vm.updateFromServer();
             const server = await vm.updateServer();
-            return deleted && local && server ? true : false;
+            const result = deleted && local && server ? true : false;
+            if(result) localStorage.setItem(abstract.lastModifiedStorageKey, new Date().getTime());
         };
 
         vm.updateDeleted = async function () {
@@ -93,9 +102,9 @@ wwapp.service('$base', function ($database, $proxy) {
         };
 
         vm.updateFromServer = async function () {
-            let password = (await abstract.db.store.orderBy('lastModified').reverse().first()) || {};
+            let item = (await abstract.db.store.orderBy('lastModified').reverse().first()) || {};
             let localStorageLastModified = localStorage.getItem(abstract.lastModifiedStorageKey);
-            const lastModified = password.lastModified > localStorageLastModified ? password.lastModified : localStorageLastModified;
+            const lastModified = item.lastModified > localStorageLastModified ? item.lastModified : localStorageLastModified;
 
             const data = await abstract.proxy.patch(lastModified || 0);
             const result = await abstract.saveServerItemsLocaly(data);

@@ -5,6 +5,12 @@
                 <h2>Blacklist</h2>
             </li>
             <li>
+                <button ng-disable="vm.blacklistSyncLoader" ng-click="vm.sync()" class="loader">
+                   <span class='text'>Sync</span>
+                   <span ng-show="vm.blacklistSyncLoader" class="loader"></span>
+                </button>
+            </li>
+            <li>
                 <button class="icon" ng-click="vm.add()">
                     <span class="pre">+</span>
                     <span>Add</span>
@@ -17,7 +23,7 @@
                 </button>
             </li>
             <li>
-                <button class="error loader" ng-click="vm.deleteAll()">
+                <button ng-disable="vm.deleteAllLoader" class="error loader" ng-click="vm.deleteAll()">
                    <span class="text">Delete all</span>
                    <span ng-show="vm.deleteAllLoader" class="loader"></span>
                 </button>

@@ -28,12 +28,11 @@ wwapp.controller("PopUpMainController", function ($scope, $blacklist) {
         });
     };
 
-    vm.addTabToBlackList = function () {
-        chrome.tabs.getSelected(null, function (tab) {
-            $blacklist.addTab(tab.url).then(r => {
-                let code = 'window.location.reload();';
-                chrome.tabs.reload(tab.id);
-            });
+    vm.addTabToBlackList = async function () {
+        chrome.tabs.getSelected(null, async function (tab) {
+            await $blacklist.addTab(tab.url);
+            let code = 'window.location.reload();';
+            chrome.tabs.reload(tab.id);
         });
     };
 });

@@ -15,10 +15,10 @@
       <div clss="section-content" ng-view></div>
     </section>
     <footer class="actions">
-      <button ng-click="vm.addTabToBlackList()" ng-disable="vm.tabBlacklisted" aria-label="Add to blacklist">
+      <button class="icon right" ng-click="vm.addTabToBlackList()" ng-if="!vm.tabBlacklisted" aria-label="Add to blacklist">
         <delete-icon></delete-icon>
       </button>
-      <button ng-click="vm.edit()" aria-label="Settings" aria-details="Go to settings">
+      <button class="icon right" ng-click="vm.edit()" aria-label="Settings" aria-details="Go to settings">
         <settings-icon></settings-icon>
       </button>
     </footer>

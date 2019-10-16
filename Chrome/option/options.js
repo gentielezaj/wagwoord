@@ -35,6 +35,10 @@ wwapp.config(function ($routeProvider, $locationProvider) {
         .when("/demo", {
             templateUrl: "../src/demo/demo.controller.html",
             tab: 'demo'
+        })
+        .when("/test", {
+            templateUrl: "../src/demo/tests/test.controller.html",
+            tab: 'test'
         });
 });
 

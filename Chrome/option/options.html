@@ -66,6 +66,12 @@
           <span>Demo</span>
         </div>
       </li>
+      <li data-page="settings" ng-click="vm.changeTab('test')" ng-class="{'active': vm.isActiveTab('test')}">
+        <i class="demo-icon icon-test"></i>
+        <div class="nav-text">
+          <span>Test</span>
+        </div>
+      </li>
     </ul>
   </nav>
   <section id="app-section">
@@ -103,6 +109,7 @@
 <script src="../src/code-generator/code-generator.controller.js"></script>
 
 <script src="../src/demo/demo.controller.js"></script>
+<script src="../src/demo/tests/test.controller.js"></script>
 
 <script src="../src/common/directives/notfication/notifications.directive.js"></script>
 <script src="../src/common/directives/notfication/notification.service.js"></script>

@@ -3,6 +3,8 @@
 
 <head>
   <title>Wagwoord</title>
+  <link href="../assests/fontello/css/animation.css" rel="stylesheet">
+  <link href="../assests/fontello/css/fontello.css" rel="stylesheet">
   <link href="../assests/css/app-defaults.css" rel="stylesheet">
   <link href="../assests/css/main.css" rel="stylesheet">
   <link href="../assests/css/password.css" rel="stylesheet">
@@ -20,44 +22,46 @@
         </div>
       </li>
       <li data-page="passwords" ng-click="vm.changeTab('/')" ng-class="{'active': vm.isActiveTab('password')}">
-        <password-icon></password-icon>
+        <i class="demo-icon icon-key"></i>
         <!-- <object data="../assests/icons/015-sync.svg"></object> -->
         <div class="nav-text">
           <span>Passwords</span>
         </div>
       </li>
       <li data-page="address" ng-click="vm.changeTab('address')" ng-class="{'active': vm.isActiveTab('address')}">
-        <address-icon></address-icon>
+        <!-- TODO: create home icon -->
+        <i class="demo-icon icon-warehouse"></i>
         <div class="nav-text">
           <span>Addresses</span>
         </div>
       </li>
       <li data-page="credit-cards" ng-click="vm.changeTab('credit-cards')" ng-class="{'active': vm.isActiveTab('credit-card')}">
+        <!-- TODO: create card icon -->
         <credit-card-icon></credit-card-icon>
         <div class="nav-text">
           <span>Credit Cards</span>
         </div>
       </li>
       <li data-page="credit-cards" ng-click="vm.changeTab('code-generators')" ng-class="{'active': vm.isActiveTab('code-generator')}">
-        <credit-card-icon></credit-card-icon>
+          <i class="demo-icon icon-015-time"></i>
         <div class="nav-text">
           <span>Code generator</span>
         </div>
       </li>
       <li data-page="blacklist" ng-click="vm.changeTab('blacklist')" ng-class="{'active': vm.isActiveTab('blacklist')}">
-        <password-icon></password-icon>
+        <i class="demo-icon icon-blacklist"></i>
         <div class="nav-text">
           <span>Blacklist</span>
         </div>
       </li>
       <li data-page="settings" ng-click="vm.changeTab('settings')" ng-class="{'active': vm.isActiveTab('setting')}">
-        <settings-icon></settings-icon>
+          <i class="demo-icon icon-settings"></i>
         <div class="nav-text">
           <span>Settings</span>
         </div>
       </li>
       <li data-page="settings" ng-click="vm.changeTab('demo')" ng-class="{'active': vm.isActiveTab('demo')}">
-        <settings-icon></settings-icon>
+        <i class="demo-icon icon-demo"></i>
         <div class="nav-text">
           <span>Demo</span>
         </div>
@@ -117,10 +121,10 @@
 <script src="../src/common/directives/icons/copy-icon.directive.js"></script>
 <script src="../src/common/directives/inputs/from-field.directive.js"></script>
 <script src="../src/common/directives/icons/sync-icon.directive.js"></script>
-<script src="../src/common/directives/icons/sync-icon.directive.js"></script>
 <script src="../src/common/directives/loaders/loader.directive.js"></script>
 <script src="../src/common/directives/inputs/file-upload/file-upload.directive.js"></script>
 <script src="../src/common/directives/list/list.directive.js"></script>
+<script src="../src/common/directives/buttons/button.directive.js"></script>
 <script src="../src/common/components/confirmation/confirmation.component.js"></script>
 
 <script src="../src/util/database.service.js"></script>

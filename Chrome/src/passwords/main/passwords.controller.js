@@ -12,7 +12,7 @@ wwapp.controller("PasswordsMainController", function ($scope, $location, $passwo
       if (await $password.update())
         $notification.success('synched');
       else
-        $notification.success('could not sync');
+        $notification.error('could not sync');
     } catch (err) {
       $notification.error('server error', err);
     }

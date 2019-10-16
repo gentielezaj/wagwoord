@@ -4,6 +4,7 @@ wwapp.controller("DemoController", function ($scope, $compile, $proxy, $password
     vm.selectmodelinput = '';
     let passwords = ['11111', '222222'];
     var passwordDialog;
+    vm.showLoader = true;
 
     vm.saveSettings = function () {
         console.log(sav());

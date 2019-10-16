@@ -32,7 +32,7 @@ input[type=button] {
     background: var(--wagwoord-main-color-light);
     border: none;
     color: var(--wagwoord-color);
-    padding: 0.4rem 0.6rem;
+    padding: 0.4rem 0.4rem;
     text-align: center;
     cursor: pointer;
     transition: width 0.2s;
@@ -41,6 +41,7 @@ input[type=button] {
 button.loader,
 input[type=button].loader {
     display: flex;
+    padding-right: 0.6rem;
 }
 
 button:disabled,
@@ -108,6 +109,7 @@ button.icon {
     display: flex;
 }
 
+button.icon .pre,
 button.icon .pre svg {
     padding-right: 0.5rem;
 }
@@ -362,7 +364,7 @@ progress[value]::-webkit-progress-value {
 /* #region loader-min */
 button.loader span.loader,
 input[button].loader span.loader {
-    margin: .1rem 0rem .1rem 1rem;
+    margin: .1rem 0rem .1rem 0.6rem;
 }
 
 button.loader span.text {
@@ -522,7 +524,7 @@ dialog .form-item .input-container {
 /* #region cards */
 
 .cards .card {
-    display: flexbox;
+    display: inline-flex;
     padding: 0.5rem;
 }
 /* #endregion cards */

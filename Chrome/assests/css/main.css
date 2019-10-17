@@ -107,6 +107,7 @@ input[type=button].info:focus:not(:disabled) {
 
 button.icon {
     display: flex;
+    transition:width 10s ease-out;
 }
 
 button.icon .pre,
@@ -126,6 +127,8 @@ button.icon svg {
 button.icon.text span {
     display: none;
 }
+
+
 
 button.icon.text:hover span,
 button.icon.text:active span {

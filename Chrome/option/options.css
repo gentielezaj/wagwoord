@@ -103,16 +103,37 @@ nav ul li:first-child:hover,
 nav ul li:first-child:focus,
 nav ul li:first-child:active {
     background: transparent;
-    cursor: default;
     border-bottom: 1px var(--wagwoord-main-color-lighter) solid;
 }
 
+nav ul li:first-child i::before {
+    content:'\e83e';
+    font-family: "fontello";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+    display: inline-block;
+    text-decoration: inherit;
+    width: 1em;
+    margin-right: .2em;
+    text-align: center;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1em;
+    margin-left: .2em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: content 2s ease-out;
+}
 
-nav ul li:first-child svg,
-nav ul li:first-child:hover svg,
-nav ul li:first-child:focus svg,
-nav ul li:first-child:active svg {
-    cursor: pointer;
+nav ul li:first-child:hover i::before {
+    content: '\e828';
+    transition: content 2s ease-out;
+}
+
+nav.collapsed ul li:first-child:hover i::before {
+    content: '\e81b';
+    transition: content 2s ease-out;
 }
 
 nav.collapsed {

@@ -15,22 +15,23 @@
   <notifications></notifications>
   <nav id="app-nav" ng-controller="NavController as vm">
     <ul>
-      <li data-page="passwords">
-        <div ng-click="vm.toggleCollapsed()" ng-include="'/src/common/directives/icons/hamburger-menu.html'"></div>
+      <li data-page="passwords"  ng-click="vm.toggleCollapsed()">
+        <div>
+          <i></i>
+        </div>
         <div class="nav-text">
           <span>Wagwoord</span>
         </div>
       </li>
       <li data-page="passwords" ng-click="vm.changeTab('/')" ng-class="{'active': vm.isActiveTab('password')}">
-        <i class="demo-icon icon-key"></i>
+        <i class="demo-icon icon-combination_lock"></i>
         <!-- <object data="../assests/icons/015-sync.svg"></object> -->
         <div class="nav-text">
           <span>Passwords</span>
         </div>
       </li>
       <li data-page="address" ng-click="vm.changeTab('address')" ng-class="{'active': vm.isActiveTab('address')}">
-        <!-- TODO: create home icon -->
-        <i class="demo-icon icon-warehouse"></i>
+        <i class="demo-icon icon-fort"></i>
         <div class="nav-text">
           <span>Addresses</span>
         </div>
@@ -118,21 +119,13 @@
 <script src="../src/blacklist/service/blacklist.service.js"></script>
 <script src="../src/blacklist/form/blacklist-form.controller.js"></script>
 
-<script src="../src/common/directives/icons/password-icon.directive.js"></script>
 <script src="../src/common/directives/icons/credit-card-icon.directive.js"></script>
-<script src="../src/common/directives/icons/address-icon.directive.js"></script>
-<script src="../src/common/directives/icons/settings-icon.directive.js"></script>
-<script src="../src/common/directives/icons/show-hide-icon.directive.js"></script>
-<script src="../src/common/directives/icons/delete-icon.directive.js"></script>
-<script src="../src/common/directives/icons/edit-icon.directive.js"></script>
-<script src="../src/common/directives/icons/copy-icon.directive.js"></script>
-<script src="../src/common/directives/inputs/from-field.directive.js"></script>
-<script src="../src/common/directives/icons/sync-icon.directive.js"></script>
 <script src="../src/common/directives/loaders/loader.directive.js"></script>
 <script src="../src/common/directives/inputs/file-upload/file-upload.directive.js"></script>
 <script src="../src/common/directives/list/list.directive.js"></script>
 <script src="../src/common/directives/buttons/button.directive.js"></script>
 <script src="../src/common/components/confirmation/confirmation.component.js"></script>
+<script src="../src/common/directives/icons/show-hide-icon.directive.js"></script>
 
 <script src="../src/util/database.service.js"></script>
 <script src="../src/util/proxy.service.js"></script>

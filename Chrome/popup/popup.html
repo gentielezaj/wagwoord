@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <link href="../assests/fontello/css/animation.css" rel="stylesheet">
+    <link href="../assests/fontello/css/fontello.css" rel="stylesheet">
   <link href="../assests/css/app-defaults.css" rel="stylesheet">
   <link href="../assests/css/main.css" rel="stylesheet">
   <link href="../assests/css/password.css" rel="stylesheet">
@@ -15,11 +17,9 @@
       <div clss="section-content" ng-view></div>
     </section>
     <footer class="actions">
-      <button class="icon right" ng-click="vm.addTabToBlackList()" ng-if="!vm.tabBlacklisted" aria-label="Add to blacklist">
-        <delete-icon></delete-icon>
+      <button ww-button pre="icon-blacklist" class="icon right" ng-click="vm.addTabToBlackList()" ng-if="!vm.tabBlacklisted" aria-label="Add to blacklist">
       </button>
-      <button class="icon right" ng-click="vm.edit()" aria-label="Settings" aria-details="Go to settings">
-        <settings-icon></settings-icon>
+      <button class="icon right" ww-button ng-click="vm.edit()" aria-label="Settings" aria-details="Go to settings" pre="icon-settings">
       </button>
     </footer>
   </div>
@@ -30,14 +30,12 @@
   <script src="popup.js"></script>
   <script src="../src/common/base.service.js"></script>
 
-  <script src="../src/common/directives/icons/edit-icon.directive.js"></script>
-  <script src="../src/common/directives/icons/copy-icon.directive.js"></script>
   <script src="../src/common/directives/icons/show-hide-icon.directive.js"></script>
-  <script src="../src/common/directives/icons/settings-icon.directive.js"></script>
-  <script src="../src/common/directives/icons/delete-icon.directive.js"></script>
+
   <script src="../src/common/directives/notfication/notifications.directive.js"></script>
   <script src="../src/common/directives/notfication/notification.service.js"></script>
   <script src="../src/common/directives/loaders/loader.directive.js"></script>
+  <script src="../src/common/directives/buttons/button.directive.js"></script>
 
   <script src="../src/passwords/services/password.service.js"></script>
   <script src="../src/passwords/form/password-form.controller.js"></script>

@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'fontello';
-  src: url('../font/fontello.eot?88452677');
-  src: url('../font/fontello.eot?88452677#iefix') format('embedded-opentype'),
-       url('../font/fontello.woff2?88452677') format('woff2'),
-       url('../font/fontello.woff?88452677') format('woff'),
-       url('../font/fontello.ttf?88452677') format('truetype'),
-       url('../font/fontello.svg?88452677#fontello') format('svg');
+  src: url('../font/fontello.eot?68858946');
+  src: url('../font/fontello.eot?68858946#iefix') format('embedded-opentype'),
+       url('../font/fontello.woff2?68858946') format('woff2'),
+       url('../font/fontello.woff?68858946') format('woff'),
+       url('../font/fontello.ttf?68858946') format('truetype'),
+       url('../font/fontello.svg?68858946#fontello') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'fontello';
-    src: url('../font/fontello.svg?88452677#fontello') format('svg');
+    src: url('../font/fontello.svg?68858946#fontello') format('svg');
   }
 }
 */
@@ -64,13 +64,14 @@
 .icon-demo:before { content: '\e806'; } /* '' */
 .icon-test:before { content: '\e807'; } /* '' */
 .icon-search:before { content: '\e808'; } /* '' */
-.icon-key:before { content: '\e809'; } /* '' */
+.icon-key-1:before { content: '\e809'; } /* '' */
 .icon-delete:before { content: '\e80a'; } /* '' */
 .icon-pencil:before { content: '\e80b'; } /* '' */
+.icon-combination_lock:before { content: '\e80c'; } /* '' */
 .icon-card:before { content: '\e80d'; } /* '' */
 .icon-spin3:before { content: '\e80e'; } /* '' */
 .icon-bank:before { content: '\e80f'; } /* '' */
-.icon-blacklist-1:before { content: '\e810'; } /* '' */
+.icon-blacklist-2:before { content: '\e810'; } /* '' */
 .icon-settings:before { content: '\e811'; } /* '' */
 .icon-database:before { content: '\e813'; } /* '' */
 .icon-network:before { content: '\e814'; } /* '' */
@@ -82,11 +83,8 @@
 .icon-right:before { content: '\e81b'; } /* '' */
 .icon-sync-arrows:before { content: '\e81c'; } /* '' */
 .icon-up:before { content: '\e81d'; } /* '' */
-.icon-synchronization:before { content: '\e81e'; } /* '' */
 .icon-sync-1:before { content: '\e81f'; } /* '' */
-.icon-expand-arrow:before { content: '\e822'; } /* '' */
-.icon-expand:before { content: '\e823'; } /* '' */
-.icon-copy:before { content: '\e825'; } /* '' */
+.icon-copy-1:before { content: '\e825'; } /* '' */
 .icon-sync-warent:before { content: '\e826'; } /* '' */
 .icon-sync-disable:before { content: '\e827'; } /* '' */
 .icon-left:before { content: '\e828'; } /* '' */
@@ -105,7 +103,11 @@
 .icon-eye:before { content: '\e836'; } /* '' */
 .icon-spin-1:before { content: '\e838'; } /* '' */
 .icon-spin-2:before { content: '\e839'; } /* '' */
+.icon-key:before { content: '\e83b'; } /* '' */
+.icon-logo:before { content: '\e83e'; } /* '' */
+.icon-safe:before { content: '\e83f'; } /* '' */
 .icon-warehouse:before { content: '\e840'; } /* '' */
+.icon-blacklist-1:before { content: '\e841'; } /* '' */
 .icon-open-link:before { content: '\f08e'; } /* '' */
 .icon-exchange:before { content: '\f0ec'; } /* '' */
 .icon-attention:before { content: '\f12a'; } /* '' */
@@ -115,5 +117,6 @@
 .icon-cc-amex:before { content: '\f1f3'; } /* '' */
 .icon-cc-paypal:before { content: '\f1f4'; } /* '' */
 .icon-user-secret:before { content: '\f21b'; } /* '' */
-.icon-clone:before { content: '\f24d'; } /* '' */
+.icon-copy:before { content: '\f24d'; } /* '' */
+.icon-fort:before { content: '\f286'; } /* '' */
 .icon-eye-close:before { content: '\f2a8'; } /* '' */

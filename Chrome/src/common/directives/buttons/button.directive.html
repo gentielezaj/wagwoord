@@ -1,6 +1,6 @@
-<i ng-if="pre" class="demo-icon" ng-class="pre"></i>
-{{prefix ? '&nbsp;' : ''}}
+<i ng-if="prefix" class="demo-icon" ng-class="prefix"></i>
+{{prefix && text ? '&nbsp;' : ''}}
 <span ng-if="text" class="i-name">{{text}}</span>
-{{suffix ? '&nbsp;' : ''}}
-<i ng-if="post" class="demo-icon" ng-class="post"></i>
+{{suffix && text ? '&nbsp;' : ''}}
+<i ng-if="suffix" class="demo-icon" ng-class="suffix"></i>
 <span ng-show="loader" class="loader"></span>

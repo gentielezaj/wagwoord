@@ -25,18 +25,6 @@ footer {
     display: flex;
 }
 
-footer button {
-    margin: 0 0.4rem;
-}
-
-footer button:first-child {
-    margin-left: 0;
-}
-
-footer button:last-child {
-    margin-right: 0;
-}
-
 section .password-list .data-container ul li .domain.title {
     font-size: unset;
 }

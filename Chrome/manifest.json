@@ -11,6 +11,9 @@
         "unlimitedStorage",
         "tabs"
     ],
+    "icons": {
+        "512": "assests/logo/logo-white.png"
+    },
     "author": "Genti Elezaj",
     "background": {
         "page": "background/background.html",

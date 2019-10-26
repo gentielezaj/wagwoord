@@ -5,7 +5,7 @@ import { PasswordRepository } from "../database/repositories/passwordRepository"
 export class PasswordController extends BaseController<PasswordEntity> {
 
     constructor() {
-        super(PasswordEntity, 'passwords');
+        super(PasswordEntity, 'password');
         this.repository = new PasswordRepository();
     }
 

@@ -21,6 +21,9 @@ export class PasswordEntity extends BaseEntity {
     @Column({nullable: false, default: false, type:'int'})
     public encrypted: boolean;
 
+    @Column({nullable: false, default: 0, type:'int'})
+    public count: number
+
     static create(obj: any) : PasswordEntity |undefined {
         if(!obj || !obj.name || !obj.domain || !obj.password) return undefined;
         let result = new PasswordEntity();
@@ -33,6 +36,7 @@ export class PasswordEntity extends BaseEntity {
         result.lastModified = obj.lastModified;
         result.encrypted = obj.encrypted || false;
         result.deleted = obj.deleted || false;
+        result.count = obj.count || 0;
         return result;
     }
 }

@@ -88,8 +88,13 @@ export class TestController {
             success: success,
             data: body,
             errorMessage: error,
-            count: count
+            count: count,
+            code
         };
+
+        res.setHeader('Content-Type', "application/json");
+        res.setHeader('mode', "cros");
+        res.setHeader('Access-Control-Allow-Origin', '*')
 
         res.status(code).json(resModel);
     }

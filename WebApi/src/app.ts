@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser";
 import { PasswordController } from "./controllers/passwordController";
 import { BlacklistController } from "./controllers/blacklistController";
 import { SettingsController } from "./controllers/settingsController";
+import { TestController } from "./controllers/testController";
 
 
 class App {
@@ -21,6 +22,7 @@ class App {
         this.app.use('/api/password', new PasswordController().GetRouter());
         this.app.use('/api/blacklist', new BlacklistController().GetRouter());
         this.app.use('/api/settings', new SettingsController().GetRouter());
+        this.app.use('/api/test', new TestController().GetRouter());
     }
 
     private config(): void{

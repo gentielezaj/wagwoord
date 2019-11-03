@@ -19,8 +19,8 @@ export class SettingsEntity extends BaseEntity {
         result.value = obj.value;
         result.id = obj.id;
         result.lastModified = obj.lastModified;
-        result.deleted = obj.deleted || false;
-        result.encrypted = obj.encrypted || false;
+        result.deleted = obj.deleted ? true : false;
+        result.encrypted = obj.encrypted ? true : false;
         return result;
     }
 }

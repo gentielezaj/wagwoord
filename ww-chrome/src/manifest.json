@@ -1,0 +1,40 @@
+{
+  "name": "Wagwoord",
+  "description": "Wagwoord credential Manager",
+  "version": "0.1",
+  "manifest_version": 2,
+  "author": "Genti Elezaj",
+  "icons": {
+    "512": "assets/logo/logo-white.png"
+  },
+  "browser_action": {
+    "default_title": "ww-chrome",
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "scripts": [
+      "background/background.js"
+    ]
+  },
+  "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*", "file:///*/*"],
+    "js": [
+      "content-scripts/content-script.js"
+    ],
+    "run_at": "document_idle"
+  }],
+  "web_accessible_resources": [
+      "content-scripts/content-script.css"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "options_page": "options/options.html",
+  "permissions": [
+    "declarativeContent",
+    "storage",
+    "activeTab",
+    "contextMenus",
+    "file://*/*",
+    "unlimitedStorage",
+    "tabs"
+  ]
+}

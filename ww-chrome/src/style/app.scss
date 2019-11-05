@@ -1,0 +1,587 @@
+@import './app-defaults.scss';
+
+.hidden {
+    display: none;
+}
+
+.right {
+    float: right;
+}
+
+.flex {
+    display: flex;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--wagwoord-color);
+    opacity: 0.6;
+    /* Firefox */
+}
+
+/* #region button */
+
+button,
+input[type=button] {
+    background: var(--wagwoord-main-color-light);
+    border: none;
+    color: var(--wagwoord-color);
+    padding: 0.4rem 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    transition: width 0.2s;
+}
+
+button.loader,
+input[type=button].loader {
+    display: flex;
+    padding-right: 0.6rem;
+}
+
+button:disabled,
+input[type=button]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled),
+input[type=button]:hover:not(:disabled),
+button:active:not(:disabled),
+input[type=button]:active:not(:disabled),
+button:focus:not(:disabled),
+input[type=button]:focus:not(:disabled) {
+    background: var(--wagwoord-main-color-lighter);
+    outline: none;
+}
+
+button.success,
+input[type=button].success {
+    background: var(--wagwoord-color-success);
+    color: #fff;
+}
+
+button.success:hover:not(:disabled),
+input[type=button].success:hover:not(:disabled),
+button.success:active:not(:disabled),
+input[type=button].success:active:not(:disabled),
+button.success:focus:not(:disabled),
+input[type=button].success:focus:not(:disabled) {
+    background: var(--wagwoord-color-success-secend);
+}
+
+button.error,
+input[type=button].error {
+    background: var(--wagwoord-color-error);
+    color: #fff;
+}
+
+button.error:hover:not(:disabled),
+input[type=button].error:hover:not(:disabled),
+button.error:active:not(:disabled),
+input[type=button].error:active:not(:disabled),
+button.error:focus:not(:disabled),
+input[type=button].error:focus:not(:disabled) {
+    background: var(--wagwoord-color-error-secend);
+}
+
+button.info,
+input[type=button].info {
+    background: var(--wagwoord-color-info);
+    color: #fff;
+}
+
+button.info:hover:not(:disabled),
+input[type=button].info:hover:not(:disabled),
+button.info:active:not(:disabled),
+input[type=button].info:active:not(:disabled),
+button.info:focus:not(:disabled),
+input[type=button].info:focus:not(:disabled) {
+    background: var(--wagwoord-color-info-secend);
+}
+
+button.transparent,
+input[type=button].transparent,
+button.transparent:hover:not(:disabled),
+input[type=button].transparent:hover:not(:disabled),
+button.transparent:active:not(:disabled),
+input[type=button].transparent:active:not(:disabled),
+button.transparent:focus:not(:disabled),
+input[type=button].transparent:focus:not(:disabled) {
+    background: transparent;
+    color: #fff;
+}
+
+button.icon {
+    display: flex;
+    transition: width 10s ease-out;
+}
+
+button.icon .pre,
+button.icon .pre svg {
+    padding-right: 0.5rem;
+}
+
+button.icon .suffix svg {
+    padding-left: 0.5rem;
+}
+
+button.icon svg {
+    width: 0.6rem;
+    height: 0.7rem;
+}
+
+button.icon.text span {
+    display: none;
+}
+
+
+
+button.icon.text:hover span,
+button.icon.text:active span {
+    display: inline;
+}
+
+
+button.icon.text .suffix svg,
+button.icon.text .pre svg {
+    padding: 0;
+}
+
+button.icon.text:hover .pre svg,
+button.icon.text:active .pre svg {
+    padding-right: 0.5rem;
+}
+
+button.icon.text:hover .suffix svg,
+button.icon.text:active .suffix svg {
+    padding-left: 0.5rem;
+}
+
+/* #endregion button */
+
+/* #region a */
+a {
+    color: var(--wagwoord-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover,
+a:active {
+    text-decoration: underline;
+}
+
+/* #endregion a */
+
+/* #region input-container */
+
+form {
+    min-width: 25rem;
+}
+
+.input-container {
+    background: var(--wagwoord-main-color-light);
+    padding: 0;
+    color: var(--wagwoord-color);
+    display: flex;
+    width: 100%;
+}
+
+.input-container.error {
+    border: 1px solid var(--wagwoord-color-error-secend);
+}
+
+.input-container>input,
+.input-container>textarea {
+    width: calc(100% - 1rem);
+    background: transparent;
+    border: none;
+    color: var(--wagwoord-color);
+    padding: 0.5rem;
+}
+
+.input-container>textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.input-container>input:focus,
+.input-container>textarea:focus {
+    outline: none;
+}
+
+.input-container>button {
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.input-container>button:hover,
+.input-container>button:focus {
+    font-weight: bold;
+}
+
+/* #endregion input-container */
+
+/* #region form item */
+.form-item {
+    padding: 0.5rem;
+    button.label{
+        padding: 0;
+    }
+}
+
+.form-item.button {
+    width: fit-content;
+}
+
+.form-item.disabled {
+    opacity: 0.5;
+}
+
+.form-item label {
+    font-size: 1rem;
+}
+
+/* #region check box */
+.lbl {
+    position: relative;
+    display: block;
+    height: 20px;
+    width: 44px;
+    background: var(--wagwoord-main-color-lighter);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lbl:after {
+    position: absolute;
+    left: -2px;
+    top: -3px;
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 100px;
+    background: var(--wagwoord-color-error);
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.05);
+    content: '';
+    transition: all 0.3s ease;
+}
+
+.lbl:active:after {
+    transform: scale(1.15, 0.85);
+}
+
+.cbx:checked~span {
+    background: var(--wagwoord-main-color-light);
+}
+
+.cbx:checked~span:after {
+    left: 20px;
+    background: var(--wagwoord-color-success);
+}
+
+.cbx:disabled~span {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
+.form-item.cbx {
+    display: flex;
+}
+
+.form-item.cbx label {
+    padding-left: 0.5rem
+}
+
+form .form-actions {
+    display: -webkit-box;
+    padding: .5rem .5rem 1rem 0.5rem;
+}
+
+form .form-actions button,
+form .form-actions input {
+    margin-left: 1rem;
+}
+
+/* #endregion check box */
+
+/* #endregion form item */
+
+/* #region svg */
+svg,
+nav ul li svg,
+nav ul li embed {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: var(--wagwoord-color);
+}
+
+svg .svg-secundary-color {
+    fill: var(--wagwoord-main-color);
+}
+
+/* #endregion svg */
+
+/* #region scroll */
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: var(--wagwoord-main-color-lighter);
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: var(--wagwoord-main-color-lighter);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: var(--wagwoord-color);
+}
+
+/* #endregion scroll */
+
+/* #region progess bar */
+progress[value] {
+    /* Reset the default appearance */
+    -webkit-appearance: none;
+}
+
+progress[value]::-webkit-progress-bar {
+    background-color: var(--wagwoord-main-color-lighter);
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+progress[value]::-webkit-progress-value {
+    background-color: var(--wagwoord-color-success-secend);
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* #endregion progess bar */
+
+/* #region loader-min */
+button.loader span.loader,
+input[button].loader span.loader {
+    margin: .1rem 0rem .1rem 0.6rem;
+}
+
+button.loader span.text {
+    width: max-content;
+}
+
+span.loader:last-child {
+    margin: .5rem .6rem;
+}
+
+span.loader {
+    color: #ffffff;
+    /* font-size: 90px; */
+    text-indent: -9999em;
+    overflow: hidden;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    margin: .5rem .29rem;
+    position: relative;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+    animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+}
+
+@-webkit-keyframes load6 {
+    0% {
+        box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+
+    5%,
+    95% {
+        box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+
+    10%,
+    59% {
+        box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+    }
+
+    20% {
+        box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+    }
+
+    38% {
+        box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+    }
+
+    100% {
+        box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+}
+
+@keyframes load6 {
+    0% {
+        box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+
+    5%,
+    95% {
+        box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+
+    10%,
+    59% {
+        box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+    }
+
+    20% {
+        box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+    }
+
+    38% {
+        box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+    }
+
+    100% {
+        box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+}
+
+@-webkit-keyframes round {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes round {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+/* #endregion loader-min */
+
+/* #region dialog */
+dialog {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    background: transparent;
+    color: var(--wagwoord-color);
+    border: none;
+    z-index: var(--dialog-zindex);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:not([open]) {
+        display: none;
+    }
+
+    >div.dialog-wraper {
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        background: var(--wagwoord-main-color-light);
+        opacity: 0.5;
+        position: fixed;
+    }
+
+    >div.dialog-main {
+        background: var(--wagwoord-main-color-light);
+        position: fixed;
+        z-index: 1;
+        box-shadow: 0 0 4px var(--wagwoord-color);
+    }
+}
+
+dialog .message {
+    font-size: 1rem;
+}
+
+dialog.l {
+    width: 50rem;
+}
+
+dialog.main-color {
+    background: var(--wagwoord-main-color);
+}
+
+dialog .dialog-actions {
+    margin-top: .5rem;
+}
+
+dialog .dialog-actions .dialog-action {
+    margin: 0.5rem;
+}
+
+dialog .form-item {
+    text-align: left;
+}
+
+dialog .input-container,
+dialog .form-item .input-container {
+    border: 1px var(--wagwoord-main-color) solid;
+    width: 100% !important;
+    &.error {
+        border: 1px solid var(--wagwoord-color-error-secend);
+    }
+}
+
+/* #endregion dialog */
+
+/* #region cards */
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+
+    .card {
+        display: block;
+        padding: 0.5rem;
+    }
+}
+
+/* #endregion cards */

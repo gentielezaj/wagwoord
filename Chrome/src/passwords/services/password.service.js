@@ -130,7 +130,7 @@ wwapp.service('$password', function ($rootScope, $database, $settings,$encryptio
     // #endregion save
 
     vm.exportPassword = async function (filter) {
-        const list = await db('get', filter);
+        const list = await db.get(filter);
         list.forEach(element => {
             delete element.id;
             delete element.searchField;
@@ -138,7 +138,7 @@ wwapp.service('$password', function ($rootScope, $database, $settings,$encryptio
         });
 
         let jsonList = JSON.stringify({
-            data: list
+            passwords: list
         });
 
         const el = document.createElement('a');

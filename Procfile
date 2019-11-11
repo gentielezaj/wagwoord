@@ -1,1 +1,1 @@
-web: npm build --prefix WebApi && npm start --prefix WebApi
+web: npm run build --prefix WebApi && npm start --prefix WebApi

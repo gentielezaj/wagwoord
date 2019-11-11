@@ -17,7 +17,7 @@ async function init() {
 
     console.log('db set');
 
-    app.listen(parseInt(PORT), serverAddress, () => {
+    app.listen(parseInt(PORT), () => {
         console.log('Express server listening on port ' + PORT);
     });
 }

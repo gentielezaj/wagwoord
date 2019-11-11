@@ -1,2 +1,2 @@
 web: npm start --prefix WebApi
-build: npm build --prefix WebApi
+worker: npm build --prefix WebApi

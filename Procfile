@@ -1,2 +1,2 @@
-web: cd WebApi && npm run start
-build: cd WebApi && npm run build
+web: npm run start --prefix WebApi
+build: npm run build --prefix WebApi

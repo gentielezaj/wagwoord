@@ -3,6 +3,6 @@
     "description": "huroku setup",
     "version": "0.1.0",
     "scripts": {
-      "postinstall": "npm install --prefix WebApi"
+      "postinstall": "npm install --prefix WebApi && npm run build --prefix WebApi "
     }
   }

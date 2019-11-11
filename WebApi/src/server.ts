@@ -17,7 +17,7 @@ async function init() {
 
     console.log('db set');
 
-    app.listen(parseInt(PORT), () => {
+    app.listen(parseInt(PORT), (e) => {
         console.log('Express server listening on port ' + PORT);
     });
 }
@@ -28,10 +28,10 @@ function getTypeOrmConfig(): SqliteConnectionOptions {
     return {
         "type": "sqlite",
         "database": process.env.TYPEORM_DATABASE || 'wagwoord.sqlite',
-        "entities": [process.env.TYPEORM_ENTITIES || 'src/database/models/*.ts'],
-        "migrations": [process.env.TYPEORM_MIGRATIONS || 'migrations/*.ts'],
+        "entities": [process.env.TYPEORM_ENTITIES || 'dist/database/models/*.js'],
+        "migrations": [process.env.TYPEORM_MIGRATIONS || 'dist/database/migrations/*.js'],
         "cli": {
-            "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR || 'migrations'
+            "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR || 'dist/database/migrations'
         },
         migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || process.env.TYPEORM_MIGRATIONS_RUN == undefined ? true : false,
         logging: ["error", "migration", "warn"],

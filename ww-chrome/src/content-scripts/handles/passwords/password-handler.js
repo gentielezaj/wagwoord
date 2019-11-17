@@ -126,12 +126,12 @@ export default class PasswordHandler {
         const pId = target.getAttribute(htmlTagAttributes.passwordId);
         const form = this.forms.filter(f => f.id == iId)[0];
         const password = this.passwords.filter(p => p.id == pId)[0];
-        this.setValueToFields(form, password);
+        this.setValueToFields(form, password, target.type != 'password');
     }
 
-    setValueToFields(form, password) {
+    setValueToFields(form, password, changeUsername) {
         form.passwordElement.value = password.password;
-        if(!form.usernameElement.value) {
+        if(!form.usernameElement.value || changeUsername) {
             form.usernameElement.value = password.username;
             form.usernameElement.dispatchEvent(new Event('change'));
         }

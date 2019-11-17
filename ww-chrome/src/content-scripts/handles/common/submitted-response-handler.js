@@ -20,10 +20,10 @@ function confirmSubmittionPassword(response, model) {
     };
 
     if (response == 'new') {
-        showDialog('save credetials', onSubmit);
+        showDialog(`save credetials:<br><i>${model.username}<i>`, onSubmit);
     }
     if (response == 'update') {
-        showDialog('update password for', onSubmit);
+        showDialog(`update password:<br><i>${model.username}<i>`, onSubmit);
     }
 }
 
@@ -35,8 +35,8 @@ function showDialog(message, onSubmit) {
     dialog.id = 'wwapp-confirmation-dialog-id';
     dialog.open = true;
     dialog.appendChild(p);
-    dialog.appendChild(createButton('save', onSubmit));
-    dialog.appendChild(createButton('reject', event => {
+    dialog.appendChild(createButton('save', 'success', onSubmit));
+    dialog.appendChild(createButton('reject', 'error', event => {
         dialog.open = false;
         sessionStorage.removeItem('submitted');
     }));
@@ -44,9 +44,10 @@ function showDialog(message, onSubmit) {
     document.getElementsByTagName('body')[0].appendChild(dialog);
 }
 
-function createButton(value, onClick) {
+function createButton(value, css, onClick) {
     const button = document.createElement('input');
     button.type = 'button';
+    button.classList.add(css);
     button.value = value;
     button.id = 'wwapp-confirmation-dialog-button-id-' + value;
     button.addEventListener('click', onClick);

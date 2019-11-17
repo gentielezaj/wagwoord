@@ -13,12 +13,16 @@ export default class BackgroundService {
     async getDataFroDomain(url, submitted) {
         url = getName(url, true);
         const passwords = await this.$password.get({
-            searchText: `${url}-`
+            searchText: `${url}-`,
+            order: {
+                property: 'count',
+                desc: true
+            }
         });
         const blacklist = await this.$blacklist.getItem({
             name: url
         });
-        const passwordSettings = await this.$password.settings.get();
+        const passwordSettings = await this.$password.settings.getOrDefults(true);
 
         return {
             passwords,
@@ -60,7 +64,7 @@ export default class BackgroundService {
         if(!model) return false;
         if(model.password) {
             model.password.name = model.password.name || model.password.domain;
-            this.$password.save(model.password);
+            this.$password.save(model.password).then();
         }
 
         return false;

@@ -49,6 +49,12 @@ export default class DB {
             if (!query) {
                 return await os.toArray();
             }
+            if (query.order) {
+                if (typeof query.order === 'string' || query.order.property)
+                    os = os.orderBy(query.order.property || query.order);
+                if (query.order.desc)
+                    os = os.reverse();
+            }
             if (query.searchText) {
                 query.searchText = query.searchText.toLowerCase();
                 os = os.filter(i => i.searchField.indexOf(query.searchText) > -1);
@@ -67,12 +73,6 @@ export default class DB {
             }
             if (query.take > 0) {
                 os = os.limit(query.take);
-            }
-            if (query.order) {
-                if (typeof query.order === 'string' || query.order.property)
-                    os.orderBy(query.order.property || query.order);
-                if (query.order.desc)
-                    os.reverse();
             }
 
             return await os.toArray();

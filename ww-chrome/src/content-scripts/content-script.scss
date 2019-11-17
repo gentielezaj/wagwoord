@@ -46,9 +46,31 @@ dialog#wwapp-confirmation-dialog-id {
     background-color: var(--wagwoord-main-color);
     color: var(--wagwoord-color);
     border: 1px solid var(--wagwoord-main-color-lighter);
+    text-align: center;
     p {
         margin: 0;
-        padding: 0;
+        padding: 0 0 0.5rem 0;
+    }
+    input[type=button] {
+        margin: 0 0.2em;
+        color: var(--wagwoord-color);
+        border: none;
+        border-radius: 0;
+        background-color: var(--wagwoord-color-info);
+        font-size: 1em;
+        cursor: pointer;
+        &.success {
+            background-color: var(--wagwoord-color-success);
+            &:hover {
+                background-color: var(--wagwoord-color-success-secend);
+            }
+        }
+        &.error {
+            background-color: var(--wagwoord-color-error);
+            &:hover {
+                background-color: var(--wagwoord-color-error-secend);
+            }
+        }
     }
 }
 // #endregion confirmation dialog

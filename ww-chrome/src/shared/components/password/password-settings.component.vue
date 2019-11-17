@@ -10,7 +10,7 @@
           @change="save('autoSubmit')"
           id="autoSubmitInput"
         />
-        <span class="lbl" @click="model.autoSubmit = !model.autoSubmit"></span>
+        <span class="lbl" @click="model.autoSubmit = !model.autoSubmit; save('autoSubmit')"></span>
         <label for="autoSubmitInput" class>Auto submit</label>
         <span v-show="saving == 'autoSubmit'" class="loader"></span>
       </div>
@@ -46,7 +46,7 @@
           />
           <span
             class="lbl"
-            @click="model.passworIncludeSymbolCharacters = !model.passworIncludeSymbolCharacters"
+            @click="model.passworIncludeSymbolCharacters = !model.passworIncludeSymbolCharacters; save('passworIncludeSymbolCharacters')"
           ></span>
           <label for="passworIncludeSymbolCharactersInput" class>inclide characters</label>
           <span v-show="saving == 'passworIncludeSymbolCharacters'" class="loader"></span>

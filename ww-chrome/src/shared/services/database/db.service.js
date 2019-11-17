@@ -56,7 +56,10 @@ export default class DB {
             if(query.where) {
                 if(!Array.isArray(query.where)) query.where = [query.where];
                 query.where.forEach(where => {
-                    os = os.where(where.property)[where.operation](where.value);
+                    if(where.property)
+                        os = os.where(where.property)[where.operation](where.value);
+                    else 
+                        os = os.where(where);
                 });
             }
             if (query.skip > 0) {

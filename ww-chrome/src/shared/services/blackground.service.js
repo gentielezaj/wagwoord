@@ -1,7 +1,7 @@
 import PasswordService from "./passwords/password.service";
 import BlacklistService from "./blacklist/blacklist.service";
 import {
-    getName
+    getName, getDomain
 } from './core/helper.service';
 
 export default class BackgroundService {
@@ -10,7 +10,7 @@ export default class BackgroundService {
         this.$blacklist = new BlacklistService();
     }
 
-    async getDataFroDomain(url) {
+    async getDataFroDomain(url, submitted) {
         url = getName(url, true);
         const passwords = await this.$password.get({
             searchText: `${url}-`
@@ -25,9 +25,47 @@ export default class BackgroundService {
             blacklist,
             settings: {
                 password: passwordSettings
-            }
+            },
+            submittedResponse: await this.getSubmittedResponse(submitted)
         };
     }
+
+    async getSubmittedResponse(model) {
+        if(!model) return undefined;
+        if(typeof model === 'string') model = JSON.parse(model);
+        let result = {};
+        if(model.password) {
+            let password = await this.$password.getItem({
+                username: model.password.username,
+                domain: getDomain(model.password.domain)
+            });
+            if(password) {
+                password.count++;
+                this.$password.save(password);
+                if(password.password == model.password.password) {
+                    result.password = false;
+                } else {
+                    result.password = 'update';
+                }
+            } else {
+                result.password = 'new';
+            }
+        }
+
+        return result;
+    }
+
+    // #region save
+    async save(model) {
+        if(!model) return false;
+        if(model.password) {
+            model.password.name = model.password.name || model.password.domain;
+            this.$password.save(model.password);
+        }
+
+        return false;
+    }
+    // #endregion save
 
     async sync() {
         await this.$password.sync();

@@ -9,11 +9,24 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        $backgound.getDataFroDomain(sender.url).then((p) => {
-            sendResponse(p);
-        });
+        if (request.requestType == 'get') {
+            $backgound.getDataFroDomain(sender.url, request.submitted).then((p) => {
+                sendResponse(p);
+            });
 
-        return true;
+            return true;
+        }
+        if (request.requestType == 'post') {
+            $backgound.save(request.model)
+                .then(r => {
+                    return r;
+                })
+                .catch(e => {
+                    throw e;
+                });
+        }
+
+        return false;
     });
 
 async function sync() {

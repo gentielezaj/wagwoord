@@ -41,7 +41,7 @@ export default class PasswordHandler {
 
     // #region from
     coreinitForm() {
-        const pass = this.passwords.length ? this.passwords[0] : {};
+        let pass = this.passwords.length ? this.passwords[0] : {};
         this.forms = getLoginForms(window.location.host);
         this.forms.forEach(f => {
             const formId = uuidv4();
@@ -51,7 +51,9 @@ export default class PasswordHandler {
             f.formElement.addEventListener('submit', event => {
                 this.onSubmit(event);
             });
-
+            if(f.usernameElement.value) {
+                pass = this.passwords.find(p => p.username == f.usernameElement.value) || pass;
+            }
             this.setUpInput(f.passwordElement, formId, pass.password);
             this.setUpInput(f.usernameElement, formId, pass.username);
         });
@@ -129,17 +131,29 @@ export default class PasswordHandler {
 
     setValueToFields(form, password) {
         form.passwordElement.value = password.password;
-        form.usernameElement.value = password.username;
+        if(!form.usernameElement.value) {
+            form.usernameElement.value = password.username;
+            form.usernameElement.dispatchEvent(new Event('change'));
+        }
 
         form.passwordElement.dispatchEvent(new Event('change'));
-        form.usernameElement.dispatchEvent(new Event('change'));
     }
 
     onSubmit(event) {
-        const id = event.target.getAttribute('cmappId');
+        const id = event.target.getAttribute(htmlTagAttributes.formId);
         const form = this.forms.find(f => f.id == id);
         console.log(form.passwordElement.value);
         console.log(form.usernameElement.value);
+        sessionStorage.removeItem("submitted");
+        const model = {
+            password: {
+                username: form.usernameElement.value,
+                password: form.passwordElement.value,
+                domain: window.location.href
+            }
+        };
+
+        sessionStorage.setItem("submitted", JSON.stringify(model));
     }
     // #endregion from
 }

@@ -34,3 +34,21 @@
     background: var(--wagwoord-main-color);
 }
 /* #endregion  */
+
+// #region confirmation dialog
+dialog#wwapp-confirmation-dialog-id {
+    position: fixed;
+    margin: 0;
+    right: 1rem;
+    top: 1rem;
+    left: unset;
+    padding: 0.5rem;
+    background-color: var(--wagwoord-main-color);
+    color: var(--wagwoord-color);
+    border: 1px solid var(--wagwoord-main-color-lighter);
+    p {
+        margin: 0;
+        padding: 0;
+    }
+}
+// #endregion confirmation dialog

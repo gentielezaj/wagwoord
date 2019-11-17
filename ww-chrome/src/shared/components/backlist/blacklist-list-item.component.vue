@@ -27,7 +27,7 @@
           class="cbx hidden"
           :id="'blacklist-password' + item.id"
         />
-        <span class="lbl" @click="item.password = !item.password;"></span>
+        <span class="lbl" @click="item.password = !item.password; save($event)"></span>
         <label :for="'blacklist-password' + item.id" class>Password</label>
       </div>
       <div class="form-item cbx">
@@ -39,7 +39,7 @@
           class="cbx hidden"
           :id="'blacklist-address' + item.id"
         />
-        <span class="lbl" @click="item.address = !item.address;"></span>
+        <span class="lbl" @click="item.address = !item.address; save($event)"></span>
         <label :for="'blacklist-address' + item.id" class>Address</label>
       </div>
       <div class="form-item cbx">
@@ -51,7 +51,7 @@
           class="cbx hidden"
           :id="'blacklist-creditCard' + item.id"
         />
-        <span class="lbl" @click="item.creditCard = !item.creditCard;"></span>
+        <span class="lbl" @click="item.creditCard = !item.creditCard; save($event)"></span>
         <label :for="'blacklist-creditCard' + item.id" class>Credit card</label>
       </div>
       <div class="form-item cbx">
@@ -63,7 +63,7 @@
           class="cbx hidden"
           :id="'blacklist-codeGenerator' + item.id"
         />
-        <span class="lbl" @click="item.codeGenerator = !item.codeGenerator;"></span>
+        <span class="lbl" @click="item.codeGenerator = !item.codeGenerator; save($event)"></span>
         <label :for="'blacklist-codeGenerator' + item.id" class>Code generator</label>
       </div>
     </div>

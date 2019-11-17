@@ -19,11 +19,44 @@
               <button @click="encrypt($event)" class="loader">Encrypt</button>
               <button @click="encrypt($event, true)" class="loader">Decrypt</button>
             </div>
-          <div class="form-actions">
-            <button @click="consol()" class="loader">Consol log chrome storage</button>
-            <button @click="reqyest()" class="loader">request</button>
-            <button @click="local()" class="loader">local</button>
-          </div>
+            <div class="form-actions">
+              <button @click="consol()" class="loader">Consol log chrome storage</button>
+              <button @click="reqyest()" class="loader">request</button>
+              <button @click="local()" class="loader">local</button>
+            </div>
+          </form>
+        </div>
+      </article>
+      <article v-searchable class="m" v-collapse="'.content'">
+        <header>
+          <h2>forms</h2>
+        </header>
+        <div search-data="forms" class="content">
+          <form>
+            <div class="container">
+              <label for="uname">
+                <b>Username</b>
+              </label>
+              <input type="text" placeholder="Enter Username" name="uname" required />
+
+              <label for="psw">
+                <b>Password</b>
+              </label>
+              <input type="password" placeholder="Enter Password" name="psw" required />
+
+              <button type="submit">Login</button>
+              <label>
+                <input type="checkbox" checked="checked" name="remember" /> Remember me
+              </label>
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+              <button type="button" class="cancelbtn">Cancel</button>
+              <span class="psw">
+                Forgot
+                <a href="#">password?</a>
+              </span>
+            </div>
           </form>
         </div>
       </article>

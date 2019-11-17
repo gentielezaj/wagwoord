@@ -1,5 +1,6 @@
 import './content-script.scss';
 import PasswordHandler from './handles/passwords/password-handler';
+import { confirmSubmittion } from './handles/common/submitted-response-handler';
 
 // eslint-disable-next-line no-unused-vars
 function createScriptTag(path) {
@@ -18,12 +19,14 @@ function createStyleTag(path) {
 }
 
 chrome.runtime.sendMessage({
-    greeting: "hello"
+    requestType: "get",
+    submitted: sessionStorage.getItem('submitted')
 }, function (response) {
     const model = {
         passwords: response && response.passwords ? response.passwords : [],
         settings: response && response.settings ? response.settings : [],
-        blacklist: response ? response.blacklist : false
+        blacklist: response ? response.blacklist : false,
+        submittedResponse: response ? response.submittedResponse : undefined
     };
     let elBody = document.getElementsByTagName('body')[0];
 
@@ -32,5 +35,9 @@ chrome.runtime.sendMessage({
 
     if(model.passwords && model.settings && model.settings.password) {
         new PasswordHandler(model.passwords, model.settings.password, model.blacklist);
+    }
+
+    if(model.submittedResponse) {
+        confirmSubmittion(model.submittedResponse);
     }
 });

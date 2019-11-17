@@ -2,6 +2,7 @@ import {
     CoreService
 } from "../core/core.service";
 import PasswordService from '../passwords/password.service';
+import { getName, getDomain } from '../core/helper.service';
 
 export default class BlacklistService extends CoreService {
     constructor() {
@@ -10,7 +11,7 @@ export default class BlacklistService extends CoreService {
     }
 
     async checkUrl(url) {
-        url = this.$password.getName(url, true);
+        url = getName(url, true);
 
         return await this.getItem({
             name: url
@@ -18,7 +19,7 @@ export default class BlacklistService extends CoreService {
     }
 
     async toggle(domain) {
-        domain = this.$password.getName(domain, true);
+        domain = getName(domain, true);
 
         const oldPasseord = await this.getItem({
             name: domain
@@ -40,8 +41,8 @@ export default class BlacklistService extends CoreService {
 
     // #region abstract
     async _preSave(item) {
-        item.name = this.$password.getName(item.name, true);
-        item.domain = this.$password.getDomain(item.domain || item.name);
+        item.name = getName(item.name, true);
+        item.domain = getDomain(item.domain || item.name);
 
         item.password = item.password ? true : false;
         item.address = item.address ? true : false;

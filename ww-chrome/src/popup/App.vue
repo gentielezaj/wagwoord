@@ -4,7 +4,7 @@
 
     <footer class="actions">
       <button
-        :class="!tab.blacklist ? 'icon-blacklist-1' : 'icon-blacklist'"
+        :class="!tab.blacklist ? 'icon-list-ok' : 'icon-blacklist'"
         @click="toggleBlackList()"
         ng-if="!tabBlacklisted"
         aria-label="Add to blacklist"

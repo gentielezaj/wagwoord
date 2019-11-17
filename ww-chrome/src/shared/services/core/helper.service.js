@@ -13,7 +13,7 @@ export function copy(model) {
 
     if (typeof model === 'boolean') return Boolean(model);
     if (typeof model === 'number') return Number(model);
-    if (Object.prototype.toString.call(model) === '[object Date]' || Date.parse(model) > 0) return new Date(model);
+    if (Object.prototype.toString.call(model) === '[object Date]') return new Date(model);
     if (typeof model === 'string') return model + '';
 
     if (typeof model === 'object') {
@@ -53,7 +53,7 @@ export function clipboard(value) {
 }
 
 export function getName(domain, min) {
-    domain = getDomain(domain);
+    domain = getDomain(domain, !(/^http(s)?:[/]{2}localhost/.test(domain)));
     domain = domain.replace(/http(s)?:\/\//, '');
     if (!min || !/[a-zA-Z]+/.test(domain)) {
         return domain;
@@ -63,14 +63,14 @@ export function getName(domain, min) {
     return splitedDomain[splitedDomain.length - 2] + '.' + splitedDomain[splitedDomain.length - 1];
 }
 
-export function getDomain(domain) {
+export function getDomain(domain, removePort) {
     if (!domain || domain.startsWith('android:')) return domain;
     if (!(/http(s)?:/.test(domain))) {
         return domain;
     }
     try {
         let url = new URL(domain);
-        return url.port ? url.origin.replace(`:${url.port}`, '') : url.origin;
+        return url.port && removePort ? url.origin.replace(`:${url.port}`, '') : url.origin;
     } catch (error) {
         throw error;
     }

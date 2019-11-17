@@ -3,7 +3,9 @@ import {
 } from "../core/core.service";
 import PasswordSettingsService from './password-settings.service';
 import {
-    getTextFromFile
+    getTextFromFile,
+    getName,
+    getDomain
 } from '../core/helper.service';
 
 export default class PasswordService extends CoreService {
@@ -13,31 +15,6 @@ export default class PasswordService extends CoreService {
     }
 
     // #region helpers
-
-    getName(domain, min) {
-        domain = this.getDomain(domain);
-        domain = domain.replace(/http(s)?:\/\//, '');
-        if (!min || !/[a-zA-Z]+/.test(domain)) {
-            return domain;
-        }
-        let splitedDomain = domain.split('.');
-        if (splitedDomain.length <= 2) return domain;
-        return splitedDomain[splitedDomain.length - 2] + '.' + splitedDomain[splitedDomain.length - 1];
-    }
-
-    getDomain(domain) {
-        if (!domain || domain.startsWith('android:')) return domain;
-        if (!(/http(s)?:/.test(domain))) {
-            return domain;
-        }
-        try {
-            let url = new URL(domain);
-            return url.port ? url.origin.replace(`:${url.port}`, '') : url.origin;
-        } catch (error) {
-            throw error;
-        }
-    }
-
     async generate(length, regex) {
         const passwordSettings = await this.settings.getOrDefults(true);
         length = length || passwordSettings.passwordLength;
@@ -86,8 +63,8 @@ export default class PasswordService extends CoreService {
 
     // #region abstract
     async _preSave(item) {
-        item.domain = this.getDomain(item.domain);
-        item.name = this.getName(item.name || item.domain);
+        item.domain = getDomain(item.domain);
+        item.name = getName(item.name || item.domain);
 
         const oldPasseord = await this.getItem({
             domain: item.domain,

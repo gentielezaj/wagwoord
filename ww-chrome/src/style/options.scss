@@ -286,6 +286,7 @@ section main article{
         padding: 0.5rem 0;
         h2 {
             width: -webkit-fill-available;
+            width: --h2;
         }
 
         &:after {
@@ -293,7 +294,6 @@ section main article{
             transform: rotate( 0deg );
             transition: transform 150ms ease;
         }
-
         &:hover:after {
             transform: rotate( 180deg );
             transition: transform 150ms ease;

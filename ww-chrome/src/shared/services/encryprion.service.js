@@ -14,7 +14,7 @@ export default class EncryptionService {
             encrypted: false
         };
 
-        return  {
+        return {
             value: CryptoJS.AES.encrypt(text, encryption.encryptionKey).toString(),
             encrypted: true
         };

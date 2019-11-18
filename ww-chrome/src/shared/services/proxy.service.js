@@ -80,7 +80,7 @@ export class ProxyService {
     // #region core request
     async request(method, data, params, action, controller, domain, headers) {
         const config = await this.settings.get();
-        if (!config.domain && !domain) return {
+        if (!config || (!config.domain && !domain)) return {
             success: true,
             unsetProxy: true
         };

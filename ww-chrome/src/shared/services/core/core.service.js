@@ -121,6 +121,7 @@ export class CoreService {
     };
 
     async _saveServerItemLocaly(item, onSaveItem) {
+        if(!item) return item;
         if (item.deleted == 1) {
             return await this.delete({
                 serverId: item.id

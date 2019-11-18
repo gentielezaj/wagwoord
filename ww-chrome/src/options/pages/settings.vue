@@ -6,15 +6,12 @@
         <article v-searchable v-collapse="'.content'">
           <header>
             <h2>Sever Settings</h2>
-            <div>
-              <button>Test connection</button>
-            </div>
           </header>
           <div search-data="sync server" class="content">
             <sync-settings-component></sync-settings-component>
           </div>
         </article>
-        <article v-searchable v-collapse="'.content'">
+        <article id="settings-password-container" v-searchable v-collapse="'.content'">
           <header>
             <h2>Password Settings</h2>
           </header>
@@ -37,13 +34,13 @@
             <u>Scroll to:</u>
           </li>
           <li>
-            <a active ng-click="vm.scrollTo()">Server</a>
+            <a active @click="scrollTo()">Server</a>
           </li>
           <li>
-            <a ng-click="vm.scrollTo('settings-password-container')">Passwords</a>
+            <a @click="scrollTo('settings-password-container')">Passwords</a>
           </li>
           <li>
-            <a ng-click="vm.scrollTo('settings-enctyption-container')">Encryption</a>
+            <a @click="scrollTo('settings-enctyption-container')">Encryption</a>
           </li>
         </ul>
       </div>
@@ -69,7 +66,15 @@ export default {
     return {
       header: {
         title: "Settings",
-        search: true
+        search: true,
+        buttons: [
+          {
+            name: "sync",
+            title: "Sync",
+            click: this.sync,
+            class: "loader icon-sync-1"
+          }
+        ]
       }
     };
   },
@@ -82,6 +87,9 @@ export default {
           id
         ).offsetTop;
       }
+    },
+    async sync() {
+      alert('TODO: create sync settings');
     }
   }
 };

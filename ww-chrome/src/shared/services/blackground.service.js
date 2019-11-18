@@ -73,6 +73,7 @@ export default class BackgroundService {
 
     async sync() {
         await this.$password.sync();
+        await this.$password.settings.sync();
         await this.$blacklist.sync();
     }
 }

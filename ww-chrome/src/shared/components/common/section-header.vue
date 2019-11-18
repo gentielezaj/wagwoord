@@ -5,7 +5,7 @@
         <h2 v-bind:class="options.class">{{options.title}}</h2>
       </li>
       <li v-for="button in options.buttons" v-bind:key="button.name">
-        <button @click="button.click(button, $event)" v-bind:class="button.class">{{button.title}}</button>
+        <button @click="button.click(button, $event)" :disabled="button.disabled" v-bind:class="button.class">{{button.title}}</button>
       </li>
       <li v-if="options.search">
         <div style="width: 20rem" class="search-input">

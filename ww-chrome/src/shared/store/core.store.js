@@ -6,11 +6,13 @@ export default function (service, store) {
 
     // #region state
     if (!store.state) {
-        store.state = {
-            service: new service()
-        };
-    } else if (!store.state.service) {
+        store.state = {};
+    }
+    if (!store.state.service) {
         store.state.service = new service();
+    }
+    if(!store.state.syncing) {
+        store.state.syncing = false;
     }
     // #endregion state
 
@@ -36,6 +38,11 @@ export default function (service, store) {
             return model;
         };
     }
+    if(!store.getters.syncing) {
+        store.getters.syncing = state => {
+            return state.syncing;
+        };
+    }
     // #endregion getters
 
     // #region actions
@@ -43,10 +50,13 @@ export default function (service, store) {
     if (!store.actions.save) {
         store.actions.save = async (context, value) => {
             try {
+                context.commit('syncing', true);
                 const results = await context.state.service.save(value);
                 context.commit('service');
+                context.commit('syncing', false);
                 return results;
             } catch (error) {
+                context.commit('syncing', false);
                 throw error;
             }
         };
@@ -54,8 +64,10 @@ export default function (service, store) {
     if (!store.actions.sync) {
         store.actions.sync = async (context) => {
             try {
+                context.commit('syncing', true);
                 const results = await context.state.service.sync();
                 context.commit('service');
+                context.commit('syncing', false);
                 return results;
             } catch (error) {
                 throw error;
@@ -78,14 +90,16 @@ export default function (service, store) {
 
     // #region mutations
     if (!store.mutations) {
-        store.mutations = {
-            service: (state) => {
-                state.service = new service();
-            }
-        };
-    } else if (!store.mutations.service) {
+        store.mutations = {};
+    } 
+    if (!store.mutations.service) {
         store.mutations.service = (state) => {
             state.service = new service();
+        };
+    }
+    if(!store.mutations.syncing) {
+        store.mutations.syncing = (state, value) => {
+            state.syncing = value;
         };
     }
     // #endregion mutations

@@ -43,13 +43,13 @@ export default class SettingsCoreService extends CoreService {
 
     async _convertLocalToServerEntity (item) {
         let value = JSON.stringify(item);
-        let encryptedValue = await this.encryption.encrypt(value);
+        let encryptedValue = await this.encryption.tryEncrypt(value);
         return {
             id: item.serverId,
             name: item.name,
             lastModified: item.lastModified,
-            encrypted: encryptedValue != value,
-            value: encryptedValue
+            encrypted: encryptedValue.encrypted,
+            value: encryptedValue.value
         };
     };
     // #endregion converters

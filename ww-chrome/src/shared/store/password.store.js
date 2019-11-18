@@ -38,9 +38,13 @@ const store = {
         },
         import: async (context, model) => {
             if (!model || !model.data) return undefined;
+            context.commit('syncing', true);
             try {
-                return await context.state.service.import(model.data, model.onSave);
+                const val = await context.state.service.import(model.data, model.onSave);
+                context.commit('syncing', false);
+                return val;
             } catch (error) {
+                context.commit('syncing', false);
                 throw error;
             }
         },

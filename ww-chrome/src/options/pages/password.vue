@@ -7,6 +7,7 @@
     <div class="content">
       <dialog-component :options="dialogOptions"></dialog-component>
     </div>
+    <div class="hidden">{{syncing}}</div>
   </div>
 </template>
 
@@ -15,7 +16,7 @@ import sctionHeader from "../../shared/components/common/section-header";
 import passwordFormComponent from "../../shared/components/password/password-form.component";
 import dialogComponent from "../../shared/components/common/dialog-component";
 import core from "../../shared/components/common/core-component";
-
+import Vue from 'vue';
 import listComponent from "../../shared/components/common/list.component";
 import passwordItemComponent from "../../shared/components/password/password-list-item.component";
 
@@ -42,7 +43,8 @@ const component = {
             name: "sync",
             title: "Sync",
             click: this.update,
-            class: "loader icon-sync-1"
+            class: "loader icon-sync-1",
+            disabled: this.syncing
           },
           {
             name: "settings",
@@ -74,8 +76,15 @@ const component = {
       this.dialogOptions.open = true;
     }
   },
+  computed: {
+    syncing() {
+      Vue.set(this.header.buttons.find(b => b.name == 'sync'), 'disabled', this.$store.getters['password/syncing']);
+      return this.$store.getters['password/syncing'];
+    }
+  },
   methods: {
     async update() {
+      const button = this.header.buttons.find(b => b.name == 'sync');
       if (await this.$store.dispatch("password/sync")) {
         this.notifySuccess("Updated");
       }

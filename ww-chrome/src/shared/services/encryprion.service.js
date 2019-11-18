@@ -7,24 +7,40 @@ export default class EncryptionService {
     }
 
     // #region encryption / decryption
-    async encrypt(text, checkLocal) {
+    async tryEncrypt(text, checkLocal) {
         const encryption = await this.get();
         if (this._skipCryption(encryption, checkLocal)) return {
             value: text,
             encrypted: false
         };
 
-        return CryptoJS.AES.encrypt(text, encryption.encryptionKey).toString();
+        return  {
+            value: CryptoJS.AES.encrypt(text, encryption.encryptionKey).toString(),
+            encrypted: true
+        };
     }
 
-    async decrypt(text, checkLocal) {
+    async encrypt(text, checkLocal) {
+        const encryptValue = await this.tryEncrypt(text, checkLocal);
+        return encryptValue.value;
+    }
+
+    async tryDecrypt(text, checkLocal) {
         const encryption = await this.get();
         if (this._skipCryption(encryption, checkLocal)) return {
             value: text,
             decrypted: false
         };
 
-        return CryptoJS.AES.decrypt(text, encryption.encryptionKey).toString(CryptoJS.enc.Utf8);
+        return {
+            value: CryptoJS.AES.decrypt(text, encryption.encryptionKey).toString(CryptoJS.enc.Utf8),
+            decrypted: true
+        };
+    };
+
+    async decrypt(text, checkLocal) {
+        const decryptValue = await this.tryDecrypt(text, checkLocal);
+        return decryptValue.value;
     };
 
     _skipCryption(encryption, checkLocal) {

@@ -64,7 +64,7 @@ export default class PasswordService extends CoreService {
     // #region abstract
     async _preSave(item) {
         item.domain = getDomain(item.domain);
-        item.name = getName(item.name || item.domain);
+        item.name = getName(item.domain);
 
         const oldPasseord = await this.getItem({
             domain: item.domain,
@@ -90,7 +90,7 @@ export default class PasswordService extends CoreService {
     }
 
     _isValidModel(item) {
-        return item.name && item.password;
+        return item.domain && item.password;
     }
 
     async _convertLocalToServerEntity(item) {
@@ -104,12 +104,10 @@ export default class PasswordService extends CoreService {
             count: item.count
         };
 
-        const ep = await this.encryption.encrypt(result.password);
-        if (ep != result.password) {
-            result.password = ep;
-            result.encrypted = true;
-        } else {
-            result.encrypted = false;
+        const ep = await this.encryption.tryEncrypt(result.password);
+        if(ep) {
+            result.encrypted = ep.encrypted;
+            result.password = ep.value;
         }
 
         return result;
@@ -130,8 +128,9 @@ export default class PasswordService extends CoreService {
         };
 
         if (result.encrypted) {
-            result.password = await this.encryption.decrypt(result.password);
-            result.encrypted = false;
+            const decrypt = await this.encryption.tryDecrypt(result.password);
+            result.password = decrypt.value;
+            result.encrypted = !decrypt.decrypted;
         }
 
         return result;

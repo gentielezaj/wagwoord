@@ -110,9 +110,9 @@
           <span>{{file.name}}, {{file.data.length}} passwords found</span>
           <div>
             <button @click="savePasswords()" :disabled="file.saveDisable" class="success">save</button>
-            <button @click="resetFile()" class="error">reset</button>
+            <button @click="resetFile()" :disabled="file.resetDisable" class="error">reset</button>
           </div>
-          <progress min="0" :max="file.data.length" value="0" id="password-upload-progress"></progress>
+          <progress min="0" :max="file.data.length - 1" value="0" id="password-upload-progress"></progress>
         </div>
       </div>
     </article>
@@ -122,6 +122,7 @@
 <script>
 import core from "../common/core-component";
 import deleteDialog from "../common/delete-dialog.component";
+import Vue from "vue";
 
 const component = {
   name: "password-settings",
@@ -180,7 +181,7 @@ const component = {
     },
     async downloadPasswords() {
       try {
-        await this.$store.dispatch('password/export');
+        await this.$store.dispatch("password/export");
       } catch (error) {
         throw error;
       }
@@ -210,7 +211,8 @@ const component = {
       }
     },
     async savePasswords() {
-      this.file.saveDisable = true;
+      Vue.set(this.file, "saveDisable", true);
+      Vue.set(this.file, "resetDisable", true);
       try {
         if (
           await this.$store.dispatch("password/import", {
@@ -226,7 +228,10 @@ const component = {
         )
           this.notifySuccess("Passwords imported");
         else this.notifyError("Error while importing");
+
+        Vue.set(this.file, "resetDisable", false);
       } catch (error) {
+        Vue.set(this.file, "resetDisable", false);
         this.notifyError("Error while importing", error);
       }
     },
@@ -234,7 +239,9 @@ const component = {
       this.file.name = false;
       this.file.data = [];
       this.file.el.value = "";
-      this.file.saveDisable = false;
+      Vue.set(this.file, "saveDisable", false);
+      Vue.set(this.file, 'resetDisable', false);
+      document.getElementById("password-upload-progress").value = 0;
     },
     setUpDragnDrop() {
       let container = document.getElementById("import-passwords-container");

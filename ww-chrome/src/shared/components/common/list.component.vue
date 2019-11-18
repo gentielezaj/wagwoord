@@ -27,7 +27,7 @@
         <li class="text-center" v-if="!list.data.length && !list.loading">
           <h2>No data!</h2>
         </li>
-        <li v-for="(item, index) in list.data" :key="index">
+        <li v-for="item in list.data" :key="item.id">
           <component :item="item" :is="options.itemComponent"></component>
         </li>
         <li class="text-center" v-show="list.loading">

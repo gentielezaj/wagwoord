@@ -16,13 +16,19 @@
     <div class="domain title">
       <span class="data-value">{{item.name}}</span>
     </div>
-    <div class="domain data">
+    <div @dblclick="clipboard(item.domain)" class="domain data">
+      <span class="data-value">{{item.domain}}</span>
+      <span class="data-action right icon" @click="clipboard(item.domain)" data="domain">
+        <i class="icon-copy-1"></i>
+      </span>
+    </div>
+    <div @dblclick="clipboard(item.username)" class="domain data">
       <span class="data-value">{{item.username}}</span>
       <span class="data-action right icon" @click="clipboard(item.username)" data="username">
         <i class="icon-copy-1"></i>
       </span>
     </div>
-    <div class="domain data password">
+    <div @dblclick="clipboard(item.password)" class="domain data password">
       <span data="password" class="data-value">{{showPassword ? item.password : '•••••••'}}</span>
       <span class="data-action right icon" @click="clipboard(item.password)">
         <i class="icon-copy-1"></i>

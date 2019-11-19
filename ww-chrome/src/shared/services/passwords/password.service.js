@@ -101,7 +101,8 @@ export default class PasswordService extends CoreService {
             password: item.password,
             lastModified: item.lastModified,
             id: item.serverId,
-            count: item.count
+            count: item.count,
+            waitTime: item.waitTime
         };
 
         const ep = await this.encryption.tryEncrypt(result.password);
@@ -124,7 +125,8 @@ export default class PasswordService extends CoreService {
             serverId: item.id,
             synced: true,
             count: item.count,
-            encrypted: item.encrypted
+            encrypted: item.encrypted,
+            waitTime: item.waitTime
         };
 
         if (result.encrypted) {
@@ -160,16 +162,21 @@ export default class PasswordService extends CoreService {
     }
 
     async import(passwords, onSaveItem) {
-        if (!passwords || !Array.isArray(passwords) || !passwords.length) {
-            return false;
+        try {
+            if (!passwords || !Array.isArray(passwords) || !passwords.length) {
+                return false;
+            }
+    
+            if (typeof passwords[0] == 'string') {
+                passwords = this.getCSVPasswords(passwords);
+            }
+    
+            if(await this.proxy.isSet()) await this.syncServer(passwords, onSaveItem);
+            else await this.save(passwords, onSaveItem);
+            return true;
+        } catch (error) {
+            throw error;
         }
-
-        if (typeof passwords[0] == 'string') {
-            passwords = this.getCSVPasswords(passwords);
-        }
-
-        await this.syncServer(passwords, onSaveItem);
-        return true;
     }
 
     getCSVPasswords(splitText) {

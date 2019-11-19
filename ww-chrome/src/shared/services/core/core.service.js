@@ -82,6 +82,19 @@ export class CoreService {
 
     // #region save
     async save(model, onSaveItem, notlastModified, ignoreServer) {
+        if(!Array.isArray(model)) {
+            return await this._coreSave(model, onSaveItem, notlastModified, ignoreServer);
+        }
+
+        let results = [];
+        for (let i = 0; i < model.length; i++) {
+            results.push(await this._coreSave(model[i], onSaveItem, notlastModified, ignoreServer));
+        }
+
+        return results;
+    }
+
+    async _coreSave(model, onSaveItem, notlastModified, ignoreServer) {
         if (!this._isValidModel(model)) return false;
 
         if (typeof this._preSave === 'function') {
@@ -97,7 +110,7 @@ export class CoreService {
         if (!notlastModified || !model.lastModified) model.lastModified = new Date().getTime();
 
         model.id = await this.db.save(model);
-        if (model.id && !ignoreServer && model.synced === true) {
+        if (model.id && !ignoreServer && model.synced === true && await this.proxy.isSet()) {
             await this.syncServer(copy(model));
         }
         if (typeof onSaveItem === 'function') {
@@ -198,7 +211,7 @@ export class CoreService {
 
         var result = await this.proxy.post(items);
         if (result.success && !result.unsetProxy) {
-            await this._saveServerItemsLocaly(result, onSaveItem);
+            await this._saveServerItemsLocaly(result.unsetProxy ? items : result, onSaveItem);
         }
 
         return result.success;

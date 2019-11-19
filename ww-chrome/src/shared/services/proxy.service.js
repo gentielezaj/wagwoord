@@ -77,6 +77,11 @@ export class ProxyService {
         return this.request('PATCH', undefined, params, action, controller, domain, headers);
     }
 
+    async isSet() {
+        const config = await this.settings.get();
+        return !config || !config.domain ? undefined : config;
+    }
+
     // #region core request
     async request(method, data, params, action, controller, domain, headers) {
         const config = await this.settings.get();

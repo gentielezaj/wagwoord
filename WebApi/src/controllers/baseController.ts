@@ -60,7 +60,9 @@ export abstract class BaseController<TEntity extends BaseEntity> {
         }
     }
 
-    abstract jsonToModel(model: any): TEntity | undefined;
+    jsonToModel(model: any): TEntity | undefined {
+        return (<any>this.entity).create();
+    }
 
     // #region save
     public async save(req: Request, res: Response): Promise<void> {

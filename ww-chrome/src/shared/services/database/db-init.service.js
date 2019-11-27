@@ -6,5 +6,8 @@ db.version(1).stores({
     blacklist: '++id,&name,serverId,lastModified,synced,password,address,codeGenerator,creditCard',
     settings: '++id,&name,encrypted,lastModified,serverId,synced'
 });
+db.version(2).stores({
+    codegenerator: '++id,issuer,username,searchField,serverId,lastModified,encrypted,synced,[issuer+username]'
+});
 
 export default db;

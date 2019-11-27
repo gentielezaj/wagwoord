@@ -1,4 +1,5 @@
 body {
+    min-width: 50rem;
     background: var(--wagwoord-main-color);
     color: var(--wagwoord-color);
     --navigation-width: 14rem;
@@ -261,7 +262,9 @@ section .password-list .data-container {
 /* #region content */
 
 section.collapsed main article,
-section main article{
+section.collapsed main form article,
+section main article
+section main form article{
     padding: 0 2rem 2rem 2rem;
     min-width: 20rem;
 

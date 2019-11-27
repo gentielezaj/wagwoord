@@ -13,7 +13,7 @@ function migrate(component, c) {
     return component;
 }
 
-export default function (component) {
+export default function (component, store) {
     const c = {
         methods: {
             notify(message, type, error) {
@@ -22,6 +22,11 @@ export default function (component) {
                     type: type || 'info',
                     error
                 });
+            },
+            async update() {
+                if (await this.$store.dispatch(store + "/sync")) {
+                    this.notifySuccess("Updated");
+                }
             },
             notifySuccess(message) {
                 this.$store.dispatch('notification/notify', {

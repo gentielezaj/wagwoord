@@ -187,8 +187,25 @@ a:active {
 
 /* #region input-container */
 
+section.collapsed form,
 form {
     min-width: 25rem;
+    article {
+        header {
+            width: calc(100% - 0.4rem);
+            position: unset;
+            background: unset;
+            padding: 0;
+            height: auto;
+            display: inline-flex;
+            line-height: unset;
+            padding: 0.2rem;
+            h3 {
+                margin: 0;
+            }
+        }
+        border-bottom: 1px solid var(--wagwoord-main-color-lighter);
+    }
 }
 
 .input-container {
@@ -534,6 +551,8 @@ dialog {
         position: fixed;
         z-index: 1;
         box-shadow: 0 0 4px var(--wagwoord-color);
+        max-height: 95vh;
+        overflow-y: auto;
     }
 }
 

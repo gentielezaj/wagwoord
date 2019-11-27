@@ -90,7 +90,7 @@ const component = {
       else {
         chrome.tabs.create({
           url:
-            "option/options.html" +
+            "options/options.html" +
             (this.item && this.item.id ? "#/?edit=" + this.item.id : "")
         });
       }

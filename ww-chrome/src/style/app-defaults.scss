@@ -13,8 +13,15 @@
 
     --dialog-zindex: 99999;
     --h2: 1.5em;
-    
 }
 
+@media(prefers-color-scheme: light) {
+    :root {
+        --wagwoord-main-color: #ffffff;
+        --wagwoord-main-color-light: #F8F8FF;
+        --wagwoord-main-color-lighter: #DCDCDC;
+        --wagwoord-color: #1e1e1e;
+    }
+}
 
 /* #endregion variables */

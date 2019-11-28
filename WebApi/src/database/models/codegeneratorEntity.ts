@@ -38,7 +38,7 @@ export class CodeGeneratorEntity extends BaseEntity {
     public icon: string; 
 
     static create(obj: any): CodeGeneratorEntity | undefined {
-        if (!obj || !obj.name || !obj.domain || !obj.password) return undefined;
+        if (!obj || !obj.issuer || !obj.username || !obj.secret) return undefined;
         let result = new CodeGeneratorEntity();
         result.issuer = obj.issuer;
         result.username = obj.username;

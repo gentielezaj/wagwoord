@@ -34,6 +34,7 @@
         <input
           id="code-generator-form-username"
           required
+          v-form-field
           name="username"
           v-model="model.username"
           type="text"
@@ -47,6 +48,7 @@
           id="code-generator-form-secret"
           name="secret"
           v-form-field
+          autocomplete="off"
           v-model="model.secret"
           type="text"
           required
@@ -60,7 +62,7 @@
       </div>
     </div>
     <div class="form-item">
-      <article v-searchable v-collapse="'.content'">
+      <article v-collapse="'.content'">
         <header>
           <h3>Advance</h3>
         </header>
@@ -73,6 +75,7 @@
                 name="digits"
                 placeholder="time, defult 6"
                 min="6"
+                v-form-field
                 max="10"
                 v-model.number="model.digits"
                 type="number"
@@ -85,6 +88,7 @@
               <input
                 id="code-generator-form-step"
                 name="step"
+                v-form-field
                 placeholder="generated code leght, defult 30"
                 v-model.number="model.step"
                 type="number"
@@ -99,6 +103,7 @@
                 name="encoding"
                 placeholder="defult ascii"
                 maxlength="512"
+                v-form-field
                 v-model="model.encoding"
                 type="number"
               />
@@ -112,6 +117,7 @@
                 name="algorithm"
                 placeholder="defult sha1"
                 maxlength="512"
+                v-form-field
                 v-model="model.algorithm"
                 type="number"
               />
@@ -124,6 +130,7 @@
                 id="code-generator-form-window"
                 name="window"
                 placeholder="defult 0"
+                v-form-field
                 v-model.number="model.window"
                 type="number"
               />
@@ -135,6 +142,7 @@
               <input
                 id="code-generator-form-epoch"
                 name="epoch"
+                v-form-field
                 v-model.number="model.epoch"
                 type="number"
               />
@@ -151,7 +159,7 @@
         class="cbx hidden"
         id="code-generator-form-synced"
       />
-      <span class="lbl" @click="model.synced = !model.synced"></span>
+      <span class="lbl" @click="changeModelProperty('synced', !model.synced)"></span>
       <label for="code-generator-form-synced" class>Sync</label>
     </div>
     <div class="form-actions right">
@@ -177,22 +185,33 @@
 </template>
 
 <script>
-export default {
+import Vue from "vue";
+import core from '../common/core-component'
+
+let component = {
   name: "code-generator-form-component",
   props: {
     options: { required: false }
   },
   data() {
     return {
-      model: {}
+      model: {
+        synced: true
+      },
+      saving: false
     };
   },
   methods: {
     reset() {
-      this.model = {};
+      this.model = {
+        synced: true
+      };
       if (this.options && typeof this.options.onSubmit == "function") {
         this.options.onSubmit();
       }
+    },
+    changeModelProperty(property, value) {
+      Vue.set(this.model, property, value);
     },
     async save() {
       if (!document.getElementById("code-generator-form").checkValidity()) {
@@ -227,4 +246,6 @@ export default {
     }
   }
 };
+
+export default core(component, 'codegenerator');
 </script>

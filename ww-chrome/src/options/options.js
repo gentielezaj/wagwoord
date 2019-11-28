@@ -22,6 +22,7 @@ import encryptionStore from '../shared/store/encryption.store';
 import proxyStore from '../shared/store/proxy.store';
 import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
+import codegeneratorStore from '../shared/store/code-generator.store';
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -30,7 +31,8 @@ const store = new Vuex.Store({
     encryption: encryptionStore,
     proxy: proxyStore,
     password: passwordStore,
-    blacklist: blacklistStore
+    blacklist: blacklistStore,
+    codegenerator: codegeneratorStore
   }
 });
 // #endregion stores

@@ -2,23 +2,25 @@
   <div>
     <section-header v-bind:options="header"></section-header>
     <main class="section-content">
-      this is code generator page
-      {{code}}
+      <list-component v-bind:options="listOptions"></list-component>
     </main>
     <dialog-component :options="dialogOptions"></dialog-component>
+    <div class="hidden">{{syncing}}</div>
   </div>
 </template>
 
 <script>
-import authenticator from "otplib/authenticator";
-import crypto from "crypto";
-
 // #region components
 import core from "../../shared/components/common/core-component";
 import sctionHeader from "../../shared/components/common/section-header";
 
 import form from '../../shared/components/code-generator/code-generator-form.component';
 import dialogComponent from "../../shared/components/common/dialog-component";
+
+import listComponent from "../../shared/components/common/list.component";
+import codegeneratorListItemComponent from "../../shared/components/code-generator/code-generator-list-item.component";
+
+import Vue from 'vue';
 // #endregion components
 
 let component = {
@@ -26,6 +28,8 @@ let component = {
   components: {
     "section-header": sctionHeader,
     "dialog-component": dialogComponent,
+    "list-component": listComponent,
+    "codegeneratorListItemComponent": codegeneratorListItemComponent
   },
   data() {
     return {
@@ -41,15 +45,8 @@ let component = {
             name: "sync",
             title: "Sync",
             click: this.update,
-            class: "loader icon-sync-1"
-          },
-          {
-            name: "settings",
-            title: "Settings",
-            click(button) {
-              console.log(button);
-            },
-            class: "icon icon-settings"
+            class: "loader icon-sync-1",
+            disabled: this.syncing
           }
         ]
       },
@@ -58,21 +55,27 @@ let component = {
         component: form,
         componentOptions: {}
       },
-      secret: "2UIRU4MQHG4TBPSJLKRWSQW643LMNHQQ"
+      listOptions: {
+        itemComponent: codegeneratorListItemComponent,
+        store: "codegenerator"
+      }
     };
   },
   methods: {
-    async update() {
-
-    }
   },
   computed: {
-    code() {
-      return authenticator.generate(this.secret);
+    syncing() {
+      Vue.set(this.header.buttons.find(b => b.name == 'sync'), 'disabled', this.$store.getters['codegenerator/syncing']);
+      return this.$store.getters['codegenerator/syncing'];
     }
   },
   created() {
-    authenticator.options = { crypto };
+    if (this.$route.query.edit) {
+      this.dialogOptions.componentOptions.itemId = Number(
+        this.$route.query.edit
+      );
+      this.dialogOptions.open = true;
+    }
   }
 };
 export default core(component, 'codegenerator');

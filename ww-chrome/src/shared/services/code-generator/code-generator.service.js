@@ -60,7 +60,7 @@ export default class CodeGeneratorService extends CoreService {
             username: item.username,
             secret: item.secret,
             lastModified: item.lastModified,
-            serverId: item.serverId,
+            serverId: item.id,
             encrypted: item.encrypted
         };
 

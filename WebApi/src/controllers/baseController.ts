@@ -61,7 +61,7 @@ export abstract class BaseController<TEntity extends BaseEntity> {
     }
 
     jsonToModel(model: any): TEntity | undefined {
-        return (<any>this.entity).create();
+        return (<any>this.entity).create(model);
     }
 
     // #region save

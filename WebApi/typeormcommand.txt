@@ -3,5 +3,5 @@ npm run typeorm:cli -- migration:create -n AddEnctyptionToPasswordTable
 
 
 huroku
-heroku git:remote -a my-app
-git subtree push --prefix path/to/subdirectory heroku master
+heroku git:remote -a wagwoord
+git subtree push --prefix C:\Users\gogi_\source\repos\wagwoord\WebApi\dist heroku master

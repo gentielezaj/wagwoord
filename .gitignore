@@ -9,7 +9,7 @@
 *.sql
 *.sqlite
 Chrome/libs/components
-*/dist
 WebApi/.env
 *.log
 ww-chrome/dist
+WebApi/dist

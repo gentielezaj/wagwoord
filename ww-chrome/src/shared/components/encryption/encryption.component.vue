@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import core from "../common/core-component";
+import {coreComponent} from "../common/core-component";
 import dialog from "../common/dialog-component";
 import form from "./encryption-form.component";
 
@@ -58,5 +58,5 @@ let component = {
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>

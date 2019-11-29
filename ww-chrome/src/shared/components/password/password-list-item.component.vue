@@ -5,7 +5,7 @@
         <span>edit</span>
         <i class="icon-pencil"></i>
       </button>
-      <button @click="deleteItem(item)" v-if="appenvirement != 'popup'" class="icon text">
+      <button @click="deleteItem(item)" v-if="isOptionsScope" class="icon text">
         <span>delete</span>
         <i class="icon-delete"></i>
       </button>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import core from "../common/core-component";
+import {coreComponent} from "../common/core-component";
 import dialogComponent from "../common/dialog-component";
 import passwordFormComponent from "./password-form.component";
 import { clipboard } from "../../services/core/helper.service";
@@ -97,17 +97,6 @@ const component = {
     },
     async deleteItem() {
       this.toggelDialog(true, 'deleteDialogOptions');
-      // try {
-      //   const res = await this.$store.dispatch("password/delete", this.item.id);
-      //   if (res) {
-      //     this.notifySuccess("Deleted");
-      //   } else {
-      //     this.notifyError("Error while deleting");
-      //   }
-      // } catch (error) {
-      //   this.notifyError("Error while deleting", error);
-      //   throw error;
-      // }
     },
     clipboard(value) {
       if (clipboard(value)) this.notify("copied to clipboard");
@@ -116,7 +105,7 @@ const component = {
   created() {}
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

@@ -61,7 +61,8 @@ export default class CodeGeneratorService extends CoreService {
             secret: item.secret,
             lastModified: item.lastModified,
             serverId: item.id,
-            encrypted: item.encrypted
+            encrypted: item.encrypted,
+            synced: true
         };
 
         if (result.encrypted) {

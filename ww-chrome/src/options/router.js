@@ -2,14 +2,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import PasswordPage from './pages/password';
-import CodeGeneratorPage from './pages/code-generator';
-import AddressPage from './pages/address';
-import CreditCardPage from './pages/credit-card';
-import BlacklistPage from './pages/blacklist';
-import SettingsPage from './pages/settings';
-import DemoPage from './pages/demo';
-import TestPage from './pages/test';
+import PasswordPage from '../shared/pages/password';
+import CodeGeneratorPage from '../shared/pages/code-generator';
+import AddressPage from '../shared/pages/address';
+import CreditCardPage from '../shared/pages/credit-card';
+import BlacklistPage from '../shared/pages/blacklist';
+import SettingsPage from '../shared/pages/settings';
+import DemoPage from '../shared/pages/demo';
+import TestPage from '../shared/pages/test';
 
 const routes = [{
         path: '/',

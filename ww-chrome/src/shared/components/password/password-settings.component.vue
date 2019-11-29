@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import core from "../common/core-component";
+import {coreComponent} from "../common/core-component";
 import deleteDialog from "../common/delete-dialog.component";
 import Vue from "vue";
 
@@ -292,7 +292,7 @@ const component = {
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

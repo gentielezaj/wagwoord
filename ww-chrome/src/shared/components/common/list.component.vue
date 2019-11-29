@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import core from "./core-component";
+import {coreComponent} from "./core-component";
 import loaderComponent from "./loader.component";
 
 const component = {
@@ -106,5 +106,5 @@ const component = {
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>

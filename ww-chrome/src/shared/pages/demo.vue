@@ -401,10 +401,10 @@
 </template>
 
 <script>
-import sctionHeader from "../../shared/components/common/section-header";
-import loader from "../../shared/components/common/loader.component";
+import sctionHeader from "../components/common/section-header";
+import loader from "../components/common/loader.component";
 import { mapGetters } from "vuex";
-import core from "../../shared/components/common/core-component";
+import {coreComponent} from "../components/common/core-component";
 
 const component = {
   name: "demo-page",
@@ -458,7 +458,7 @@ const component = {
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

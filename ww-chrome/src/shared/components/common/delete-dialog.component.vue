@@ -13,7 +13,7 @@
 
 <script>
 import Vue from "vue";
-import core from './core-component';
+import {coreComponent} from './core-component';
 
 const component = {
   name: "dialog-delete-component",
@@ -59,7 +59,7 @@ const component = {
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

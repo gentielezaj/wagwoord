@@ -1,24 +1,24 @@
 <template>
   <div>
-    <section-header v-bind:options="header"></section-header>
+    <section-header v-if="!removeHeader" v-bind:options="header"></section-header>
     <main class="section-content">
       <list-component v-bind:options="listOptions"></list-component>
     </main>
-    <dialog-component :options="dialogOptions"></dialog-component>
+    <dialog-component  v-if="!removeForm" :options="dialogOptions"></dialog-component>
     <div class="hidden">{{syncing}}</div>
   </div>
 </template>
 
 <script>
 // #region components
-import core from "../../shared/components/common/core-component";
-import sctionHeader from "../../shared/components/common/section-header";
+import {pageComponent} from "../components/common/core-component";
+import sctionHeader from "../components/common/section-header";
 
-import form from '../../shared/components/code-generator/code-generator-form.component';
-import dialogComponent from "../../shared/components/common/dialog-component";
+import form from '../components/code-generator/code-generator-form.component';
+import dialogComponent from "../components/common/dialog-component";
 
-import listComponent from "../../shared/components/common/list.component";
-import codegeneratorListItemComponent from "../../shared/components/code-generator/code-generator-list-item.component";
+import listComponent from "../components/common/list.component";
+import codegeneratorListItemComponent from "../components/code-generator/code-generator-list-item.component";
 
 import Vue from 'vue';
 // #endregion components
@@ -78,5 +78,5 @@ let component = {
     }
   }
 };
-export default core(component, 'codegenerator');
+export default pageComponent(component, 'codegenerator');
 </script>

@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import core from "../common/core-component";
+import {coreComponent} from "../common/core-component";
 import dialogComponent from "../common/dialog-component";
 import blacklistFormComponent from "./blacklist-form.component";
 
@@ -134,7 +134,7 @@ const component = {
   created() {}
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

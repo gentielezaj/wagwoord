@@ -186,7 +186,7 @@
 
 <script>
 import Vue from "vue";
-import core from '../common/core-component'
+import {coreComponent} from '../common/core-component'
 
 let component = {
   name: "code-generator-form-component",
@@ -211,6 +211,7 @@ let component = {
       }
     },
     changeModelProperty(property, value) {
+      console.log('change propery');
       Vue.set(this.model, property, value);
     },
     async save() {
@@ -247,5 +248,5 @@ let component = {
   }
 };
 
-export default core(component, 'codegenerator');
+export default coreComponent(component, 'codegenerator');
 </script>

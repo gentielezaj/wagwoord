@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import core from "../common/core-component";
+import {coreComponent} from "../common/core-component";
 
 const component = {
   name: "password-form",
@@ -150,7 +150,7 @@ const component = {
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

@@ -9,13 +9,13 @@
 </template>
 
 <script>
-import core from "../../shared/components/common/core-component";
-import sctionHeader from "../../shared/components/common/section-header";
-import dialogComponent from "../../shared/components/common/dialog-component";
+import {coreComponent} from "../components/common/core-component";
+import sctionHeader from "../components/common/section-header";
+import dialogComponent from "../components/common/dialog-component";
 
-import blacklistFormComponent from "../../shared/components/backlist/blacklist-form.component";
-import listComponent from "../../shared/components/common/list.component";
-import blacklistItemComponent from "../../shared/components/backlist/blacklist-list-item.component";
+import blacklistFormComponent from "../components/backlist/blacklist-form.component";
+import listComponent from "../components/common/list.component";
+import blacklistItemComponent from "../components/backlist/blacklist-list-item.component";
 
 const component = {
   name: "blacklist-page",
@@ -80,7 +80,7 @@ const component = {
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>
 
 <style lang="scss">

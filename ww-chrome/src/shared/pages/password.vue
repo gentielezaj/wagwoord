@@ -1,10 +1,10 @@
 <template>
   <div class="passwords">
-    <section-header v-bind:options="header"></section-header>
+    <section-header v-if="!removeHeader" v-bind:options="header"></section-header>
     <div class="password-list">
       <list-component v-bind:options="listOptions"></list-component>
     </div>
-    <div class="content">
+    <div v-if="!removeForm" class="content">
       <dialog-component :options="dialogOptions"></dialog-component>
     </div>
     <div class="hidden">{{syncing}}</div>
@@ -12,13 +12,13 @@
 </template>
 
 <script>
-import sctionHeader from "../../shared/components/common/section-header";
-import passwordFormComponent from "../../shared/components/password/password-form.component";
-import dialogComponent from "../../shared/components/common/dialog-component";
-import core from "../../shared/components/common/core-component";
+import sctionHeader from "../components/common/section-header";
+import passwordFormComponent from "../components/password/password-form.component";
+import dialogComponent from "../components/common/dialog-component";
+import { pageComponent } from "../components/common/core-component";
 import Vue from 'vue';
-import listComponent from "../../shared/components/common/list.component";
-import passwordItemComponent from "../../shared/components/password/password-list-item.component";
+import listComponent from "../components/common/list.component";
+import passwordItemComponent from "../components/password/password-list-item.component";
 
 const component = {
   name: "password-page",
@@ -92,7 +92,7 @@ const component = {
   }
 };
 
-export default core(component);
+export default pageComponent(component);
 </script>
 
 <style>

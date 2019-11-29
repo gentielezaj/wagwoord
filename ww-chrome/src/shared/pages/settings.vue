@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import sctionHeader from "../../shared/components/common/section-header";
-import encryptionComponent from "../../shared/components/encryption/encryption.component";
-import syncSettingComponent from "../../shared/components/settings/sync-settings.component";
-import passwordSettingsComponent from '../../shared/components/password/password-settings.component'
+import sctionHeader from "../components/common/section-header";
+import encryptionComponent from "../components/encryption/encryption.component";
+import syncSettingComponent from "../components/settings/sync-settings.component";
+import passwordSettingsComponent from '../components/password/password-settings.component'
 
 export default {
   name: "settings-page",

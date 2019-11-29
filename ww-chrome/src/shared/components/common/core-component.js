@@ -13,7 +13,7 @@ function migrate(component, c) {
     return component;
 }
 
-export default function (component, store) {
+export function coreComponent(component, store) {
     const c = {
         methods: {
             notify(message, type, error) {
@@ -53,3 +53,19 @@ export default function (component, store) {
 
     return migrate(component, c);
 };
+
+export function pageComponent(component, store) {
+    if (!component.props) component.props = {};
+    if (!component.props.removeForm) {
+        component.props.removeForm = {
+            required: false
+        };
+    }
+    if (!component.props.removeHeader) {
+        component.props.removeHeader = {
+            required: false
+        };
+    }
+
+    return coreComponent(component, store);
+}

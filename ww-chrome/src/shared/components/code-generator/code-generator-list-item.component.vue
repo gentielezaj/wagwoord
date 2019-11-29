@@ -5,7 +5,7 @@
         <span>edit</span>
         <i class="icon-pencil"></i>
       </button>
-      <button @click="deleteItem(item)" v-if="appenvirement != 'popup'" class="icon text">
+      <button @click="deleteItem(item)" v-if="isOptionsScope" class="icon text">
         <span>delete</span>
         <i class="icon-delete"></i>
       </button>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import core from "../common/core-component";
+import {coreComponent} from "../common/core-component";
 import dialogComponent from "../common/dialog-component";
 import codegeneratorFormComponent from "./code-generator-form.component";
 import { clipboard } from "../../services/core/helper.service";
@@ -43,7 +43,7 @@ import deleteConfiramtionComponent from "../common/delete-dialog.component";
 import authenticator from "otplib/authenticator";
 import crypto from "crypto";
 
-import Vue from 'vue';
+import Vue from "vue";
 
 const component = {
   name: "code-generator-list-item",
@@ -76,9 +76,13 @@ const component = {
           itemId: this.item.id
         }
       },
-      code: '',
-      timeLeft: 0
+      code: "",
+      timeLeft: 0,
+      checkCodeInterval: ""
     };
+  },
+  beforeDestroy() {
+    this.checkCodeInterval = undefined;
   },
   methods: {
     async edit() {
@@ -97,25 +101,18 @@ const component = {
     clipboard(value) {
       if (clipboard(value)) this.notify("copied to clipboard");
     },
-    changeCode() {
-      Vue.set(this, 'code', authenticator.generate(this.item.secret));
-      setInterval(() => {
-       this.changeCode()   
-      }, 1);
-    },
-    changeTimeLeft() {
-      Vue.set(this, 'timeLeft', authenticator.timeRemaining());
-      setInterval(() => {
-       this.changeTimeLeft()   
-      }, 1);
+    checkCode() {
+      Vue.set(this, "timeLeft", authenticator.timeRemaining());
+      Vue.set(this, "code", authenticator.generate(this.item.secret));
     }
   },
   created() {
     authenticator.options = { crypto };
-    this.changeCode();
-    this.changeTimeLeft();
+    this.checkCodeInterval = setInterval(() => {
+      this.checkCode();
+    }, 1);
   }
 };
 
-export default core(component);
+export default coreComponent(component);
 </script>

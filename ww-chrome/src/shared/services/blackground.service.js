@@ -1,5 +1,7 @@
 import PasswordService from "./passwords/password.service";
 import BlacklistService from "./blacklist/blacklist.service";
+import CodeGeneratorService from "./code-generator/code-generator.service";
+
 import {
     getName, getDomain
 } from './core/helper.service';
@@ -8,6 +10,7 @@ export default class BackgroundService {
     constructor() {
         this.$password = new PasswordService();
         this.$blacklist = new BlacklistService();
+        this.$codeGenerator = new CodeGeneratorService();
     }
 
     async getDataFroDomain(url, submitted) {
@@ -75,5 +78,6 @@ export default class BackgroundService {
         await this.$password.sync();
         await this.$password.settings.sync();
         await this.$blacklist.sync();
+        await this.$codeGenerator.sync();
     }
 }

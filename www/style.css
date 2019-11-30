@@ -1,0 +1,69 @@
+/* #region variables */
+:root {
+    --wagwoord-main-color: #1e1e1e;
+    --wagwoord-main-color-light: #313131;
+    --wagwoord-main-color-lighter: #525252;
+    --wagwoord-color: aliceblue;
+    --wagwoord-color-error-secend: #9c0404;
+    --wagwoord-color-error: #5a0b0b;
+    --wagwoord-color-success-secend: #006400;
+    --wagwoord-color-success: #004d00;
+    --wagwoord-color-info: rgb(0, 5, 68);
+    --wagwoord-color-info-secend: #000080;
+
+    --dialog-zindex: 99999;
+    --h2: 1.5em;
+}
+
+@media(prefers-color-scheme: light) {
+    :root {
+        --wagwoord-main-color: #ffffff;
+        --wagwoord-main-color-light: #F8F8FF;
+        --wagwoord-main-color-lighter: #DCDCDC;
+        --wagwoord-color: #1e1e1e;
+    }
+}
+
+/* #endregion variables */
+
+img {
+    max-width: 25rem;
+}
+
+body {
+    background-color: var(--wagwoord-main-color);
+    color: var(--wagwoord-color);
+    display: flex;
+    text-align: center;
+    width: 98%;
+    height: 95vh;
+    justify-content: center;
+}
+
+.container {
+    width: 50%;
+    height: 95vh;
+    text-align: center;
+    justify-content: center;
+}
+
+
+@media only screen and (max-width: 699px) {
+    body {
+        background-color: var(--wagwoord-main-color);
+        color: var(--wagwoord-color);
+        display: unset;
+        text-align: center;
+        width: 98%;
+        height: 95vh;
+        justify-content: center;
+    }
+
+    .container {
+        width: 95vw;
+        height: auto;
+        padding-bottom: 0.2rem;
+        text-align: center;
+        justify-content: center;
+    }
+}

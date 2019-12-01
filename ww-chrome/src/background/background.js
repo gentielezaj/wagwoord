@@ -3,9 +3,29 @@ import BackgroundService from '../shared/services/blackground.service';
 
 var $backgound = new BackgroundService();
 
-chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    window.open('popup/popup.html', 'extension_popup');
+// #region conext menu
+// #region genertate password
+chrome.contextMenus.create({
+    id: 'wagwoord-contextmenu-generate-password',
+    title: 'Generate password',
+    contexts: ["editable"],
+    // TODO: check settings
+    visible: true,
+    onclick: function (info, tab) {
+        $backgound.$password.generate().then(r => sendMessageToConentScript(tab, 'insert-value', r));
+    }
 });
+// #endregion genertate password
+
+function sendMessageToConentScript(tab, requestType, data) {
+    chrome.tabs.sendMessage(tab.id, {
+        requestType,
+        data
+    });
+}
+// #endregion conext menu
+
+// #region content script
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
@@ -57,10 +77,13 @@ function storage(tab, key, data) {
         return sessionStorage.getItem(storageKey);
     }
 }
+// #endregion content script
 
+// #region sync
 async function sync() {
     await $backgound.sync();
     setTimeout(() => sync(), 60000);
 }
 
 sync().then();
+// #endregion sync

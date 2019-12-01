@@ -1,6 +1,8 @@
 import './content-script.scss';
 import PasswordHandler from './handles/passwords/password-handler';
-import { confirmSubmittion } from './handles/common/submitted-response-handler';
+import {
+    confirmSubmittion
+} from './handles/common/submitted-response-handler';
 
 // eslint-disable-next-line no-unused-vars
 function createScriptTag(path) {
@@ -34,11 +36,37 @@ chrome.runtime.sendMessage({
     sessionStorage.setItem('wwapp', JSON.stringify(model));
     elBody.appendChild(createStyleTag('content-scripts/content-script.css'));
 
-    if(model.passwords && model.settings && model.settings.password) {
+    if (model.passwords && model.settings && model.settings.password) {
         new PasswordHandler(model.passwords, model.settings.password, model.blacklist);
     }
 
-    if(model.submittedResponse) {
+    if (model.submittedResponse) {
         confirmSubmittion(model.submittedResponse);
     }
 });
+
+// #region get messages
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log(request);
+    console.log(sender);
+    switch (request.requestType) {
+        case 'insert-value':
+            insetValue(request.data);
+            break;
+    }
+});
+
+function insetValue(data) {
+    if (!data) return;
+    const elem = document.activeElement;
+    var start = elem.selectionStart;
+    var end = elem.selectionEnd;
+    if (end - start > 2) {
+        elem.value = elem.value.slice(0, start) + data + elem.value.substr(end);
+        elem.selectionStart = start + data.length;
+        elem.selectionEnd = elem.selectionStart;
+    } else {
+        elem.value = data;
+    }
+}
+// #endregion get messages

@@ -1,5 +1,6 @@
 {
   "name": "Wagwoord",
+  "short_name": "wagwoord",
   "description": "Wagwoord credential Manager",
   "version": "0.1",
   "manifest_version": 2,

@@ -1,6 +1,8 @@
 import {
     getLoginForms
 } from '../common/form-detectors.js';
+import appChrome from '../common/chrome-handler';
+import { confirmSubmittion } from '../common/submitted-response-handler';
 import {
     uuidv4
 } from '../../../shared/services/core/helper.service';
@@ -148,7 +150,6 @@ export default class PasswordHandler {
         const form = this.forms.find(f => f.id == id);
         console.log(form.passwordElement.value);
         console.log(form.usernameElement.value);
-        sessionStorage.removeItem("submitted");
         const model = {
             password: {
                 username: form.usernameElement.value,
@@ -157,7 +158,7 @@ export default class PasswordHandler {
             }
         };
 
-        sessionStorage.setItem("submitted", JSON.stringify(model));
+        appChrome.formSubmittion("password", JSON.stringify(model)).then(r => confirmSubmittion(r));
     }
     // #endregion from
 }

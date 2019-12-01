@@ -42,6 +42,7 @@ dialog#wwapp-confirmation-dialog-id {
     right: 1rem;
     top: 1rem;
     left: unset;
+    z-index: 9999999999999999999;
     padding: 0.5rem;
     background-color: var(--wagwoord-main-color);
     color: var(--wagwoord-color);

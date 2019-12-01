@@ -3,7 +3,8 @@ import BlacklistService from "./blacklist/blacklist.service";
 import CodeGeneratorService from "./code-generator/code-generator.service";
 
 import {
-    getName, getDomain
+    getName,
+    getDomain
 } from './core/helper.service';
 
 export default class BackgroundService {
@@ -38,18 +39,19 @@ export default class BackgroundService {
     }
 
     async getSubmittedResponse(model) {
-        if(!model) return undefined;
-        if(typeof model === 'string') model = JSON.parse(model);
+        if (!model) return undefined;
+        if (typeof model === 'string') model = JSON.parse(model);
         let result = {};
-        if(model.password) {
+        if (model.password) {
+            const passwordModel = model.password.model ? model.password.model : model.password;
             let password = await this.$password.getItem({
-                username: model.password.username,
-                domain: getDomain(model.password.domain)
+                username: passwordModel.username,
+                domain: getDomain(passwordModel.domain)
             });
-            if(password) {
+            if (password) {
                 password.count++;
                 this.$password.save(password);
-                if(password.password == model.password.password) {
+                if (password.password == passwordModel.password) {
                     result.password = false;
                 } else {
                     result.password = 'update';
@@ -59,13 +61,19 @@ export default class BackgroundService {
             }
         }
 
-        return result;
+        return {
+            password: {
+                action: result.password,
+                model: model.password.model ? model.password.model : model.password
+            },
+            hasAction: result.password != undefined && result.password != false
+        };
     }
 
     // #region save
     async save(model) {
-        if(!model) return false;
-        if(model.password) {
+        if (!model) return false;
+        if (model.password) {
             model.password.name = model.password.name || model.password.domain;
             this.$password.save(model.password).then();
         }

@@ -30,6 +30,7 @@ chrome.runtime.sendMessage({
     };
     let elBody = document.getElementsByTagName('body')[0];
 
+    // TODO:remove local storage
     sessionStorage.setItem('wwapp', JSON.stringify(model));
     elBody.appendChild(createStyleTag('content-scripts/content-script.css'));
 

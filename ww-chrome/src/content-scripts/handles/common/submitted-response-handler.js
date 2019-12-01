@@ -1,14 +1,17 @@
+import appChrome from '../common/chrome-handler';
+
 export function confirmSubmittion(submitted) {
-    if (!submitted) return;
-    let model = sessionStorage.getItem('submitted');
-    if (!model) return;
-    model = JSON.parse(model);
-    if (submitted.password && model.password) {
-        confirmSubmittionPassword(submitted.password, model.password);
+    if (!submitted || !submitted.hasAction) return;
+    if (submitted.password) {
+        confirmSubmittionPassword(submitted.password);
     }
 }
 
-function confirmSubmittionPassword(response, model) {
+// #region password
+
+function confirmSubmittionPassword(response) {
+    if(!response.model || !response.action) return;
+    let model = typeof response.model == 'string' ? JSON.stringify(response.model) : response.model;
     const onSubmit = event => {
         document.getElementById('wwapp-confirmation-dialog-id').open = false;
         chrome.runtime.sendMessage({
@@ -19,13 +22,16 @@ function confirmSubmittionPassword(response, model) {
         });
     };
 
-    if (response == 'new') {
+    if (response.action == 'new') {
         showDialog(`save credetials:<br><i>${model.username}<i>`, onSubmit);
     }
-    if (response == 'update') {
+    if (response.action == 'update') {
         showDialog(`update password:<br><i>${model.username}<i>`, onSubmit);
     }
 }
+// #endregion password
+
+// #region dialog
 
 function showDialog(message, onSubmit) {
     const p = document.createElement('p');
@@ -38,7 +44,7 @@ function showDialog(message, onSubmit) {
     dialog.appendChild(createButton('save', 'success', onSubmit));
     dialog.appendChild(createButton('reject', 'error', event => {
         dialog.open = false;
-        sessionStorage.removeItem('submitted');
+        appChrome.storage.removeItem('submitted').then();
     }));
 
     document.getElementsByTagName('body')[0].appendChild(dialog);
@@ -53,3 +59,4 @@ function createButton(value, css, onClick) {
     button.addEventListener('click', onClick);
     return button;
 }
+// #endregion dialog

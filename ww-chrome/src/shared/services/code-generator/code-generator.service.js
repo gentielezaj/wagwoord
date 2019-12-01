@@ -27,6 +27,26 @@ export default class CodeGeneratorService extends CoreService {
         return item;
     }
 
+    async save(model, onSaveItem, notlastModified, ignoreServer) {
+        if (typeof model == 'string') {
+            if (!model.toLocaleLowerCase().startsWith("otpauth://totp/")) {
+                // eslint-disable-next-line no-throw-literal
+                throw "Invalide otp link";
+            }
+
+            let url = new URL(model);
+            let params = new URLSearchParams(url.search.slice(1));
+            model = {};
+            params.forEach((k, v) => {
+                model[v] = k;
+            });
+        
+            model.username = url.pathname.substring(7);
+        }
+
+        return await super.save(model, onSaveItem, notlastModified, ignoreServer);
+    }
+
     _isValidModel(item) {
         return item.issuer && item.username && item.secret;
     }

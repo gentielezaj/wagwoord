@@ -1,5 +1,6 @@
 'use strict';
 import BackgroundService from '../shared/services/blackground.service';
+import { BrowserQRCodeReader } from '@zxing/library';
 
 var $backgound = new BackgroundService();
 
@@ -12,10 +13,25 @@ chrome.contextMenus.create({
     // TODO: check settings
     visible: true,
     onclick: function (info, tab) {
+        console.log(info);
+        console.log(tab);
         $backgound.$password.generate().then(r => sendMessageToConentScript(tab, 'insert-value', r));
     }
 });
 // #endregion genertate password
+
+chrome.contextMenus.create({
+    id: 'wagwoord-contextmenu-get-barcode',
+    title: 'Add barcode',
+    contexts: ["image"],
+    visible: true,
+    onclick: function (info, tab) {
+        console.log(info);
+        console.log(tab);
+        const codeReader = new BrowserQRCodeReader();
+        codeReader.decodeFromImage(undefined, info.srcUrl).then(r => $backgound.$codeGenerator.save(r.text).then());
+    }
+});
 
 function sendMessageToConentScript(tab, requestType, data) {
     chrome.tabs.sendMessage(tab.id, {

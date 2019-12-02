@@ -33,11 +33,14 @@ img {
 body {
     background-color: var(--wagwoord-main-color);
     color: var(--wagwoord-color);
-    display: flex;
     text-align: center;
     width: 98%;
     height: 95vh;
     justify-content: center;
+}
+
+main {
+    display: flex;
 }
 
 .container {
@@ -66,4 +69,9 @@ body {
         text-align: center;
         justify-content: center;
     }
+}
+
+footer {
+    width: 100%;
+    padding: 0.5rem;
 }

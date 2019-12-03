@@ -40,7 +40,7 @@ export default class BlacklistService extends CoreService {
     }
 
     // #region abstract
-    async _preSave(item) {
+    async _preSave(item, canUpdate) {
         item.name = getName(item.name, true);
         item.domain = getDomain(item.domain || item.name);
 
@@ -52,6 +52,11 @@ export default class BlacklistService extends CoreService {
         const oldPasseord = await this.getItem({
             name: item.name
         });
+
+        if(!canUpdate && oldPasseord && oldPasseord.id != item.id) {
+            // eslint-disable-next-line no-throw-literal
+            throw "item-exists";
+        }
 
         if (oldPasseord && oldPasseord.id) {
             item.id = oldPasseord.id;

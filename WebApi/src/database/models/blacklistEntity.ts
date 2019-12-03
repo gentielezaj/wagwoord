@@ -1,8 +1,11 @@
 import { Entity, Column } from "typeorm";
 import { BaseEntity } from "./baseEntity";
+import { Identifier } from "../querys/modelDecorator";
 
 @Entity({ name: 'Blacklist' })
 export class BlacklistEntity extends BaseEntity {
+
+    @Identifier()
     @Column({ nullable: false, type: 'varchar', length: 64 })
     public name: string;
 

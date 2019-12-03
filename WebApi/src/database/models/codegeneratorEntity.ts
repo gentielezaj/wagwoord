@@ -1,11 +1,14 @@
 import { Entity, Column } from "typeorm";
 import { BaseEntity } from "./baseEntity";
+import { Identifier } from "../querys/modelDecorator";
 
 @Entity({ name: 'CodeGenerator' })
 export class CodeGeneratorEntity extends BaseEntity {
+    @Identifier()
     @Column({ nullable: false, type: 'varchar', length: 64 })
     public issuer: string;
-
+    
+    @Identifier()
     @Column({ nullable: false, type: 'varchar', length: 128 })
     public username: string;
 

@@ -28,9 +28,9 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
     public async save(model: TEntity): Promise<TEntity | undefined> {
         let oldItem = await this.getSavedItem(model);
         if (oldItem) {
-            if (oldItem && model.lastModified && oldItem.lastModified > model.lastModified) 
+            if (oldItem && model.lastModified && oldItem.lastModified > model.lastModified)
                 return oldItem;
-                
+
             model.id = oldItem.id;
         }
         if (!model.lastModified) model.lastModified = new Date().getTime();
@@ -38,8 +38,22 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
     }
 
     protected async getSavedItem(model: TEntity): Promise<TEntity | undefined> {
-        if (model.id > 0) return undefined;
-        return await this.getById(model.id);
+        if(!model) return undefined;
+
+        let identifier = Reflect.getMetadata('Identifier', model);
+        if (identifier && identifier.length > 0) {
+            let where:any = {};
+            identifier.forEach((i: string ) => {
+                where[i] = (<any>model)[i];
+            });
+
+            return await this.dbRepository.findOne({
+                where: [where]
+            });
+        } else {
+            if (model.id <= 0) return undefined;
+            return await this.getById(model.id);
+        }
     }
 
     public async saveAll(models: Array<TEntity>): Promise<Array<TEntity | undefined>> {

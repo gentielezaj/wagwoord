@@ -35,11 +35,19 @@ export function coreComponent(component, store) {
                 });
             },
             notifyError(message, error) {
-                this.$store.dispatch('notification/notify', {
-                    message,
-                    type: 'error',
-                    error
-                });
+                if(error == 'item-exists') {
+                    this.$store.dispatch('notification/notify', {
+                        message: "Item exists",
+                        type: 'error',
+                        error
+                    });
+                } else {
+                    this.$store.dispatch('notification/notify', {
+                        message,
+                        type: 'error',
+                        error
+                    });
+                }
             },
             toggelDialog(value, id) {
                 let options = typeof id === 'string' && this.hasOwnProperty(id) ? this[id] : this.dialogOptions;

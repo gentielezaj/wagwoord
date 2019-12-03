@@ -9,5 +9,11 @@ db.version(1).stores({
 db.version(2).stores({
     codegenerator: '++id,issuer,username,searchField,serverId,lastModified,encrypted,synced,[issuer+username]'
 });
+db.version(3).stores({
+    creditcard: '++id,name,cardType,expiredMonth,expiredYear,searchField,serverId,lastModified,encrypted,synced,count'
+});
+db.version(4).stores({
+    creditcard: '++id,firtName,lastName,birthDay,street,secundStreet,city,state,country,username,postalCode,searchField,serverId,lastModified,organization,phone,encrypted,synced,count'
+});
 
 export default db;

@@ -82,23 +82,31 @@ export class CoreService {
 
     // #region save
     async save(model, onSaveItem, notlastModified, ignoreServer) {
+        return await this._saveArray(model, onSaveItem, notlastModified, ignoreServer);
+    }
+
+    async saveOrUpdate(model, onSaveItem, notlastModified, ignoreServer) {
+        return await this._saveArray(model, onSaveItem, notlastModified, ignoreServer, true);
+    }
+
+    async _saveArray(model, onSaveItem, notlastModified, ignoreServer, canUpdate) {
         if(!Array.isArray(model)) {
-            return await this._coreSave(model, onSaveItem, notlastModified, ignoreServer);
+            return await this._coreSave(model, onSaveItem, notlastModified, ignoreServer, canUpdate);
         }
 
         let results = [];
         for (let i = 0; i < model.length; i++) {
-            results.push(await this._coreSave(model[i], onSaveItem, notlastModified, ignoreServer));
+            results.push(await this._coreSave(model[i], onSaveItem, notlastModified, ignoreServer, canUpdate));
         }
 
         return results;
     }
 
-    async _coreSave(model, onSaveItem, notlastModified, ignoreServer) {
+    async _coreSave(model, onSaveItem, notlastModified, ignoreServer, canUpdate) {
         if (!this._isValidModel(model)) return false;
 
         if (typeof this._preSave === 'function') {
-            model = await this._preSave(model);
+            model = await this._preSave(model, canUpdate);
         }
 
         let old = await this.getItem(model.id);
@@ -143,7 +151,7 @@ export class CoreService {
 
         item = await this._convertServerToLocalEntity(item);
 
-        return await this.save(item, onSaveItem, true, true);
+        return await this.saveOrUpdate(item, onSaveItem, true, true);
     };
 
     _isValidModel(item) {

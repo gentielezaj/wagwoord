@@ -1,8 +1,6 @@
-import { BaseEntity } from "database/models/baseEntity";
-import { Request, Response, Application, response, Router } from "express";
-import { ObjectType, SelectQueryBuilder, QueryBuilder } from "typeorm";
-import { BaseRepository, IBaseRepository } from "../database/repositories/baseRepository";
+import { Request, Response, Router } from "express";
 import { AppLogger } from "../utils/appLogger";
+import { CreditCardModel } from "../database/models/creadit-card";
 
 export class TestController {
 
@@ -17,7 +15,7 @@ export class TestController {
         });
 
         router.get('/', (req: Request, res: Response) => {
-            this.resolts(req, res);
+            this.test(req, res);
         });
 
         router.patch('/', (req: Request, res: Response) => {
@@ -29,6 +27,13 @@ export class TestController {
         });
 
         return router;
+    }
+
+    protected test(req: Request, res: Response) {
+        var model = new CreditCardModel();
+        model.name = undefined;
+        let metadata = Reflect.getMetadata('Identifier', model);
+        return res.json(metadata);
     }
 
     protected resolts(req: Request, res: Response) {

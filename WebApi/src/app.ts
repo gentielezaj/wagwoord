@@ -1,11 +1,15 @@
 import * as express from "express";
 import * as cros from 'cors';
 import * as bodyParser from "body-parser";
-import { PasswordController } from "./controllers/passwordController";
-import { BlacklistController } from "./controllers/blacklistController";
 import { SettingsController } from "./controllers/settingsController";
 import { TestController } from "./controllers/testController";
-import { CodeGeneratorController } from "./controllers/codeGeneratorController";
+import { BaseController } from './controllers/baseController';
+
+import { AddressEntity } from "./database/models/addressEntity";
+import { CreditCardModel } from "./database/models/creadit-card";
+import { BlacklistEntity } from "./database/models/blacklistEntity";
+import { CodeGeneratorEntity } from "./database/models/codegeneratorEntity";
+import { PasswordEntity } from "./database/models/passwordEntity";
 
 
 class App {
@@ -35,11 +39,13 @@ class App {
     }
 
     private initControllers() {
-        this.app.use('/api/password', new PasswordController().GetRouter());
-        this.app.use('/api/blacklist', new BlacklistController().GetRouter());
+        this.app.use('/api/password', new BaseController<PasswordEntity>(PasswordEntity, 'password').GetRouter());
+        this.app.use('/api/blacklist', new BaseController<BlacklistEntity>(BlacklistEntity, 'blacklist').GetRouter());
         this.app.use('/api/settings', new SettingsController().GetRouter());
-        this.app.use('/api/codegenerator', new CodeGeneratorController().GetRouter());
+        this.app.use('/api/codegenerator', new BaseController<CodeGeneratorEntity>(CodeGeneratorEntity, 'codegenerator').GetRouter());
         this.app.use('/api/test', new TestController().GetRouter());
+        this.app.use('/api/address', new BaseController<AddressEntity>(AddressEntity, 'address').GetRouter());
+        this.app.use('/api/creditcard', new BaseController<CreditCardModel>(CreditCardModel, 'creditcard').GetRouter());
 
         this.app.get('/', function (req, res) {
             res.sendFile('index.html', {root : __dirname + '/views'});

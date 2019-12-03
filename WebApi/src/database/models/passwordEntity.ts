@@ -1,14 +1,17 @@
 import { Entity, Column } from "typeorm";
 import { BaseEntity } from "./baseEntity";
+import { Identifier } from "../querys/modelDecorator";
 
 @Entity({ name: 'Password' })
 export class PasswordEntity extends BaseEntity {
     @Column({ nullable: false, type: 'varchar', length: 64 })
     public name: string;
 
+    @Identifier()
     @Column({ nullable: false, type: 'varchar' })
     public domain: string;
 
+    @Identifier()
     @Column({ nullable: true, type: 'varchar', length: 128 })
     public username?: string;
 

@@ -62,7 +62,7 @@ export default class PasswordService extends CoreService {
     // #endregion helpers
 
     // #region abstract
-    async _preSave(item) {
+    async _preSave(item, canUpdate) {
         item.domain = getDomain(item.domain);
         item.name = getName(item.domain);
 
@@ -70,6 +70,11 @@ export default class PasswordService extends CoreService {
             domain: item.domain,
             username: item.username
         });
+
+        if(!canUpdate && oldPasseord && oldPasseord.id != item.id) {
+            // eslint-disable-next-line no-throw-literal
+            throw "item-exists";
+        }
 
         if (oldPasseord && oldPasseord.id) {
             item.id = oldPasseord.id;

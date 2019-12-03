@@ -2,6 +2,6 @@ npm run typeorm:cli -- migration:run
 npm run typeorm:cli -- migration:create -n AddEnctyptionToPasswordTable
 
 
-huroku
+huroku upload
 heroku git:remote -a wagwoord
 git subtree push --prefix WebApi heroku master

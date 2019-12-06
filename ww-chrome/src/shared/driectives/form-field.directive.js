@@ -1,5 +1,5 @@
 import Vue from 'vue';
-
+// TODO: check if filed is number with pattern
 var formField = {
     name: 'form-field',
     update: function (el, attr, vnode) {

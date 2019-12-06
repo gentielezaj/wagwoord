@@ -12,6 +12,7 @@ export default {
         selectedTab: async store => {
             let tab = await store.chrome.selectedTab();
             tab.wwurl = getName(tab.url, true);
+            console.log(tab);
             return tab;
         },
         activeTabData: async store => {
@@ -22,6 +23,11 @@ export default {
                 tab,
                 blacklist
             };
+        }
+    },
+    mutations: {
+        open: (state, value) => {
+            state.chrome.open(value);
         }
     }
 };

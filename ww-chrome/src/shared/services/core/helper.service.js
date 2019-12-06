@@ -65,6 +65,13 @@ export function getName(domain, min) {
 
 export function getDomain(domain, removePort) {
     if (!domain || domain.startsWith('android:')) return domain;
+    // const regex = /(chrome-)?(extension:){1}(\/){2}\w+\//g;
+    // if(regex.test(domain)) {
+    //     domain = domain.match(regex);
+    //     console.log('domain ' + domain);
+    //     return;
+    // }
+
     if (!(/http(s)?:/.test(domain))) {
         return domain;
     }

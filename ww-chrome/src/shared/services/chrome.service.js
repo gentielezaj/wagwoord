@@ -1,3 +1,7 @@
+import {
+    getDomain, copy
+} from './core/helper.service';
+
 export default class ChromeService {
     constructor(key) {
         this.key = key;
@@ -10,7 +14,7 @@ export default class ChromeService {
     }
 
     async set(value) {
-        if(!value) return false;
+        if (!value) return false;
 
         let save = {};
         save[this.key] = JSON.stringify(value);
@@ -24,15 +28,54 @@ export default class ChromeService {
 
     async selectedTab() {
         return new Promise((resolve) => {
-            chrome.tabs.getSelected(null, async function (tab) {
-                resolve(tab);
+            chrome.tabs.query({
+                currentWindow: true,
+                active: true
+            }, function (tabs) {
+                resolve(tabs[0]);
             });
+        });
+    }
+
+    async currentWindow() {
+        return new Promise((resolve) => {
+            chrome.windows.getCurrent(null, (t) => resolve(t));
+        });
+    }
+
+    open(url, hardMatch) {
+        if (typeof url === 'object') {
+            hardMatch = url.hardMatch;
+            url = url.url;
+        }
+        let searchUrl = copy(url);
+        if (!hardMatch) {
+            searchUrl = getDomain(searchUrl);
+        }
+
+        chrome.tabs.query({
+            currentWindow: true
+        }, tabs => {
+            for (const tab of tabs) {
+                if (tab.url.indexOf(searchUrl) > -1) {
+                    chrome.tabs.update(tab.id, {
+                        active: true,
+                        url
+                    });
+                    return true;
+                }
+            }
+            chrome.tabs.create({
+                url
+            });
+
+            return false;
         });
     }
 }
 
 async function chromeStorage(operation, key) {
-    if(!operation || !key) return false;
+    if (!operation || !key) return false;
     return new Promise(resolve => {
         chrome.storage.local[operation](key, result => {
             resolve(result || true);

@@ -23,6 +23,7 @@ import proxyStore from '../shared/store/proxy.store';
 import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
 import codegeneratorStore from '../shared/store/code-generator.store';
+import creditcardStore from '../shared/store/credit-card.store';
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -32,7 +33,8 @@ const store = new Vuex.Store({
     proxy: proxyStore,
     password: passwordStore,
     blacklist: blacklistStore,
-    codegenerator: codegeneratorStore
+    codegenerator: codegeneratorStore,
+    creditcard: creditcardStore
   }
 });
 // #endregion stores

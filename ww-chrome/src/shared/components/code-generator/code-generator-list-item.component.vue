@@ -88,7 +88,7 @@ const component = {
     async edit() {
       if (this.isOptionsScope) this.toggelDialog();
       else {
-        chrome.tabs.create({
+        this.$store.commit('chrome/open', {
           url:
             "options/options.html#/code-generator" +
             (this.item && this.item.id ? "?edit=" + this.item.id : "")

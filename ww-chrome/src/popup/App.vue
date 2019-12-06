@@ -63,7 +63,7 @@ export default {
     },
     edit() {
       // TODO: open allready opened tab
-      chrome.tabs.create({
+      this.$store.commit('chrome/open',{
         url: "options/options.html"
       });
     },

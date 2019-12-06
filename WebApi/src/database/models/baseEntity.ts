@@ -53,7 +53,7 @@ export abstract class BaseCountEntity extends BaseEncryptionEntity {
     
     protected static create(model: BaseCountEntity, obj: any): BaseCountEntity {
         model = <BaseCountEntity>super.create(model, obj);
-        model.encrypted = obj.encrypted;
+        model.count = obj.count || 0;
         return model;
     }
 }

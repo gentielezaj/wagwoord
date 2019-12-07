@@ -28,7 +28,7 @@
             type="checkbox"
             v-model="model.password"
             name="password"
-            class="cbx hidden"
+            class="cbx main hidden"
             id="blacklist-form-password"
           />
           <span class="lbl" @click="model.password = !model.password"></span>
@@ -39,7 +39,7 @@
             type="checkbox"
             v-model="model.address"
             name="address"
-            class="cbx hidden"
+            class="cbx main hidden"
             id="blacklist-form-address"
           />
           <span class="lbl" @click="model.address = !model.address"></span>
@@ -50,7 +50,7 @@
             type="checkbox"
             v-model="model.creditCard"
             name="creditCard"
-            class="cbx hidden"
+            class="cbx main hidden"
             id="blacklist-form-creditCard"
           />
           <span class="lbl" @click="model.creditCard = !model.creditCard"></span>
@@ -61,7 +61,7 @@
             type="checkbox"
             v-model="model.codeGenerator"
             name="codeGenerator"
-            class="cbx hidden"
+            class="cbx main hidden"
             id="blacklist-form-codeGenerator"
           />
           <span class="lbl" @click="model.codeGenerator = !model.codeGenerator"></span>

@@ -65,7 +65,7 @@
         type="checkbox"
         v-model="model.synced"
         name="synced"
-        class="cbx hidden"
+        class="cbx main hidden"
         id="password-form-synced"
       />
       <span class="lbl" @click="model.synced = !model.synced"></span>

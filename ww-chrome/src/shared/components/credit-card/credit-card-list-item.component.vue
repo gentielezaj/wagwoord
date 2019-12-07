@@ -1,0 +1,104 @@
+<template>
+  <div class="list-item">
+    <div class="item-actions right">
+      <button @click="toggelDialog()" class="icon text">
+        <span>edit</span>
+        <i class="icon-pencil"></i>
+      </button>
+      <button @click="deleteItem(item)" class="icon text">
+        <span>delete</span>
+        <i class="icon-delete"></i>
+      </button>
+    </div>
+    <div class="hidden">
+      <span class="data-value">{{item.id}}</span>
+    </div>
+    <div class="domain title">
+      <span class="data-value">{{name}}</span>
+    </div>
+    <div @dblclick="clipboard(item.username)" class="domain data">
+      <i :class="cardIcon"></i>&nbsp;&nbsp;
+      <span class="data-value">**** **** **** {{cardNumber}}</span>
+      <span class="data-action right icon" @click="clipboard(item.username)" data="username">
+        <i class="icon-copy-1"></i>
+      </span>
+    </div>
+    <div class="domain data">
+      <span class="data-value">Expires on: {{expiredMonthView}} / {{item.expiredYear}}</span>
+      <!-- <span class="data-action right icon" @click="clipboard(code)" data="code">
+        <i class="icon-copy-1"></i>
+      </span> -->
+    </div>
+    <dialog-component :options="dialogOptions"></dialog-component>
+    <delete-dialog-component :options="deleteDialogOptions"></delete-dialog-component>
+  </div>
+</template>
+
+<script>
+import {coreComponent} from "../common/core-component";
+import dialogComponent from "../common/dialog-component";
+import form from "./cedit-card-form.component";
+import { clipboard } from "../../services/core/helper.service";
+import deleteConfiramtionComponent from "../common/delete-dialog.component";
+
+import Vue from "vue";
+
+const component = {
+  name: "credit-card-list-item",
+  props: {
+    item: { required: true },
+    onSubmits: { required: false }
+  },
+  components: {
+    "dialog-component": dialogComponent,
+    "delete-dialog-component": deleteConfiramtionComponent
+  },
+  computed: {
+    cardNumber() {
+        return this.item.cardNumber.substring(this.item.cardNumber.length - 4);
+    },
+    expiredMonthView() {
+        return this.item.expiredMonth < 10 ? ("0" + this.item.expiredMonth) : this.item.expiredMonth;
+    },
+    name() {
+        const b = this.item.bank ? ` ${this.item.bank} ` : '';
+        return this.item.name + b;
+    },
+    cardIcon() {
+        return this.$store.getters['creditcard/creditCardIcon'](this.item.cardType);
+    }
+  },
+  data() {
+    return {
+      appenvirement: false,
+      deleteDialogOptions: {
+        store: "creditcard",
+        item: this.item,
+        message: `Delete credit card?`
+      },
+      dialogOptions: {
+        id: "credit-card-list-item-component-dialog-" + this.item.id,
+        component: form,
+        componentOptions: {
+          itemId: this.item.id
+        }
+      }
+    };
+  },
+  beforeDestroy() {
+    this.checkCodeInterval = undefined;
+  },
+  methods: {
+    async deleteItem() {
+      this.toggelDialog(true, "deleteDialogOptions");
+    },
+    clipboard(value) {
+      if (clipboard(value)) this.notify("copied to clipboard");
+    }
+  },
+  created() {
+  }
+};
+
+export default coreComponent(component);
+</script>

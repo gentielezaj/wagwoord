@@ -253,6 +253,13 @@ form {
 /* #endregion input-container */
 
 /* #region form item */
+.form-item-group {
+    display: flex;
+    .form-item {
+        width: -webkit-fill-available;
+    }
+}
+
 .form-item {
     padding: 0.5rem;
     button.label{
@@ -302,8 +309,12 @@ form {
     transform: scale(1.15, 0.85);
 }
 
-.cbx:checked~span {
+.cbx:checked~span,
+.cbx-light:checked~span {
     background: var(--wagwoord-main-color-light);
+}
+.cbx.main:checked~span {
+    background: var(--wagwoord-main-color);
 }
 
 .cbx:checked~span:after {

@@ -1,5 +1,4 @@
 import Vue from 'vue';
-// TODO: check if filed is number with pattern
 var formField = {
     name: 'form-field',
     update: function (el, attr, vnode) {
@@ -10,6 +9,13 @@ var formField = {
         }
     },
     inserted(el, attr, vnode) {
+        // if(el.tagName === 'INPUT' && el.type === "number" && el.maxLength > 0) {
+        //     el.addEventListener('input', event => {
+        //         if(el.value && el.value.length > el.maxLength) {
+        //             el.value = el.value.substring(0, el.maxLength);
+        //         }
+        //     });
+        // }
         el.addEventListener('focus', event => {
             el.setAttribute('touched', 'true');
         });

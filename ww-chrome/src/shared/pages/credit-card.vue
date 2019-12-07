@@ -2,8 +2,7 @@
   <div>
     <section-header v-if="!removeHeader" v-bind:options="header"></section-header>
     <main class="section-content">
-      <!-- <list-component v-bind:options="listOptions"></list-component> -->
-      here l;ist
+      <list-component v-bind:options="listOptions"></list-component>
     </main>
     <dialog-component  v-if="!removeForm" :options="dialogOptions"></dialog-component>
     <div class="hidden">{{syncing}}</div>
@@ -19,7 +18,7 @@ import form from '../components/credit-card/cedit-card-form.component';
 import dialogComponent from "../components/common/dialog-component";
 
 import listComponent from "../components/common/list.component";
-import codegeneratorListItemComponent from "../components/code-generator/code-generator-list-item.component";
+import creditCardListItemComponent from "../components/credit-card/credit-card-list-item.component";
 
 import Vue from 'vue';
 // #endregion components
@@ -30,7 +29,7 @@ let component = {
     "section-header": sctionHeader,
     "dialog-component": dialogComponent,
     "list-component": listComponent,
-    "codegeneratorListItemComponent": codegeneratorListItemComponent
+    "creditCardListItemComponent": creditCardListItemComponent
   },
   data() {
     return {
@@ -57,7 +56,7 @@ let component = {
         componentOptions: {}
       },
       listOptions: {
-        itemComponent: codegeneratorListItemComponent,
+        itemComponent: creditCardListItemComponent,
         store: "creditcard"
       }
     };

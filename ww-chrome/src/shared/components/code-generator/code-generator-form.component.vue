@@ -156,7 +156,7 @@
         type="checkbox"
         v-model="model.synced"
         name="synced"
-        class="cbx hidden"
+        class="cbx main hidden"
         id="code-generator-form-synced"
       />
       <span class="lbl" @click="changeModelProperty('synced', !model.synced)"></span>

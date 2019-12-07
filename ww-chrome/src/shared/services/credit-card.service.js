@@ -35,10 +35,12 @@ export default class CreditCardService extends CoreService {
             item.serverId = oldItem.serverId;
         }
 
-        // TODO: detect credit card
-        item.cardType = "mastercard";
+        if(item.nfc) item.nfc = true;
+        if(!item.nfc) item.nfc = false;
 
-        item.searchField = `${item.name.toLowerCase()}-${item.cardType.toLowerCase()}`;
+        let searchCardType = item.cardType ? '-' + item.cardType.toLowerCase() : '';
+        let searchBank = item.bank ? '-' + item.bank.toLowerCase() : '';
+        item.searchField = `${item.name.toLowerCase()}${searchCardType}${searchBank}`;
         if (item.bank) {
             item.searchField += "-" + item.bank.toLowerCase();
         }

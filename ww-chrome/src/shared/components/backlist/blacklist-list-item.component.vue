@@ -24,7 +24,7 @@
           v-model="item.password"
           @change="save($event)"
           name="password"
-          class="cbx hidden"
+          class="cbx light hidden"
           :id="'blacklist-password' + item.id"
         />
         <span class="lbl" @click="item.password = !item.password; save($event)"></span>
@@ -36,7 +36,7 @@
           v-model="item.address"
           @change="save($event)"
           name="address"
-          class="cbx hidden"
+          class="cbx light hidden"
           :id="'blacklist-address' + item.id"
         />
         <span class="lbl" @click="item.address = !item.address; save($event)"></span>
@@ -48,7 +48,7 @@
           v-model="item.creditCard"
           @change="save($event)"
           name="creditCard"
-          class="cbx hidden"
+          class="cbx light hidden"
           :id="'blacklist-creditCard' + item.id"
         />
         <span class="lbl" @click="item.creditCard = !item.creditCard; save($event)"></span>
@@ -60,7 +60,7 @@
           v-model="item.codeGenerator"
           @change="save($event)"
           name="codeGenerator"
-          class="cbx hidden"
+          class="cbx light hidden"
           :id="'blacklist-codeGenerator' + item.id"
         />
         <span class="lbl" @click="item.codeGenerator = !item.codeGenerator; save($event)"></span>

@@ -14,12 +14,14 @@
       <span class="data-value">{{item.id}}</span>
     </div>
     <div class="domain title">
-      <span class="data-value">{{name}}</span>
+      <span class="data-value">{{item.name}} <i v-show="item.bank">- {{item.bank}}</i></span>
     </div>
-    <div @dblclick="clipboard(item.username)" class="domain data">
-      <i :class="cardIcon"></i>&nbsp;&nbsp;
+    <div @dblclick="clipboard(item.cardNumber)" class="domain data xl">
+      <!-- <i :class="cardIcon"></i> -->
+      <img v-if="cardIcon" :src="cardIcon">
+      &nbsp;&nbsp;
       <span class="data-value">**** **** **** {{cardNumber}}</span>
-      <span class="data-action right icon" @click="clipboard(item.username)" data="username">
+      <span class="data-action right icon" @click="clipboard(item.cardNumber)" data="cardNumber">
         <i class="icon-copy-1"></i>
       </span>
     </div>
@@ -60,12 +62,8 @@ const component = {
     expiredMonthView() {
         return this.item.expiredMonth < 10 ? ("0" + this.item.expiredMonth) : this.item.expiredMonth;
     },
-    name() {
-        const b = this.item.bank ? ` ${this.item.bank} ` : '';
-        return this.item.name + b;
-    },
     cardIcon() {
-        return this.$store.getters['creditcard/creditCardIcon'](this.item.cardType);
+        return this.$store.getters['creditcard/creditCardImage'](this.item.cardType);
     }
   },
   data() {

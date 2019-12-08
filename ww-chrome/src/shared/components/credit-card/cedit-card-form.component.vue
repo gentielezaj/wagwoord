@@ -37,12 +37,7 @@
           v-model="model.cardNumber"
           type="text"
         />
-      </div>
-      <div class="hint">
-        <span
-          id="credit-card-form-cardNumber-hint"
-        >Lenght: {{model.cardNumber ? model.cardNumber.length : 0}}/16</span>
-        <i class="right" :class="cardIcon"></i>
+        <img v-if="cardIcon" :src="cardIcon"/>
       </div>
     </div>
     <div class="form-item-group">
@@ -186,7 +181,7 @@ let component = {
         nfc: true
       },
       saving: false,
-      cardIcon: 'icon-card'
+      cardIcon: undefined
     };
   },
   computed: {
@@ -214,7 +209,7 @@ let component = {
         event.key != "Delete"
       )
         return;
-      let curorPosition = event.target.selectionStart != this.model.cardNumber.length ? Number(event.target.selectionStart) : false;
+      let curorPosition = event.target && event.target.selectionStart != this.model.cardNumber.length ? Number(event.target.selectionStart) : -1;
       console.log(curorPosition)
       if (this.model.cardNumber && this.model.cardNumber.length > 4) {
         let val = "";
@@ -230,7 +225,7 @@ let component = {
         }
         this.model.cardNumber = val;
       }
-      if (curorPosition && curorPosition < this.model.cardNumber.length) {
+      if (curorPosition !== -1 && curorPosition < this.model.cardNumber.length) {
         if((curorPosition == 5 || curorPosition == 9 || curorPosition == 15) && event.key != "Backspace" && event.key != "Delete") {
           curorPosition++; 
         }
@@ -242,7 +237,7 @@ let component = {
       this.getCreditCardType();
     },
     getCreditCardType() {
-      this.cardIcon = this.$store.getters['creditcard/creditCardIcon'](this.model.cardType);
+      this.cardIcon = this.$store.getters['creditcard/creditCardImage'](this.model.cardNumber);
     },
     changeModelProperty(property, value) {
       console.log("change propery");
@@ -277,6 +272,7 @@ let component = {
       this.model = await this.$store.getters["creditcard/item"](
         this.options.itemId
       );
+      this.checkCardNumber({key: 'Backspace'});
       console.log(this.model);
     }
   }

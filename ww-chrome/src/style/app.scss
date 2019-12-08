@@ -214,6 +214,9 @@ form {
     color: var(--wagwoord-color);
     display: flex;
     width: 100%;
+    img {
+        height: 1.9rem;
+    }
 }
 
 .input-container.error {

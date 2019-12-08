@@ -53,6 +53,31 @@ const store = {
                 default:
                     return 'icon-card';
             }
+        },
+        creditCardImage: (state, getters) => card => {
+            if (!card) {
+                return undefined;
+            }
+
+            if (/^[0-9]+/g.test(card)) {
+                card = getters.creditCardType(card);
+            }
+
+            switch (card || '') {
+                case 'visa':
+                case 'electron':
+                    return '/assets/icons/credit-cards_visa.png';
+                case 'mastercard':
+                    return `/assets/icons/credit-cards_${card}.png`;
+                case 'amex':
+                    return `/assets/icons/credit-cards_${card}.png`;
+                case 'discover':
+                    return `/assets/icons/credit-cards_${card}.png`;
+                case 'maestro':
+                    return `/assets/icons/credit-cards_${card}.png`;
+                default:
+                    return undefined;
+            }
         }
     }
 };

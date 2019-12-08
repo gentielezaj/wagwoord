@@ -65,9 +65,8 @@ let component = {
   },
   computed: {
     syncing() {
-      // Vue.set(this.header.buttons.find(b => b.name == 'sync'), 'disabled', this.$store.getters['codegenerator/syncing']);
-      // return this.$store.getters['codegenerator/syncing'];
-      return false;
+      Vue.set(this.header.buttons.find(b => b.name == 'sync'), 'disabled', this.$store.getters['creditcard/syncing']);
+      return this.$store.getters['creditcard/syncing'];
     }
   },
   created() {

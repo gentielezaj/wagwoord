@@ -24,6 +24,7 @@ import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
 import codegeneratorStore from '../shared/store/code-generator.store';
 import creditcardStore from '../shared/store/credit-card.store';
+import addressStore from '../shared/store/address.store';
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -34,7 +35,8 @@ const store = new Vuex.Store({
     password: passwordStore,
     blacklist: blacklistStore,
     codegenerator: codegeneratorStore,
-    creditcard: creditcardStore
+    creditcard: creditcardStore,
+    address: addressStore
   }
 });
 // #endregion stores

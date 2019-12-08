@@ -45,14 +45,6 @@ const component = {
             click: this.update,
             class: "loader icon-sync-1",
             disabled: this.syncing
-          },
-          {
-            name: "settings",
-            title: "Settings",
-            click(button) {
-              console.log(button);
-            },
-            class: "icon icon-settings"
           }
         ]
       },
@@ -92,7 +84,7 @@ const component = {
   }
 };
 
-export default pageComponent(component);
+export default pageComponent(component, 'password');
 </script>
 
 <style>

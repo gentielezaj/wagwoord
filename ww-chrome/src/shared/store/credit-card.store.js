@@ -1,5 +1,5 @@
 import core from './core.store.js';
-import { copy } from '../services/core/helper.service'
+import { copy } from '../services/core/helper.service';
 import creditcardService from '../services/credit-card.service';
 const store = {
     getters: {

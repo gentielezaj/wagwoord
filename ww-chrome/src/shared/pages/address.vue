@@ -11,21 +11,15 @@
 
 <script>
 // #region components
-import { pageComponent } from "../components/common/core-component";
+import { pageCoreComponentMixin } from "../components/common/core.component";
 import form from "../components/address/address-form.component";
 import addressListItemComponent from "../components/address/address-list-item.component";
 
 import Vue from "vue";
 // #endregion components
 
-let component = {
+export default {
+  mixins: [pageCoreComponentMixin('address', 'Address', form, addressListItemComponent)],
   name: "address-page",
 };
-export default pageComponent(
-  component,
-  "address",
-  "Addresses",
-  form,
-  addressListItemComponent
-);
 </script>

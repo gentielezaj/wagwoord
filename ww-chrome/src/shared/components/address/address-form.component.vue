@@ -8,17 +8,17 @@
     </div>
     <div class="form-item-group">
       <div class="form-item">
-        <label for="address-form-firtName">firtName</label>
+        <label for="address-form-firstName">firstName</label>
         <div class="input-container">
           <input
-            id="address-form-firtName"
+            id="address-form-firstName"
             maxlength="64"
             minlength="2"
             pattern="^[A-Za-z]+$"
-            name="firtName"
+            name="firstName"
             required
             v-form-field
-            v-model="model.firtName"
+            v-model="model.firstName"
             type="text"
           />
         </div>
@@ -48,7 +48,7 @@
           required
           v-form-field
           name="birthDay"
-          v-model="model.birthDay"
+          v-model="model.birthDate"
           type="date"
         />
       </div>
@@ -82,6 +82,19 @@
       </div>
     </div>
     <div class="form-item">
+      <label for="address-form-organization">organization</label>
+      <div class="input-container">
+        <input
+          id="address-form-organization"
+          name="organization"
+          v-form-field
+          autocomplete="off"
+          v-model="model.organization"
+          type="text"
+        />
+      </div>
+    </div>
+    <div class="form-item">
       <label for="address-form-street">street</label>
       <div class="input-container">
         <input
@@ -105,7 +118,6 @@
           autocomplete="off"
           v-model="model.secundStreet"
           type="text"
-          required
         />
       </div>
     </div>
@@ -133,7 +145,6 @@
           autocomplete="off"
           v-model="model.state"
           type="text"
-          required
         />
       </div>
     </div>
@@ -199,24 +210,10 @@
 </template>
 
 <script>
-import { formComponent } from "../common/core-component";
+import { formCoreComponentMixin } from "../common/core.component";
 
-let component = {
-  name: "address-form-component",
-  props: {
-    options: { required: false }
-  },
-  data() {
-    return {
-      model: {
-        synced: true
-      },
-      saving: false
-    };
-  },
-  methods: {
-  }
+export default {
+  mixins: [formCoreComponentMixin("address", 'address-form')],
+  name: "address-form-component"
 };
-
-export default formComponent(component, "address", 'address-form');
 </script>

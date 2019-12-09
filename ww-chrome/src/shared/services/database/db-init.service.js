@@ -18,5 +18,8 @@ db.version(4).stores({
 db.version(4).stores({
     creditcard: '++id,name,cardType,expiredMonth,expiredYear,searchField,serverId,lastModified,encrypted,synced,count,&cardNumber,bank,nfc'
 });
+db.version(4).stores({
+    address: '++id,firtName,lastName,birthDate,street,secundStreet,city,state,country,username,postalCode,searchField,serverId,lastModified,organization,phone,encrypted,synced,count'
+});
 
 export default db;

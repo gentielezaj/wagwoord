@@ -10,17 +10,37 @@ export default class AddressService extends CoreService {
     // #region abstract
 
     async _preSave(item, canUpdate) {
-        let oldItem = await this.getItem(item.id);
+        let search = [];
+        if (item.firstName) search.push(item.firstName);
+        if (item.lastName) search.push(item.lastName);
+        if (item.city) search.push(item.city);
+        if (item.country) search.push(item.country);
+        item.searchField = search.join('-');
+
+        let oldItem;
+        if (item.id) {
+            oldItem = await this.getItem(item.id);
+        } else if(item.serverId) {
+            oldItem = await this.getItem({
+                serverId: item.serverId
+            });
+        }
+
+        if(oldItem === undefined) {
+            oldItem = await this.getItem({
+                searchField: item.searchField
+            });
+        }
+        
         if (oldItem && oldItem.serverId) {
             item.serverId = oldItem.serverId;
         }
-        let search = [];
-        if(item.firstName) search.push(item.firstName);
-        if(item.lastName) search.push(item.lastName);
-        if(item.city) search.push(item.city);
-        if(item.country) search.push(item.country);
+        if (oldItem && oldItem.id) {
+            item.id = oldItem.id;
+        }
 
-        item.searchField = search.join('-');
+        item.encrypted = item.encrypted || false;
+        item.count = item.count || 0;
 
         return item;
     }
@@ -32,10 +52,10 @@ export default class AddressService extends CoreService {
     async _convertLocalToServerEntity(item) {
         if (item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
         let result = {
-            count: item.count,
+            count: item.count || 0,
             lastModified: item.lastModified,
             id: item.serverId,
-            encrypted: item.encrypted,
+            encrypted: item.encrypted || false,
             firstName: item.firstName,
             lastName: item.lastName,
             birthDate: item.birthDate,
@@ -54,7 +74,7 @@ export default class AddressService extends CoreService {
             const street = await this.encryption.tryEncrypt(result.street);
             const secundStreet = await this.encryption.tryEncrypt(result.secundStreet);
             if (street && secundStreet && street.encrypted && secundStreet.encrypted) {
-                result.encrypted = street.encrypted;
+                result.encrypted = street.encrypted || false;
                 result.street = street.value;
                 result.secundStreet = secundStreet.value;
             }
@@ -66,10 +86,10 @@ export default class AddressService extends CoreService {
     async _convertServerToLocalEntity(item) {
         if (item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
         let result = {
-            count: item.count,
+            count: item.count || 0,
             lastModified: item.lastModified,
             serverId: item.id,
-            encrypted: item.encrypted,
+            encrypted: item.encrypted || false,
             firstName: item.firstName,
             lastName: item.lastName,
             birthDate: item.birthDate,
@@ -81,13 +101,14 @@ export default class AddressService extends CoreService {
             username: item.username,
             postalCode: item.postalCode,
             organization: item.organization,
-            phone: item.phone
+            phone: item.phone,
+            synced: true
         };
 
-        if (!result.encrypted) {
+        if (result.encrypted) {
             const street = await this.encryption.tryDecrypt(result.street);
             const secundStreet = await this.encryption.tryDecrypt(result.secundStreet);
-            if (street && secundStreet && street.encrypted && secundStreet.encrypted) {
+            if (street && secundStreet && street.decrypted && secundStreet.decrypted) {
                 result.encrypted = !street.decrypted;
                 result.street = street.value;
                 result.secundStreet = secundStreet.value;

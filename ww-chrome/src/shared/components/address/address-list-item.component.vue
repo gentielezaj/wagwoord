@@ -28,12 +28,11 @@
 </template>
 
 <script>
-import {listItemComponent} from "../common/core-component";
+import {listItemCoreComponentMixin} from "../common/core.component";
 import form from "./address-form.component";
 
-const component = {
+export default {
+  mixins: [listItemCoreComponentMixin('address', form)],
   name: "address-list-item"
 };
-
-export default listItemComponent(component, 'address', form);
 </script>

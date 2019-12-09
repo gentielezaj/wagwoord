@@ -16,9 +16,9 @@ export abstract class BaseEntity {
     public deleted: boolean;
 
     protected static create(model: BaseEntity, obj: any): BaseEntity {
-        model.deleted = obj.deleted;
+        model.deleted = obj.deleted || 0;
         model.id = obj.id;
-        model.lastModified = obj.lastModified;
+        model.lastModified = obj.lastModified || new Date().getTime();
         return model;
     }
 }

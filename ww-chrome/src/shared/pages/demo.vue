@@ -401,15 +401,14 @@
 </template>
 
 <script>
-import sctionHeader from "../components/common/section-header";
 import loader from "../components/common/loader.component";
 import { mapGetters } from "vuex";
-import {coreComponent} from "../components/common/core-component";
+import {pageCoreComponentMixin} from "../components/common/core.component";
 
-const component = {
+export default {
   name: "demo-page",
+  mixins: [pageCoreComponentMixin('demo', 'Demo')],
   components: {
-    "section-header": sctionHeader,
     loader: loader
   },
   data() {
@@ -457,8 +456,6 @@ const component = {
     }
   }
 };
-
-export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

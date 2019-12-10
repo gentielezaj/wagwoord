@@ -17,11 +17,6 @@ export function coreComponentMixin(store) {
                     error
                 });
             },
-            async update() {
-                if (await this.$store.dispatch(store + "/sync")) {
-                    this.notifySuccess("Updated");
-                }
-            },
             notifySuccess(message) {
                 this.$store.dispatch('notification/notify', {
                     message,
@@ -127,6 +122,13 @@ export function pageCoreComponentMixin(store, pageTitle, formComponent, listItem
                     this.$route.query.edit
                 );
                 this.dialogOptions.open = true;
+            }
+        },
+        methods: {   
+            async update() {
+                if (await this.$store.dispatch(store + "/sync")) {
+                    this.notifySuccess("Updated");
+                }
             }
         }
     };

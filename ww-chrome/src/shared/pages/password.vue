@@ -12,79 +12,15 @@
 </template>
 
 <script>
-import sctionHeader from "../components/common/section-header";
-import passwordFormComponent from "../components/password/password-form.component";
-import dialogComponent from "../components/common/dialog-component";
-import { pageComponent } from "../components/common/core-component";
-import Vue from 'vue';
-import listComponent from "../components/common/list.component";
-import passwordItemComponent from "../components/password/password-list-item.component";
+import form from "../components/password/password-form.component";
+import { pageCoreComponentMixin } from "../components/common/core.component";
+import listItem from "../components/password/password-list-item.component";
 
-const component = {
+export default {
   name: "password-page",
-  components: {
-    "section-header": sctionHeader,
-    "password-form": passwordFormComponent,
-    "dialog-component": dialogComponent,
-    "password-item-component": passwordItemComponent,
-    "list-component": listComponent
-  },
-  data() {
-    return {
-      header: {
-        title: "Password",
-        buttons: [
-          {
-            name: "add",
-            title: "add",
-            click: this.toggelDialog
-          },
-          {
-            name: "sync",
-            title: "Sync",
-            click: this.update,
-            class: "loader icon-sync-1",
-            disabled: this.syncing
-          }
-        ]
-      },
-      dialogOptions: {
-        id: "password-form-component-dialog",
-        component: passwordFormComponent,
-        disableClose: true,
-        componentOptions: {}
-      },
-      listOptions: {
-        itemComponent: passwordItemComponent,
-        store: "password"
-      }
-    };
-  },
-  created() {
-    if (this.$route.query.edit) {
-      this.dialogOptions.componentOptions.itemId = Number(
-        this.$route.query.edit
-      );
-      this.dialogOptions.open = true;
-    }
-  },
-  computed: {
-    syncing() {
-      Vue.set(this.header.buttons.find(b => b.name == 'sync'), 'disabled', this.$store.getters['password/syncing']);
-      return this.$store.getters['password/syncing'];
-    }
-  },
-  methods: {
-    async update() {
-      const button = this.header.buttons.find(b => b.name == 'sync');
-      if (await this.$store.dispatch("password/sync")) {
-        this.notifySuccess("Updated");
-      }
-    }
-  }
+  mixins: [pageCoreComponentMixin('password', 'Passwords', form, listItem)]
 };
 
-export default pageComponent(component, 'password');
 </script>
 
 <style>

@@ -57,7 +57,7 @@ const component = {
   },
   computed: {
     cardNumber() {
-        return this.item.cardNumber.substring(this.item.cardNumber.length - 4);
+        return this.item.cardNumber ? this.item.cardNumber.substring(this.item.cardNumber.length - 4) : '';
     },
     expiredMonthView() {
         return this.item.expiredMonth < 10 ? ("0" + this.item.expiredMonth) : this.item.expiredMonth;

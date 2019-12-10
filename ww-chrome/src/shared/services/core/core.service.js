@@ -128,7 +128,7 @@ export class CoreService {
 
         model.id = await this.db.save(model);
         if (model.id && !ignoreServer && model.synced === true && await this.proxy.isSet()) {
-            await this.syncServer(copy(model));
+            await this._syncServer(copy(model));
         }
         if (typeof onSaveItem === 'function') {
             onSaveItem(model);
@@ -190,7 +190,7 @@ export class CoreService {
     async sync() {
         const deleted = await this._syncDeleted();
         const local = await this._syncFromServer();
-        const server = await this.syncServer();
+        const server = await this._syncServer();
         // eslint-disable-next-line no-unneeded-ternary
         const result = deleted && local && server ? true : false;
         if (result) localStorage.setItem(this.lastModifiedStorageKey, new Date().getTime());

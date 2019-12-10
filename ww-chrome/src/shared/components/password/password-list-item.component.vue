@@ -44,68 +44,18 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
-import dialogComponent from "../common/dialog-component";
-import passwordFormComponent from "./password-form.component";
-import { clipboard } from "../../services/core/helper.service";
-import deleteConfiramtionComponent from '../common/delete-dialog.component';
+import {listItemCoreComponentMixin} from "../common/core.component";
+import form from "./password-form.component";
 
-const component = {
+export default {
   name: "password-list-item",
-  props: {
-    item: { required: true },
-    onSubmits: { required: false }
-  },
-  components: {
-    "dialog-component": dialogComponent,
-    "delete-dialog-component": deleteConfiramtionComponent
-  },
-  computed: {
-    isOptionsScope() {
-      return this.$constants.scope == "options";
-    }
-  },
+  mixins: [listItemCoreComponentMixin('password', form, '')],
   data() {
     return {
-      appenvirement: false,
-      showPassword: false,
-      deleteDialogOptions: {
-        store: 'password',
-        item: this.item,
-        message: `Delete password?`
-      },
-      dialogOptions: {
-        id: "password-list-item-component-dialog-" + this.item.id,
-        component: passwordFormComponent,
-        disableClose: true,
-        componentOptions: {
-          itemId: this.item.id
-        }
-      }
-    };
-  },
-  methods: {
-    async edit() {
-      if (this.isOptionsScope) this.toggelDialog();
-      else {
-        this.$store.commit('chrome/open', {
-          url:
-            "options/options.html" +
-            (this.item && this.item.id ? "#/?edit=" + this.item.id : "")
-        });
-      }
-    },
-    async deleteItem() {
-      this.toggelDialog(true, 'deleteDialogOptions');
-    },
-    clipboard(value) {
-      if (clipboard(value)) this.notify("copied to clipboard");
+      showPassword: false
     }
-  },
-  created() {}
+  }
 };
-
-export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

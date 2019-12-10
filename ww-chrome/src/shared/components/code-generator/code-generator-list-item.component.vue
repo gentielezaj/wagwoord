@@ -34,48 +34,17 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
-import dialogComponent from "../common/dialog-component";
-import codegeneratorFormComponent from "./code-generator-form.component";
-import { clipboard } from "../../services/core/helper.service";
-import deleteConfiramtionComponent from "../common/delete-dialog.component";
+import {listItemCoreComponentMixin} from "../common/core.component";
+import form from "./code-generator-form.component";
 
 import authenticator from "otplib/authenticator";
 import crypto from "crypto";
 
-import Vue from "vue";
-
-const component = {
+export default {
   name: "code-generator-list-item",
-  props: {
-    item: { required: true },
-    onSubmits: { required: false }
-  },
-  components: {
-    "dialog-component": dialogComponent,
-    "delete-dialog-component": deleteConfiramtionComponent
-  },
-  computed: {
-    isOptionsScope() {
-      return this.$constants.scope == "options";
-    }
-  },
+  mixins: [listItemCoreComponentMixin('codegenerator', form, 'code-generator')],
   data() {
     return {
-      appenvirement: false,
-      deleteDialogOptions: {
-        store: "codegenerator",
-        item: this.item,
-        message: `Delete code?`
-      },
-      dialogOptions: {
-        id: "code-generator-list-item-component-dialog-" + this.item.id,
-        component: codegeneratorFormComponent,
-        disableClose: true,
-        componentOptions: {
-          itemId: this.item.id
-        }
-      },
       code: "",
       timeLeft: 0,
       checkCodeInterval: ""
@@ -85,25 +54,9 @@ const component = {
     this.checkCodeInterval = undefined;
   },
   methods: {
-    async edit() {
-      if (this.isOptionsScope) this.toggelDialog();
-      else {
-        this.$store.commit('chrome/open', {
-          url:
-            "options/options.html#/code-generator" +
-            (this.item && this.item.id ? "?edit=" + this.item.id : "")
-        });
-      }
-    },
-    async deleteItem() {
-      this.toggelDialog(true, "deleteDialogOptions");
-    },
-    clipboard(value) {
-      if (clipboard(value)) this.notify("copied to clipboard");
-    },
     checkCode() {
-      Vue.set(this, "timeLeft", authenticator.timeRemaining());
-      Vue.set(this, "code", authenticator.generate(this.item.secret));
+      this.vue.set(this, "timeLeft", authenticator.timeRemaining());
+      this.vue.set(this, "code", authenticator.generate(this.item.secret));
     }
   },
   created() {
@@ -113,6 +66,4 @@ const component = {
     }, 1);
   }
 };
-
-export default coreComponent(component);
 </script>

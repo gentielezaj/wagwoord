@@ -37,24 +37,12 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
-import dialogComponent from "../common/dialog-component";
+import {listItemCoreComponentMixin} from "../common/core.component";
 import form from "./cedit-card-form.component";
-import { clipboard } from "../../services/core/helper.service";
-import deleteConfiramtionComponent from "../common/delete-dialog.component";
 
-import Vue from "vue";
-
-const component = {
+export default {
   name: "credit-card-list-item",
-  props: {
-    item: { required: true },
-    onSubmits: { required: false }
-  },
-  components: {
-    "dialog-component": dialogComponent,
-    "delete-dialog-component": deleteConfiramtionComponent
-  },
+  mixins: [listItemCoreComponentMixin('creditcard', form)],
   computed: {
     cardNumber() {
         return this.item.cardNumber ? this.item.cardNumber.substring(this.item.cardNumber.length - 4) : '';
@@ -66,37 +54,8 @@ const component = {
         return this.$store.getters['creditcard/creditCardImage'](this.item.cardType);
     }
   },
-  data() {
-    return {
-      appenvirement: false,
-      deleteDialogOptions: {
-        store: "creditcard",
-        item: this.item,
-        message: `Delete credit card?`
-      },
-      dialogOptions: {
-        id: "credit-card-list-item-component-dialog-" + this.item.id,
-        component: form,
-        componentOptions: {
-          itemId: this.item.id
-        }
-      }
-    };
-  },
   beforeDestroy() {
     this.checkCodeInterval = undefined;
-  },
-  methods: {
-    async deleteItem() {
-      this.toggelDialog(true, "deleteDialogOptions");
-    },
-    clipboard(value) {
-      if (clipboard(value)) this.notify("copied to clipboard");
-    }
-  },
-  created() {
   }
 };
-
-export default coreComponent(component);
 </script>

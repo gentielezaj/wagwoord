@@ -6,7 +6,7 @@
         <span>edit</span>
         <i class="icon-pencil"></i>
       </button>
-      <button @click="deleteItem(item)" v-if="appenvirement != 'popup'" class="icon text">
+      <button @click="deleteItem(item)" v-if="isOptionsScope" class="icon text">
         <span>delete</span>
         <i class="icon-delete"></i>
       </button>
@@ -72,51 +72,18 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
-import dialogComponent from "../common/dialog-component";
-import blacklistFormComponent from "./blacklist-form.component";
+import {listItemCoreComponentMixin} from "../common/core.component";
+import form from "./blacklist-form.component";
 
-const component = {
+export default {
   name: "blacklist-list-item",
-  props: {
-    item: { required: true },
-    onSubmits: { required: false }
-  },
-  components: {
-    "dialog-component": dialogComponent
-  },
+  mixins: [listItemCoreComponentMixin('address', form)],
   data() {
     return {
-      appenvirement: false,
-      showPassword: false,
-      dialogOptions: {
-        id: "blacklist-list-item-component-dialog-" + this.item.id,
-        component: blacklistFormComponent,
-        disableClose: true,
-        componentOptions: {
-          itemId: this.item.id
-        }
-      },
       saving:false
     };
   },
   methods: {
-    async edit() {
-      this.toggelDialog();
-    },
-    async deleteItem() {
-      try {
-        const res = await this.$store.dispatch("blacklist/delete", this.item.id);
-        if (res) {
-          this.notifySuccess("Deleted");
-        } else {
-          this.notifyError("Error while deleting");
-        }
-      } catch (error) {
-        this.notifyError("Error while deleting", error);
-        throw error;
-      }
-    },
     async save(value) {
       this.saving = true;
       try {
@@ -130,11 +97,8 @@ const component = {
         throw error;
       }
     }
-  },
-  created() {}
+  }
 };
-
-export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

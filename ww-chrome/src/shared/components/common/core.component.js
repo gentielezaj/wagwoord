@@ -124,7 +124,7 @@ export function pageCoreComponentMixin(store, pageTitle, formComponent, listItem
                 this.dialogOptions.open = true;
             }
         },
-        methods: {   
+        methods: {
             async update() {
                 if (await this.$store.dispatch(store + "/sync")) {
                     this.notifySuccess("Updated");
@@ -134,7 +134,7 @@ export function pageCoreComponentMixin(store, pageTitle, formComponent, listItem
     };
 }
 
-export function listItemCoreComponentMixin(store, form) {
+export function listItemCoreComponentMixin(store, form, page) {
     return {
         mixins: [coreComponentMixin(store)],
         components: {
@@ -168,7 +168,14 @@ export function listItemCoreComponentMixin(store, form) {
         },
         methods: {
             async edit() {
-                this.toggelDialog();
+                if (this.isOptionsScope) this.toggelDialog();
+                else {
+                    // TODO: resolve page
+                    this.$store.commit('chrome/open', {
+                        url: "options/options.html#/" + (page || page === '' ? page : store) +
+                            (this.item && this.item.id ? "?edit=" + this.item.id : "")
+                    });
+                }
             },
             async deleteItem() {
                 this.toggelDialog(true, "deleteDialogOptions");

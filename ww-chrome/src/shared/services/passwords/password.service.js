@@ -106,6 +106,7 @@ export default class PasswordService extends CoreService {
             password: item.password,
             lastModified: item.lastModified,
             id: item.serverId,
+            localId: item.id,
             count: item.count,
             waitTime: item.waitTime
         };
@@ -128,6 +129,7 @@ export default class PasswordService extends CoreService {
             password: item.password,
             lastModified: item.lastModified,
             serverId: item.id,
+            id: item.localId,
             synced: true,
             count: item.count,
             encrypted: item.encrypted,

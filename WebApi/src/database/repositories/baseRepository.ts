@@ -12,6 +12,7 @@ export interface IBaseRepository<TEntity extends BaseEntity> {
     delete(id: number | Array<number>, destroy?: boolean): Promise<DeleteResult>;
     getLastModified(lastModified: number): Promise<Array<TEntity>>;
     getItem(appQuery: AppQueryBuilder | number): Promise<TEntity | undefined>;
+    setLocalId(destination: any, source: any) : void;
 }
 
 export class BaseRepository<TEntity extends BaseEntity> implements IBaseRepository<TEntity> {
@@ -28,13 +29,22 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
     public async save(model: TEntity): Promise<TEntity | undefined> {
         let oldItem = await this.getSavedItem(model);
         if (oldItem) {
-            if (oldItem && model.lastModified && oldItem.lastModified > model.lastModified)
+            if (oldItem && model.lastModified && oldItem.lastModified > model.lastModified) {
+                this.setLocalId(oldItem, model);
                 return oldItem;
+            }
 
             model.id = oldItem.id;
         }
         if (!model.lastModified) model.lastModified = new Date().getTime();
-        return <TEntity | undefined>(await this.dbRepository.save(<any>model));
+        let result = <TEntity | undefined>(await this.dbRepository.save(<any>model));
+        
+        this.setLocalId(result, model);
+        return result;
+    }
+
+    public setLocalId(destination: any, source: any) : void {
+        destination.localId = source.localId;
     }
 
     protected async getSavedItem(model: TEntity): Promise<TEntity | undefined> {

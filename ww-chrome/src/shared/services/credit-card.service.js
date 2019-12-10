@@ -65,6 +65,7 @@ export default class CreditCardService extends CoreService {
             expiredYear: item.expiredYear,
             cardNumber: item.cardNumber,
             cvv: item.cvv,
+            localId: item.id,
             bank: item.bank,
             pin: item.pin,
             nfc: item.nfc
@@ -93,6 +94,7 @@ export default class CreditCardService extends CoreService {
             serverId: item.id,
             encrypted: item.encrypted,
             name: item.name,
+            id: item.localId,
             cardType: item.cardType,
             expiredMonth: item.expiredMonth,
             expiredYear: item.expiredYear,

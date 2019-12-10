@@ -48,7 +48,7 @@ export class CoreService {
     // #endregion get
 
     // #region delete
-    async delete (id, dontUpdateServer) {
+    async delete(id, dontUpdateServer) {
         const item = await this.getItem(id);
         if (!item) return true;
         const deleted = await this.db.delete(id);
@@ -62,14 +62,14 @@ export class CoreService {
         return deleted;
     };
 
-    async deleteAll () {
+    async deleteAll() {
         if ((await this.proxy.deleteAll()).success)
             return await this.db.deleteAll();
 
         return false;
     };
 
-    async syncDeleted () {
+    async _syncDeleted() {
         let deleted = localStorage.getItem(this.deletedUnsyncStorageKey);
         if (!deleted || !deleted.length) return true;
         let result = await this.proxy.delete(deleted);
@@ -90,21 +90,30 @@ export class CoreService {
     }
 
     async _saveArray(model, onSaveItem, notlastModified, ignoreServer, canUpdate) {
-        if(!Array.isArray(model)) {
-            return await this._coreSave(model, onSaveItem, notlastModified, ignoreServer, canUpdate);
+        if (!Array.isArray(model)) {
+            model = [model];
         }
 
+        const isProxySet = await this.proxy.isSet();
         let results = [];
         for (let i = 0; i < model.length; i++) {
-            results.push(await this._coreSave(model[i], onSaveItem, notlastModified, ignoreServer, canUpdate));
+            let item = model[i];
+            if (!this._isValidModel(item)) {
+                return item;
+            }
+
+            if (typeof this._preSave === 'function') {
+                item = await this._preSave(item, canUpdate);
+            }
+
+            if (isProxySet && !ignoreServer && item.synced) results.push(this._syncServer(item));
+            else results.push(await this._coreSave(model[i], onSaveItem, notlastModified, true, canUpdate));
         }
 
         return results;
     }
 
     async _coreSave(model, onSaveItem, notlastModified, ignoreServer, canUpdate) {
-        if (!this._isValidModel(model)) return false;
-
         if (typeof this._preSave === 'function') {
             model = await this._preSave(model, canUpdate);
         }
@@ -128,7 +137,7 @@ export class CoreService {
         return model.id;
     }
 
-    async _saveServerItemsLocaly (response, onSaveItem) {
+    async _saveServerItemsLocaly(response, onSaveItem) {
         if (response.success === true) {
             if (Array.isArray(response.data))
                 for (let i in response.data) {
@@ -142,7 +151,7 @@ export class CoreService {
     };
 
     async _saveServerItemLocaly(item, onSaveItem) {
-        if(!item) return item;
+        if (!item) return item;
         if (item.deleted == 1) {
             return await this.delete({
                 serverId: item.id
@@ -151,7 +160,7 @@ export class CoreService {
 
         item = await this._convertServerToLocalEntity(item);
 
-        return await this.saveOrUpdate(item, onSaveItem, true, true);
+        return await this._coreSave(item, onSaveItem, true, true, true);
     };
 
     _isValidModel(item) {
@@ -162,42 +171,42 @@ export class CoreService {
     // #region converters
     async _convertServerToLocalEntity(item) {
         item.serverId = copy(item.id);
+        item.id = item.localId;
         item.synced = true;
-        delete item.id;
 
         return item;
     }
 
-    async _convertLocalToServerEntity (item) {
+    async _convertLocalToServerEntity(item) {
+        item.localId = copy(item.id);
         item.id = copy(item.serverId);
-        delete item.serverId;
-        delete item.synced;
+        if(item.hasOwnProperty('synced')) delete item.synced;
 
         return item;
     };
     // #endregion converters
 
     // #region sever sync
-    async sync () {
-        const deleted = await this.syncDeleted();
-        const local = await this.syncFromServer();
+    async sync() {
+        const deleted = await this._syncDeleted();
+        const local = await this._syncFromServer();
         const server = await this.syncServer();
         // eslint-disable-next-line no-unneeded-ternary
         const result = deleted && local && server ? true : false;
         if (result) localStorage.setItem(this.lastModifiedStorageKey, new Date().getTime());
     };
 
-    async syncFromServer () {
+    async _syncFromServer() {
         let item = (await this.db.store.orderBy('lastModified').reverse().first()) || {};
         let localStorageLastModified = localStorage.getItem(this.lastModifiedStorageKey);
         let lastModified = item.lastModified > localStorageLastModified ? item.lastModified : localStorageLastModified;
-        if(localStorageLastModified == "-1") lastModified = 0;
+        if (localStorageLastModified == "-1") lastModified = 0;
         const data = await this.proxy.patch(lastModified || 0);
         const result = await this._saveServerItemsLocaly(data);
         return result;
     };
 
-    async syncServer (items, onSaveItem) {
+    async _syncServer(items, onSaveItem) {
         if (!items) {
             var res = await this.proxy.patch();
             if (!res.success) {

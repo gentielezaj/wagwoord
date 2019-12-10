@@ -64,6 +64,7 @@ export default class CodeGeneratorService extends CoreService {
             secret: item.secret,
             lastModified: item.lastModified,
             id: item.serverId,
+            localId: item.id,
             encrypted: item.encrypted
         };
 
@@ -86,6 +87,7 @@ export default class CodeGeneratorService extends CoreService {
             secret: item.secret,
             lastModified: item.lastModified,
             serverId: item.id,
+            id: item.localId,
             encrypted: item.encrypted,
             synced: true
         };

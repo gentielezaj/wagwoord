@@ -55,6 +55,7 @@ export default class AddressService extends CoreService {
             count: item.count || 0,
             lastModified: item.lastModified,
             id: item.serverId,
+            localId: item.id,
             encrypted: item.encrypted || false,
             firstName: item.firstName,
             lastName: item.lastName,
@@ -102,6 +103,7 @@ export default class AddressService extends CoreService {
             postalCode: item.postalCode,
             organization: item.organization,
             phone: item.phone,
+            id: item.localId,
             synced: true
         };
 

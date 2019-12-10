@@ -61,7 +61,9 @@ export class BaseController<TEntity extends BaseEntity> {
     }
 
     jsonToModel(model: any): TEntity | undefined {
-        return (<any>this.entity).create(model);
+        var e = (<any>this.entity).create(model);
+        this.repository.setLocalId(e, model);
+        return e;
     }
 
     // #region save

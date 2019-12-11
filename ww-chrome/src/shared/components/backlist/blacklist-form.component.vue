@@ -1,5 +1,5 @@
 <template>
-  <form v-form id="blacklistForm" name="blacklistForm" novalidate>
+  <form v-form id="blacklist-form" name="blacklist-form" novalidate>
     <div class="form-item">
       <label for="blacklist-form-id">id</label>
       <div class="input-container">
@@ -86,71 +86,23 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
+import { formCoreComponentMixin } from "../common/core.component";
 
-const component = {
-  name: "password-form",
-  props: {
-    options: { required: false }
-  },
-  data() {
-    return {
-      model: {
-          name:'',
-        synced: true,
-        password: true,
-        address: true,
-        codeGenerator: true,
-        creditCard: true
-      },
-      saving: false
-    };
-  },
-  computed: {},
-  methods: {
-    async save(event) {
-      if (!document.getElementById("blacklistForm").checkValidity()) {
-        event.preventDefault();
-        this.notifyError("Invalide form");
-        return;
-      }
-      event.preventDefault();
-      this.saving = true;
-      try {
-        let result = await this.$store.dispatch("blacklist/save", this.model);
-        if (result) this.notifySuccess("Blacklist saved");
-        else this.notifyError("Error while saving blacklist");
-        this.saving = false;
-        this.reset();
-      } catch (error) {
-        this.notifyError("Error while saving blacklist", error);
-        this.saving = false;
-        throw error;
-      }
-    },
-    reset() {
-      this.model = {
-        synced: true,
-        password: true,
-        address: true,
-        codeGenerator: true,
-        creditCard: true
+export default {
+  mixins: [formCoreComponentMixin('blacklist')],
+  computed: {
+    baseModel() {
+      return {
+          name: "",
+          synced: true,
+          password: true,
+          address: true,
+          codeGenerator: true,
+          creditCard: true
       };
-      if (this.options && typeof this.options.onSubmit == "function") {
-        this.options.onSubmit();
-      }
-    }
-  },
-  async created() {
-    if (this.options.itemId) {
-      this.model = await this.$store.getters["blacklist/item"](
-        this.options.itemId
-      );
     }
   }
 };
-
-export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

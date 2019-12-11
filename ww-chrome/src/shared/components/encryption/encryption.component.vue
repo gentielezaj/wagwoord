@@ -3,14 +3,14 @@
     <div class="form-item cbx right">
       <input
         type="checkbox"
-        name="synced"
+        name="encryptLocal"
         v-model="encryptLocal"
         class="cbx hidden"
         @change="save()"
         id="encyption-form-local"
       />
       <span class="lbl" v-span-label for="encyption-form-local"></span>
-      <label for="encyption-form-local" class>Sync</label>
+      <label for="encyption-form-local" class>encryptLocal</label>
     </div>
     <div class="form-item">
       <button @click="toggelDialog(true);">Manage EncryptonKey</button>

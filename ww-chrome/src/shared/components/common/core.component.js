@@ -4,7 +4,7 @@ import deleteDialogComponent from './delete-dialog.component';
 import sctionHeader from './section-header';
 import listComponent from './list.component';
 import {
-    clipboard
+    clipboard, copy
 } from '../../services/core/helper.service';
 
 export function coreComponentMixin(store) {
@@ -190,6 +190,7 @@ export function listItemCoreComponentMixin(store, form, page) {
 export function formCoreComponentMixin(store, formId) {
     return {
         mixins: [coreComponentMixin(store)],
+        name: store + '-from-component',
         props: {
             options: {
                 required: false
@@ -203,11 +204,19 @@ export function formCoreComponentMixin(store, formId) {
                 saving: false
             };
         },
-        methods: {
-            reset() {
-                this.model = {
+        computed: {
+            baseModel() {
+                return {
                     synced: true
                 };
+            },
+            formId() {
+                return formId || (store + '-form');
+            }
+        },
+        methods: {
+            reset() {
+                this.model = copy(this.baseModel);
                 if (this.options && typeof this.options.onSubmit == "function") {
                     this.options.onSubmit();
                 }
@@ -216,7 +225,7 @@ export function formCoreComponentMixin(store, formId) {
                 this.vue.set(this.model, property, value);
             },
             async save() {
-                if (!document.getElementById(formId).checkValidity()) {
+                if (!document.getElementById(this.formId).checkValidity()) {
                     event.preventDefault();
                     this.notifyError("Invalide form");
                     return;
@@ -237,14 +246,19 @@ export function formCoreComponentMixin(store, formId) {
                     this.saving = false;
                     throw error;
                 }
+            },
+            async onCreate() {
+                if (this.options.itemId) {
+                    this.model = await this.$store.getters[this.storeName + "/item"](
+                        this.options.itemId
+                    );
+                } else {
+                    this.model = copy(this.baseModel);
+                }
             }
         },
         async created() {
-            if (this.options.itemId) {
-                this.model = await this.$store.getters[this.storeName + "/item"](
-                    this.options.itemId
-                );
-            }
+            await this.onCreate();
         }
     };
 }

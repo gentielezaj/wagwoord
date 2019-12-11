@@ -34,9 +34,10 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
+import {coreComponentMixin} from "../common/core.component";
 
-let component = {
+export default {
+  mixins: [coreComponentMixin()],
   name: "encryption-form-component",
   props: {
     options: { required: false }
@@ -71,6 +72,4 @@ let component = {
     this.encryptionKey = await this.$store.getters["encryption/encryptionKey"];
   }
 };
-
-export default coreComponent(component);
 </script>

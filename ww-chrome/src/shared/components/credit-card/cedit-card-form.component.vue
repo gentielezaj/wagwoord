@@ -149,7 +149,7 @@
         :disabled="saving"
         id="credit-card-form-save"
         class="success loader"
-        @click="save($event)"
+        @click="saveItem($event)"
       >
         <span>Save</span>
         <span v-show="saving" class="loader"></span>
@@ -167,20 +167,12 @@
 
 <script>
 import Vue from "vue";
-import { coreComponent } from "../common/core-component";
+import { formCoreComponentMixin } from "../common/core.component";
 
-let component = {
-  name: "credit-card-form-component",
-  props: {
-    options: { required: false }
-  },
+export default {
+  mixins: [formCoreComponentMixin("creditcard", 'credit-card-form')],
   data() {
     return {
-      model: {
-        synced: true,
-        nfc: true
-      },
-      saving: false,
       cardIcon: undefined
     };
   },
@@ -190,17 +182,15 @@ let component = {
     },
     maxYear() {
       return this.minYear + 20;
+    },
+    baseModel() {
+      return {
+        synced: true,
+        nfc: true
+      };
     }
   },
   methods: {
-    reset() {
-      this.model = {
-        synced: true
-      };
-      if (this.options && typeof this.options.onSubmit == "function") {
-        this.options.onSubmit();
-      }
-    },
     checkCardNumber(event) {
       if (
         this.model.cardNumber &&
@@ -239,44 +229,15 @@ let component = {
     getCreditCardType() {
       this.cardIcon = this.$store.getters['creditcard/creditCardImage'](this.model.cardNumber);
     },
-    changeModelProperty(property, value) {
-      console.log("change propery");
-      Vue.set(this.model, property, value);
-    },
-    async save() {
-      if (!document.getElementById("credit-card-form").checkValidity()) {
-        event.preventDefault();
-        this.notifyError("Invalide form");
-        return;
-      }
-      event.preventDefault();
-      this.model.cardNumber = this.model.cardNumber.replace(/( )/g, '');
+    async saveItem() {
+      this.model.cardNumber = this.model.cardNumber ? this.model.cardNumber.replace(/( )/g, '') : this.model.cardNumber;
       this.model.cardType = this.$store.getters['creditcard/creditCardType'](this.model.cardNumber);
-      // TODO: chack card validety;
-      this.saving = true;
-      try {
-        let result = await this.$store.dispatch("creditcard/save", this.model);
-        if (result) this.notifySuccess("credit card saved");
-        else this.notifyError("Error while saving credit card");
-        this.saving = false;
-        this.reset();
-      } catch (error) {
-        this.notifyError("Error while saving credit card", error);
-        this.saving = false;
-        throw error;
-      }
+      await this.save();
     }
   },
   async created() {
-    if (this.options.itemId) {
-      this.model = await this.$store.getters["creditcard/item"](
-        this.options.itemId
-      );
-      this.checkCardNumber({key: 'Backspace'});
-      console.log(this.model);
-    }
+    await this.onCreate(); 
+    this.checkCardNumber({key: 'Backspace'});
   }
 };
-
-export default coreComponent(component, "creditcard");
 </script>

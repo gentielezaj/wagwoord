@@ -185,68 +185,9 @@
 </template>
 
 <script>
-import Vue from "vue";
-import {coreComponent} from '../common/core-component'
+import {formCoreComponentMixin} from '../common/core.component'
 
-let component = {
-  name: "code-generator-form-component",
-  props: {
-    options: { required: false }
-  },
-  data() {
-    return {
-      model: {
-        synced: true
-      },
-      saving: false
-    };
-  },
-  methods: {
-    reset() {
-      this.model = {
-        synced: true
-      };
-      if (this.options && typeof this.options.onSubmit == "function") {
-        this.options.onSubmit();
-      }
-    },
-    changeModelProperty(property, value) {
-      console.log('change propery');
-      Vue.set(this.model, property, value);
-    },
-    async save() {
-      if (!document.getElementById("code-generator-form").checkValidity()) {
-        event.preventDefault();
-        this.notifyError("Invalide form");
-        return;
-      }
-      event.preventDefault();
-      this.saving = true;
-      try {
-        let result = await this.$store.dispatch(
-          "codegenerator/save",
-          this.model
-        );
-        if (result) this.notifySuccess("code generator saved");
-        else this.notifyError("Error while saving code generator");
-        this.saving = false;
-        this.reset();
-      } catch (error) {
-        this.notifyError("Error while saving code generator", error);
-        this.saving = false;
-        throw error;
-      }
-    }
-  },
-  async created() {
-    if (this.options.itemId) {
-      this.model = await this.$store.getters["codegenerator/item"](
-        this.options.itemId
-      );
-      console.log(this.model);
-    }
-  }
+export default {
+  mixins: [formCoreComponentMixin("codegenerator", 'code-generator-form')]
 };
-
-export default coreComponent(component, 'codegenerator');
 </script>

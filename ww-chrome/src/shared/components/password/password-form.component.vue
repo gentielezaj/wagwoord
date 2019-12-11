@@ -1,5 +1,5 @@
 <template>
-  <form v-form id="passwordForm" name="passwordForm" novalidate>
+  <form v-form id="password-form" name="password-form" novalidate>
     <div class="form-item">
       <label for="password-form-id">id</label>
       <div class="input-container">
@@ -94,60 +94,27 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
+import {formCoreComponentMixin} from "../common/core.component";
 import Vue from 'vue';
 
-const component = {
-  name: "password-form",
-  props: {
-    options: { required: false }
-  },
+export default {
+  mixins: [formCoreComponentMixin('password')],
   data() {
     return {
-      model: {
-        synced: true
-      },
       passwordInput: {
         get el() {
           return document.getElementById("password-form-password");
         },
         buttonClass: "icon-eye",
         type: "password"
-      },
-      saving: false
+      }
     };
   },
-  computed: {},
   methods: {
-    async save(event) {
-      if (!document.getElementById("passwordForm").checkValidity()) {
-        this.notifyError("Invalide form");
-        return;
-      }
-      event.preventDefault();
-      this.saving = true;
-      try {
-        let result = await this.$store.dispatch("password/save", this.model);
-        if (result) this.notifySuccess("Password saved");
-        else this.notifyError("Error while saving password");
-        this.saving = false;
-        this.reset();
-      } catch (error) {
-        this.notifyError("Error while saving password", error);
-        this.saving = false;
-        throw error;
-      }
-    },
     async generatePassword() {
       const gp = await this.$store.dispatch('password/generate');
       console.log(gp);
       Vue.set(this.model, 'password', gp);
-    },
-    reset() {
-      this.model = { synced: true };
-      if (this.options && typeof this.options.onSubmit == "function") {
-        this.options.onSubmit();
-      }
     },
     showPassword() {
       if (this.passwordInput.type == "password") {
@@ -158,17 +125,7 @@ const component = {
         this.passwordInput.buttonClass = "icon-eye";
       }
     }
-  },
-  async created() {
-    if(this.options.itemId) {
-      this.model = await this.$store.getters['password/item'](this.options.itemId);
-      console.log(this.model);
-    }
   }
 };
 
-export default coreComponent(component);
 </script>
-
-<style lang="scss" scoped>
-</style>

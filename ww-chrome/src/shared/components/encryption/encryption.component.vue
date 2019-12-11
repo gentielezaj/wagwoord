@@ -20,12 +20,13 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
+import {coreComponentMixin} from "../common/core.component";
 import dialog from "../common/dialog-component";
 import form from "./encryption-form.component";
 
-let component = {
+export default {
   name: "encryption-component",
+  mixins: [coreComponentMixin('encryption')],
   components: {
     "dialog-component": dialog,
     "encryption-form-component": form
@@ -57,6 +58,4 @@ let component = {
     this.encryptLocal = await this.$store.getters['encryption/encryptLocal'] || false;
   }
 };
-
-export default coreComponent(component);
 </script>

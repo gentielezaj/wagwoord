@@ -51,10 +51,11 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
+import {coreComponentMixin} from "../common/core.component";
 
-const component = {
+export default {
   name: "sync-settings",
+  mixins: [coreComponentMixin('proxy')],
   data() {
     return {
       model: {},
@@ -93,5 +94,4 @@ const component = {
   }
 };
 
-export default coreComponent(component);
 </script>

@@ -13,9 +13,10 @@
 
 <script>
 import Vue from "vue";
-import {coreComponent} from './core-component';
+import {coreComponentMixin} from './core.component';
 
-const component = {
+export default {
+  mixins: [coreComponentMixin()],
   name: "dialog-delete-component",
   props: {
     options: { required: true }
@@ -49,7 +50,6 @@ const component = {
       }
     }
   },
-  computed: {},
   created() {
     this.item = this.options.item;
     if (!this.options.id)
@@ -59,7 +59,6 @@ const component = {
   }
 };
 
-export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

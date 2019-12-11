@@ -120,12 +120,13 @@
 </template>
 
 <script>
-import {coreComponent} from "../common/core-component";
+import {coreComponentMixin} from "../common/core.component";
 import deleteDialog from "../common/delete-dialog.component";
 import Vue from "vue";
 
-const component = {
-  name: "password-settings",
+export default {
+  name: "password-settings-component",
+  mixins: [coreComponentMixin('password')],
   components: {
     "delete-dialog": deleteDialog
   },
@@ -291,8 +292,6 @@ const component = {
     this.setUpDragnDrop();
   }
 };
-
-export default coreComponent(component);
 </script>
 
 <style lang="scss" scoped>

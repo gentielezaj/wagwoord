@@ -49,11 +49,12 @@
 </template>
 
 <script>
-import {coreComponent} from "./core-component";
+import {coreComponentMixin} from "./core.component";
 import loaderComponent from "./loader.component";
 
-const component = {
+export default {
   name: "list-component",
+  mixins: [coreComponentMixin()],
   props: ["options"],
   components: {
     "loader-component": loaderComponent
@@ -107,5 +108,4 @@ const component = {
   }
 };
 
-export default coreComponent(component);
 </script>

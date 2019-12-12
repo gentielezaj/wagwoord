@@ -1,0 +1,37 @@
+Wagwoord (early alfra)
+USE IT ON YOUR OWN RISK
+Your personal credential manager, on your personal server!
+
+I created this application for my self, because I think that the most secure way to save sensitive infromation is on you personal server, so you are in controll of your data.
+
+This app is recommended for users that dont share there device, and have an basic knolage about servers and deployment.
+
+Wagwoord is a credential manager that helps you store passwords, Time-based One-time Password, credit cards and addresses.
+
+This application contains no adds and is free.
+
+Features:
+- save password, addresses, registration, credit card, TOTP forms
+- autofill password, addresses, registration, credit card, TOTP forms
+- generate strong password, customisable in settings, add simbols and legth
+- generate TOTP from barcode image
+- every thing encrypted
+- open source
+
+Set up:
+- By downloading the app the application will be available for you.
+
+- How ever it is recommended to specify encryption key before use, think it as a master password. 
+To set encryption go to settings on section Encryption.
+  The encryption key supported are AES-128, AES-192, and AES-256. It will pick the variant by the size of the key you pass in. If you use a passphrase, then it will generate a 256-bit key.
+The key is stored locally, and never leaves the local device, that sead you need to set the encryption key on every app you want to uses manualy.
+IMPORTANT: The encryption key is stored locally so there is no way to regain access if you lose it.
+
+- If you want to sync you need to go to settings and on server section set up url.
+Please visit offitial site for more information about setting up server.
+
+How to use:
+- after setting up you can start using linke any other credential manager, the app will auto fill your inputs on the platform that you are using.
+
+IMPORTANT:
+Application can be used locally, but in case you want to sync cos devices than you have to have your server that supports nodejs, and the code for the server can be found on github, for publishing server side app to your server and more information about the Wagwoord please visit the official site or github.

@@ -14,7 +14,7 @@ export default class CodeGeneratorService extends CoreService {
             username: item.username
         });
 
-        if(!canUpdate && oldPasseord && oldPasseord.id != item.id) {
+        if (!canUpdate && oldPasseord && oldPasseord.id != item.id) {
             // eslint-disable-next-line no-throw-literal
             throw "item-exists";
         }
@@ -45,7 +45,7 @@ export default class CodeGeneratorService extends CoreService {
             params.forEach((k, v) => {
                 model[v] = k;
             });
-        
+
             model.username = url.pathname.substring(7);
         }
 

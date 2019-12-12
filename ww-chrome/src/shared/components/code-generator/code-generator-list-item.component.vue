@@ -27,6 +27,12 @@
       <span class="data-action right icon" @click="clipboard(code)" data="code">
         <i class="icon-copy-1"></i>
       </span>
+      <div
+        class="code-time-progress"
+        :class="progressColorClass"
+        :id="'code-time-progress' + item.id"
+        :style="widthStyle"
+      ></div>
     </div>
     <dialog-component v-if="isOptionsScope" :options="dialogOptions"></dialog-component>
     <delete-dialog-component :options="deleteDialogOptions"></delete-dialog-component>
@@ -34,7 +40,7 @@
 </template>
 
 <script>
-import {listItemCoreComponentMixin} from "../common/core.component";
+import { listItemCoreComponentMixin } from "../common/core.component";
 import form from "./code-generator-form.component";
 
 import authenticator from "otplib/authenticator";
@@ -42,12 +48,14 @@ import crypto from "crypto";
 
 export default {
   name: "code-generator-list-item",
-  mixins: [listItemCoreComponentMixin('codegenerator', form, 'code-generator')],
+  mixins: [listItemCoreComponentMixin("codegenerator", form, "code-generator")],
   data() {
     return {
       code: "",
       timeLeft: 0,
-      checkCodeInterval: ""
+      checkCodeInterval: "",
+      widthStyle: "width: 100%",
+      progressColorClass: "success"
     };
   },
   beforeDestroy() {
@@ -55,15 +63,45 @@ export default {
   },
   methods: {
     checkCode() {
+      const timeRemaining = authenticator.timeRemaining();
+      let procent = 100 - ((this.timeRemaining() / (Number(this.item.step) || 30)) * 100).toFixed(4);
+      if (procent > 11) this.vue.set(this, "progressColorClass", "success");
+      else if (procent < 6) this.vue.set(this, "progressColorClass", "error");
+      else this.vue.set(this, "progressColorClass", "info");
+
       this.vue.set(this, "timeLeft", authenticator.timeRemaining());
       this.vue.set(this, "code", authenticator.generate(this.item.secret));
+      this.vue.set(this, "widthStyle", `width: ${procent}%`);
+    },
+    timeRemaining() {
+      return (
+        ((this.item.epoch || new Date().getTime()) / 1000) %
+        (this.item.step || 30)
+      );
     }
   },
   created() {
-    authenticator.options = { crypto };
+    authenticator.options = {
+      crypto
+    };
     this.checkCodeInterval = setInterval(() => {
       this.checkCode();
-    }, 1);
+    }, 10);
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.code-time-progress {
+  height: 1px;
+  &.success {
+    background-color: var(--wagwoord-color-success-secend);
+  }
+  &.info {
+    background-color: var(--wagwoord-color-info-secend);
+  }
+  &.error {
+    background-color: var(--wagwoord-color-error-secend);
+  }
+}
+</style>

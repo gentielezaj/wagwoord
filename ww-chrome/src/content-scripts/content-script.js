@@ -9,10 +9,6 @@ var handlers = {};
 var observer = undefined;
 window.muttat = 0;
 
-function getMuttant() {
-    return window.muttat;
-}
-
 // eslint-disable-next-line no-unused-vars
 function createScriptTag(path) {
     let script = document.createElement('script');

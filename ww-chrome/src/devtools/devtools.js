@@ -1,6 +1,5 @@
 import './devtools.scss';
 
-
 chrome.devtools.panels.create("Ww log",
     "",
     "../devtools/devtools.html",
@@ -10,7 +9,6 @@ chrome.devtools.panels.create("Ww log",
 );
 
 function init(panel) {
-    
     chrome.devtools.inspectedWindow.eval(
         "inspect(window.muttat)",
         { useContentScriptContext: true },

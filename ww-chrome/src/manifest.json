@@ -9,7 +9,7 @@
     "512": "assets/logo/logo-white.png"
   },
   "browser_action": {
-    "default_title": "ww-chrome",
+    "default_title": "Wagwoord",
     "default_popup": "popup/popup.html"
   },
   "background": {

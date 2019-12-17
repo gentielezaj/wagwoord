@@ -1,5 +1,11 @@
 @import '../style/app-defaults.scss';
 
+.wagwoord-complete-hide {
+    display: none;
+    position: absolute;
+}
+
+
 #wagwoord-password-input-wapper{
     z-index: 9999;
 }

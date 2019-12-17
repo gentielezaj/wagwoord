@@ -18,6 +18,7 @@ const config = {
     'background/background': './background/background.js',
     'popup/popup': './popup/popup.js',
     'options/options': './options/options.js',
+    'devtools/devtools': './devtools/devtools.js',
     'content-scripts/content-script': './content-scripts/content-script.js'
   },
   output: {
@@ -92,6 +93,13 @@ const config = {
       to: 'options/options.html',
       transform: transformHtml
     },
+    // #region dev tools
+    {
+      from: 'devtools/devtools.html',
+      to: 'devtools/devtools.html',
+      transform: transformHtml
+    },
+    // #endregion dev tools
     {
       from: 'assets',
       to: 'assets'

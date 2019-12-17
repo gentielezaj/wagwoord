@@ -247,18 +247,6 @@ section main {
 
 /* #endregion section */
 
-/* #region passwords */
-.password-list .search-input {
-    padding: 2.5rem 0 0.5rem 0;
-    top: 4.5rem;
-}
-
-section .password-list .data-container {
-    padding-top: 2.5rem;
-}
-
-/* #endregion passwords */
-
 /* #region content */
 
 section.collapsed main article,
@@ -404,3 +392,12 @@ ul.settings-navigation {
 /* #endregion drag n drop */
 
 /* #endregion settings */
+
+// #region list
+.list{
+    .search-input {
+        top: 4.5rem;
+        padding: 1rem 0;
+    }
+}
+// #endregion list

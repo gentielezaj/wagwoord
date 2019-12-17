@@ -17,6 +17,7 @@
       "background/background.js"
     ]
   },
+  "devtools_page": "devtools/devtools.html",
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*", "file:///*/*"],
     "js": [

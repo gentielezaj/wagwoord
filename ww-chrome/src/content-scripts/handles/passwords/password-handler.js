@@ -25,27 +25,28 @@ export default class PasswordHandler {
         this.passwords = passwords || [];
         this.settings = settings || {};
         this.blacklist = blacklist || false;
+        this.forms = [];
 
         this.waitTime = 0;
-        passwords.forEach(element => {
-            if (element.waitTime && this.waitTime < element.waitTime) {
-                this.waitTime = element.waitTime;
-            }
-        });
-
-        this.init();
+        // passwords.forEach(element => {
+        //     if (element.waitTime && this.waitTime < element.waitTime) {
+        //         this.waitTime = element.waitTime;
+        //     }
+        // });
     }
 
     init() {
         if(!this.blacklist || !this.blacklist.password)
-            setTimeout(() => this.coreinitForm(), this.waitTime || 0);
+            // setTimeout(() => this.coreinitForm(), this.waitTime || 0);
+            this.coreinitForm();
     }
 
     // #region from
     coreinitForm() {
         let pass = this.passwords.length ? this.passwords[0] : {};
-        this.forms = getLoginForms(window.location.host);
-        this.forms.forEach(f => {
+        let forms = getLoginForms(window.location.host);
+        forms.forEach(f => {
+            if(f.formElement.getAttribute(htmlTagAttributes.formId)) return;
             const formId = uuidv4();
             f.id = formId;
             f.formElement.setAttribute('autocomplete', 'off');
@@ -58,10 +59,11 @@ export default class PasswordHandler {
             }
             this.setUpInput(f.passwordElement, formId, pass.password);
             this.setUpInput(f.usernameElement, formId, pass.username);
+            this.forms.push(f);
         });
 
-        if (this.forms.length == 1 && this.settings.autoSubmit) {
-            this.forms[0].formElement.submit();
+        if (forms.length == 1 && this.settings.autoSubmit) {
+            forms[0].formElement.submit();
         }
     }
 
@@ -157,6 +159,8 @@ export default class PasswordHandler {
                 domain: window.location.href
             }
         };
+
+        if(!model.password.password) return;
 
         appChrome.formSubmittion("password", JSON.stringify(model)).then(r => confirmSubmittion(r));
     }

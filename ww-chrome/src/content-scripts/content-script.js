@@ -4,6 +4,15 @@ import {
     confirmSubmittion
 } from './handles/common/submitted-response-handler';
 
+var handlers = {};
+// eslint-disable-next-line no-undef-init
+var observer = undefined;
+window.muttat = 0;
+
+function getMuttant() {
+    return window.muttat;
+}
+
 // eslint-disable-next-line no-unused-vars
 function createScriptTag(path) {
     let script = document.createElement('script');
@@ -37,13 +46,37 @@ chrome.runtime.sendMessage({
     elBody.appendChild(createStyleTag('content-scripts/content-script.css'));
 
     if (model.passwords && model.settings && model.settings.password) {
-        new PasswordHandler(model.passwords, model.settings.password, model.blacklist);
+        handlers.password = new PasswordHandler(model.passwords, model.settings.password, model.blacklist);
     }
+
+    startFormInspector(model);
 
     if (model.submittedResponse) {
         confirmSubmittion(model.submittedResponse);
     }
 });
+
+function startFormInspector(model) {
+    for (const handler in handlers) {
+        if (handlers.hasOwnProperty(handler)) {
+            handlers[handler].init();
+        }
+    }
+
+    if (!observer) {
+        observer = new MutationObserver((e, s) => {
+            console.log(window.muttat++);
+            startFormInspector(model);
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            characterData: false
+        });
+    }
+}
 
 // #region get messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

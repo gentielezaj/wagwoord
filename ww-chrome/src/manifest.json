@@ -2,7 +2,7 @@
   "name": "Wagwoord",
   "short_name": "wagwoord",
   "description": "Wagwoord credential Manager",
-  "version": "0.1",
+  "version": "0.2.0",
   "manifest_version": 2,
   "author": "Genti Elezaj",
   "icons": {

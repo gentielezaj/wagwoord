@@ -1,7 +1,7 @@
 {
-  "name": "ww-chrome",
-  "version": "0.1.1",
-  "description": "wagwoordchrome",
+  "name": "wagwoord",
+  "version": "0.2.0",
+  "description": "wagwoord chrome",
   "author": "Genti Elezaj <gogi_46@live.com>",
   "license": "MIT",
   "scripts": {

@@ -1,6 +1,8 @@
 import PasswordService from "./passwords/password.service";
 import BlacklistService from "./blacklist/blacklist.service";
 import CodeGeneratorService from "./code-generator/code-generator.service";
+import CreditCardService from "./credit-card.service";
+import AddressService from "./address.service";
 
 import {
     getName,
@@ -12,6 +14,8 @@ export default class BackgroundService {
         this.$password = new PasswordService();
         this.$blacklist = new BlacklistService();
         this.$codeGenerator = new CodeGeneratorService();
+        this.$creditCards = new CreditCardService();
+        this.$addressService = new AddressService();
     }
 
     async getDataFroDomain(url, submitted) {
@@ -87,5 +91,7 @@ export default class BackgroundService {
         await this.$password.settings.sync();
         await this.$blacklist.sync();
         await this.$codeGenerator.sync();
+        await this.$addressService.sync();
+        await this.$creditCards.sync();
     }
 }

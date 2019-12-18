@@ -61,7 +61,7 @@ function startFormInspector(model) {
 
     if (!observer) {
         observer = new MutationObserver((e, s) => {
-            console.log(window.muttat++);
+            // console.log(window.muttat++);
             startFormInspector(model);
         });
 

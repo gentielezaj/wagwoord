@@ -42,9 +42,6 @@ export class CoreService {
         return await this.db.getItem(key);
     }
 
-    async getSaveItem(item) {
-        return await this.get();
-    }
     // #endregion get
 
     // #region delete
@@ -101,6 +98,8 @@ export class CoreService {
             if (!this._isValidModel(item)) {
                 return item;
             }
+
+            if (!notlastModified || !item.lastModified) item.lastModified = new Date().getTime();
 
             if (typeof this._preSave === 'function') {
                 item = await this._preSave(item, canUpdate);

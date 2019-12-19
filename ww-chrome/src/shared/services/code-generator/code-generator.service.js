@@ -46,6 +46,7 @@ export default class CodeGeneratorService extends CoreService {
                 model[v] = k;
             });
 
+            model.synced = true;
             model.username = url.pathname.substring(7);
         }
 

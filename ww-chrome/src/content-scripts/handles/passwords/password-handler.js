@@ -160,7 +160,8 @@ export default class PasswordHandler {
             }
         };
 
-        if(!model.password.password) return;
+        // TODO: resolve when password is without username
+        if(!model.password.password || !model.password.username) return;
 
         appChrome.formSubmittion("password", JSON.stringify(model)).then(r => confirmSubmittion(r));
     }

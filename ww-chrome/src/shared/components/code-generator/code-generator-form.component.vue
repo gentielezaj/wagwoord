@@ -19,7 +19,7 @@
           id="code-generator-form-issuer"
           maxlength="64"
           minlength="2"
-          pattern="^[A-Za-z0-9_\-.@:]{1,64}$"
+          pattern="^[A-Za-z0-9_\-.@: ]{1,64}$"
           name="issuer"
           required
           v-form-field
@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="form-item">
-      <article v-collapse="'.content'">
+      <article v-collapse="'.content'" class="xl">
         <header>
           <h3>Advance</h3>
         </header>
@@ -73,7 +73,7 @@
               <input
                 id="code-generator-form-digits"
                 name="digits"
-                placeholder="time, defult 6"
+                placeholder="generated code leght, defult 6"
                 min="6"
                 v-form-field
                 max="10"
@@ -89,7 +89,7 @@
                 id="code-generator-form-step"
                 name="step"
                 v-form-field
-                placeholder="generated code leght, defult 30"
+                placeholder="time, defult 30"
                 v-model.number="model.step"
                 type="number"
               />
@@ -105,7 +105,7 @@
                 maxlength="512"
                 v-form-field
                 v-model="model.encoding"
-                type="number"
+                type="text"
               />
             </div>
           </div>
@@ -119,7 +119,7 @@
                 maxlength="512"
                 v-form-field
                 v-model="model.algorithm"
-                type="number"
+                type="text"
               />
             </div>
           </div>
@@ -177,7 +177,7 @@
         type="button"
         id="code-generator-form-reset"
         :disabled="saving"
-        @click="reset()"
+        @click="reset($event)"
         class="error"
       >Reset</button>
     </div>
@@ -185,9 +185,24 @@
 </template>
 
 <script>
-import {formCoreComponentMixin} from '../common/core.component'
+import { formCoreComponentMixin } from "../common/core.component";
 
 export default {
-  mixins: [formCoreComponentMixin("codegenerator", 'code-generator-form')]
+  mixins: [formCoreComponentMixin("codegenerator", "code-generator-form")],
+  methods: {
+    async save(event) {
+      if (event) event.preventDefault();
+      if (!this.checkFormVaidity()) return;
+      this.model = this.$store.getters[this.storeName + "/assingeDefaults"](
+        this.model
+      );
+      console.log(this.model);
+      await this.coreSave(event);
+    }
+  },
+  async created() {
+    await this.onCreate();
+    console.log(this.model);
+  }
 };
 </script>

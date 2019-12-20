@@ -7,6 +7,24 @@ export default class CodeGeneratorService extends CoreService {
         super('codegenerator');
     }
 
+    get defaultModel() {
+        return {
+            digits: 6,
+            encoding: 'ascii',
+            algorithm: 'sha1',
+            step: 30,
+            window: 0,
+            epoch: undefined
+        };
+    }
+
+    assigneDefaultValues(item) {
+        return {
+            ...this.defaultModel,
+            ...item
+        };
+    }
+
     // #region abstract
     async _preSave(item, canUpdate) {
         const oldPasseord = await this.getItem({
@@ -66,7 +84,14 @@ export default class CodeGeneratorService extends CoreService {
             lastModified: item.lastModified,
             id: item.serverId,
             localId: item.id,
-            encrypted: item.encrypted
+            encrypted: item.encrypted,
+            digits: item.digits || 6,
+            encoding: item.encoding || 'ascii',
+            algorithm: item.algorithm || 'sha1',
+            epoch: item.epoch,
+            step: item.step || 30,
+            window: item.window || 0,
+            icon: item.icon
         };
 
         if (!result.encrypted) {
@@ -90,7 +115,14 @@ export default class CodeGeneratorService extends CoreService {
             serverId: item.id,
             id: item.localId,
             encrypted: item.encrypted,
-            synced: true
+            synced: true,
+            digits: item.digits || 6,
+            encoding: item.encoding || 'ascii',
+            algorithm: item.algorithm || 'sha1',
+            epoch: item.epoch,
+            step: item.step || 30,
+            window: item.window || 0,
+            icon: item.icon
         };
 
         if (result.encrypted) {

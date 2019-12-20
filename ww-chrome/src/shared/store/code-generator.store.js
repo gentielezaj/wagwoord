@@ -1,4 +1,12 @@
 import core from './core.store.js';
 import codegeneratorService from '../services/code-generator/code-generator.service';
 
-export default core(codegeneratorService);
+const store = {
+    getters: {
+        assingeDefaults: state => item => {
+            return state.service.assigneDefaultValues(item);
+        }
+    }
+};
+
+export default core(codegeneratorService, store);

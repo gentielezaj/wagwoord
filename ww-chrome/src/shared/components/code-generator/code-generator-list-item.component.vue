@@ -55,7 +55,8 @@ export default {
       timeLeft: 0,
       checkCodeInterval: "",
       widthStyle: "width: 100%",
-      progressColorClass: "success"
+      progressColorClass: "success",
+      authenticator: new authenticator.Authenticator()
     };
   },
   beforeDestroy() {
@@ -63,14 +64,18 @@ export default {
   },
   methods: {
     checkCode() {
-      const timeRemaining = authenticator.timeRemaining();
-      let procent = 100 - ((this.timeRemaining() / (Number(this.item.step) || 30)) * 100).toFixed(4);
+      const timeRemaining = this.authenticator.timeRemaining();
+      let procent =
+        100 -
+        ((this.timeRemaining() / (Number(this.item.step) || 30)) * 100).toFixed(
+          4
+        );
       if (procent > 11) this.vue.set(this, "progressColorClass", "success");
       else if (procent < 6) this.vue.set(this, "progressColorClass", "error");
       else this.vue.set(this, "progressColorClass", "info");
 
-      this.vue.set(this, "timeLeft", authenticator.timeRemaining());
-      this.vue.set(this, "code", authenticator.generate(this.item.secret));
+      this.vue.set(this, "timeLeft", timeRemaining);
+      this.vue.set(this, "code", this.authenticator.generate(this.item.secret));
       this.vue.set(this, "widthStyle", `width: ${procent}%`);
     },
     timeRemaining() {
@@ -81,8 +86,19 @@ export default {
     }
   },
   created() {
-    authenticator.options = {
-      crypto
+    const defaults = this.$store.getters[this.storeName + "/assingeDefaults"](
+      this.item
+    );
+
+    console.log(defaults);
+    this.authenticator.options = {
+      crypto,
+      digits: defaults.digits,
+      encoding: defaults.encoding,
+      algorithm: defaults.algorithm,
+      step: defaults.step,
+      window: defaults.window,
+      epoch: defaults.epoch
     };
     this.checkCodeInterval = setInterval(() => {
       this.checkCode();

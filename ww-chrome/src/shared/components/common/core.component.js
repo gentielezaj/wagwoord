@@ -224,13 +224,13 @@ export function formCoreComponentMixin(store, formId) {
             changeModelProperty(property, value) {
                 this.vue.set(this.model, property, value);
             },
-            async save() {
-                if (!document.getElementById(this.formId).checkValidity()) {
-                    event.preventDefault();
-                    this.notifyError("Invalide form");
-                    return;
-                }
-                event.preventDefault();
+            async save(event) {
+                if(event) event.preventDefault();
+                if(!this.checkFormVaidity()) return;
+                await this.coreSave(event);
+            },
+            async coreSave(event) {
+                if(event) event.preventDefault();
                 this.saving = true;
                 try {
                     let result = await this.$store.dispatch(
@@ -246,6 +246,14 @@ export function formCoreComponentMixin(store, formId) {
                     this.saving = false;
                     throw error;
                 }
+            },
+            checkFormVaidity(event) {
+                if (!document.getElementById(this.formId).checkValidity()) {
+                    if(event) event.preventDefault();
+                    this.notifyError("Invalide form");
+                    return false;
+                }
+                return true;
             },
             async onCreate() {
                 if (this.options.itemId) {

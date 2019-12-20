@@ -188,6 +188,8 @@ a:active {
 /* #region input-container */
 
 section.collapsed form,
+section.collapsed main form,
+section main form,
 form {
     min-width: 25rem;
     article {

@@ -1,6 +1,8 @@
 'use strict';
 import BackgroundService from '../shared/services/blackground.service';
-import { BrowserQRCodeReader } from '@zxing/library';
+import {
+    BrowserQRCodeReader
+} from '@zxing/library';
 
 var $backgound = new BackgroundService();
 
@@ -10,11 +12,11 @@ chrome.contextMenus.create({
     id: 'wagwoord-contextmenu-generate-password',
     title: 'Generate password',
     contexts: ["editable"],
-    // TODO: check settings
     visible: true,
     onclick: function (info, tab) {
         console.log(info);
         console.log(tab);
+        // TODO: check settings of input
         $backgound.$password.generate().then(r => sendMessageToConentScript(tab, 'insert-value', r));
     }
 });
@@ -56,7 +58,7 @@ chrome.runtime.onMessage.addListener(
 
         if (request.requestType == 'formSubmited') {
             $backgound.getSubmittedResponse(request.model).then(r => {
-                if(r.hasAction) storage(sender.tab, 'submitted', r);
+                if (r.hasAction) storage(sender.tab, 'submitted', r);
                 sendResponse(r);
             });
             return true;
@@ -85,7 +87,7 @@ function storage(tab, key, data) {
     if (data === 'remove') {
         sessionStorage.removeItem(storageKey);
         return true;
-    }else if (data) {
+    } else if (data) {
         if (typeof data != 'string') data = JSON.stringify(data);
         sessionStorage.setItem(storageKey, data);
         return true;

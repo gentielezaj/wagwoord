@@ -125,7 +125,6 @@ export default class PasswordHandler {
     }
 
     setListPassword(target) {
-        // TODO: not change username if not null
         const iId = target.parentNode.getAttribute(htmlTagAttributes.dualogUlId);
         const pId = target.getAttribute(htmlTagAttributes.passwordId);
         const form = this.forms.filter(f => f.id == iId)[0];

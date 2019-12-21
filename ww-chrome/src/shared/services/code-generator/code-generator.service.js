@@ -66,6 +66,9 @@ export default class CodeGeneratorService extends CoreService {
 
             model.synced = true;
             model.username = url.pathname.substring(7);
+            if(model.username && model.username.indexOf(':') > -1) {
+                model.username = model.username.substring(model.username.indexOf(':') + 1, model.username.length);
+            }
         }
 
         return await super.save(model, onSaveItem, notlastModified, ignoreServer);

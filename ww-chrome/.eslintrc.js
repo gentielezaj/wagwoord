@@ -43,6 +43,7 @@ module.exports = {
     "no-unneeded-ternary": 0,
     "new-cap": 0,
     "no-trailing-spaces": 0,
-    "eslint-plugin-vue": 0
+    "eslint-plugin-vue": 0,
+    'no-cond-assign': 0
   }
 }

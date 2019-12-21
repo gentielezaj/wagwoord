@@ -26,7 +26,8 @@
     "run_at": "document_idle"
   }],
   "web_accessible_resources": [
-      "content-scripts/content-script.css"
+      "content-scripts/content-script.css",
+      "assets/*"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "options_page": "options/options.html",

@@ -3,8 +3,8 @@ import codegeneratorService from '../services/code-generator/code-generator.serv
 
 const store = {
     getters: {
-        assingeDefaults: state => item => {
-            return state.service.assigneDefaultValues(item);
+        assingeDefaults: state => (item, isForm) => {
+            return state.service.assigneDefaultValues(item, isForm);
         }
     }
 };

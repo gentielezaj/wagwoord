@@ -2,26 +2,38 @@ import {
     CoreService
 } from "../core/core.service";
 
+import authenticator from "otplib/authenticator";
+import crypto from "crypto";
+
 export default class CodeGeneratorService extends CoreService {
     constructor() {
         super('codegenerator');
     }
 
-    get defaultModel() {
-        return {
+    getDefaultModel(skipEpoch) {
+        let model = {
             digits: 6,
-            encoding: 'ascii',
+            encoding: 'hex',
             algorithm: 'sha1',
             step: 30,
-            window: 0,
-            epoch: undefined
+            window: 0
         };
+        if(!skipEpoch) {
+            model.epoch = Date.now();
+        }
+        return model;
     }
 
-    assigneDefaultValues(item) {
-        return {
-            ...this.defaultModel,
+    assigneDefaultValues(item, isForm) {
+        return isForm ? {
+            ...authenticator.defaultOptions,
+            ...this.getDefaultModel(isForm),
             ...item
+        } : {
+            ...authenticator.optionsAll,
+            ...this.getDefaultModel(),
+            ...item,
+            crypto
         };
     }
 

@@ -13,7 +13,7 @@ export class CreateCodeGeneratorTable1574877308169 implements MigrationInterface
                 "secret" varchar NOT NULL,
                 "encrypted" integer NOT NULL DEFAULT (0),
                 "digits" integer DEFAULT (6),
-                "encoding" varchar(512) DEFAULT ('ascii'),
+                "encoding" varchar(512) DEFAULT ('hex'),
                 "algorithm" varchar(512) DEFAULT ('sha1'),
                 "epoch" integer,
                 "step" integer NOT NULL DEFAULT (30),

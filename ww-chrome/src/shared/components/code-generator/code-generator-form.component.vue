@@ -79,6 +79,7 @@
                 max="10"
                 v-model.number="model.digits"
                 type="number"
+                required
               />
             </div>
           </div>
@@ -92,35 +93,46 @@
                 placeholder="time, defult 30"
                 v-model.number="model.step"
                 type="number"
+                required
               />
             </div>
           </div>
           <div class="form-item">
             <label for="code-generator-form-encoding">encoding</label>
             <div class="input-container">
-              <input
+              <select
                 id="code-generator-form-encoding"
                 name="encoding"
-                placeholder="defult ascii"
-                maxlength="512"
+                placeholder="defult hex"
                 v-form-field
                 v-model="model.encoding"
-                type="text"
-              />
+                required
+              >
+                <option
+                  v-for="encodingType in encodingTypes"
+                  :key="encodingType"
+                  :value="encodingType"
+                >{{encodingType.toUpperCase()}}</option>
+              </select>
             </div>
           </div>
           <div class="form-item">
             <label for="code-generator-form-algorithm">algorithm</label>
-            <div class="input-container">
-              <input
+            <div class="input-container">              
+              <select
                 id="code-generator-form-algorithm"
                 name="algorithm"
                 placeholder="defult sha1"
-                maxlength="512"
                 v-form-field
                 v-model="model.algorithm"
-                type="text"
-              />
+                required
+              >
+                <option
+                  v-for="algorithmType in algorithmTypes"
+                  :key="algorithmType"
+                  :value="algorithmType"
+                >{{algorithmType.toUpperCase()}}</option>
+              </select>
             </div>
           </div>
           <div class="form-item">
@@ -133,6 +145,7 @@
                 v-form-field
                 v-model.number="model.window"
                 type="number"
+                required
               />
             </div>
           </div>
@@ -193,16 +206,24 @@ export default {
     async save(event) {
       if (event) event.preventDefault();
       if (!this.checkFormVaidity()) return;
-      this.model = this.$store.getters[this.storeName + "/assingeDefaults"](
-        this.model
-      );
-      console.log(this.model);
+
       await this.coreSave(event);
+    }
+  },
+  computed: {
+    encodingTypes() {
+      return ["hex", "ascii", "utf8", "base64", "latin1"];
+    },
+    algorithmTypes() {
+      return ["sha1", "sha256", "sha512"];
     }
   },
   async created() {
     await this.onCreate();
-    console.log(this.model);
+    this.model = this.$store.getters[this.storeName + "/assingeDefaults"](
+      this.model,
+      true
+    );
   }
 };
 </script>

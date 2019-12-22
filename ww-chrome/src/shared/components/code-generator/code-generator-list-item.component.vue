@@ -42,9 +42,7 @@
 <script>
 import { listItemCoreComponentMixin } from "../common/core.component";
 import form from "./code-generator-form.component";
-
 import authenticator from "otplib/authenticator";
-import crypto from "crypto";
 
 export default {
   name: "code-generator-list-item",
@@ -90,16 +88,7 @@ export default {
       this.item
     );
 
-    console.log(defaults);
-    this.authenticator.options = {
-      crypto,
-      digits: defaults.digits,
-      encoding: defaults.encoding,
-      algorithm: defaults.algorithm,
-      step: defaults.step,
-      window: defaults.window,
-      epoch: defaults.epoch
-    };
+    this.authenticator.options = defaults;
     this.checkCodeInterval = setInterval(() => {
       this.checkCode();
     }, 10);

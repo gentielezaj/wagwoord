@@ -41,9 +41,18 @@ form {
 }
 
 .input-container>input,
-.input-container>textarea {
+.input-container>textarea,
+.input-container>select {
     width: calc(100% - 1rem);
     background: transparent;
+    border: none;
+    color: var(--wagwoord-color);
+    padding: 0.5rem;
+}
+
+select option {
+    width: calc(100% - 1rem);
+    background: var(--wagwoord-main-color);
     border: none;
     color: var(--wagwoord-color);
     padding: 0.5rem;
@@ -54,8 +63,13 @@ form {
     resize: vertical;
 }
 
+.input-container>select {
+    width: 100%;
+}
+
 .input-container>input:focus,
-.input-container>textarea:focus {
+.input-container>textarea:focus,
+.input-container>select  {
     outline: none;
 }
 

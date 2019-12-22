@@ -21,7 +21,7 @@ export class CodeGeneratorEntity extends BaseEntity {
     @Column({ nullable: true, default: 6, type: 'int' })
     public digits: number;
 
-    @Column({ nullable: true, default: 'ascii', type: 'varchar', length: 512 })
+    @Column({ nullable: true, default: 'hex', type: 'varchar', length: 512 })
     public encoding: string;
 
     @Column({ nullable: true, default: 'sha1', type: 'varchar', length: 512 })
@@ -47,15 +47,15 @@ export class CodeGeneratorEntity extends BaseEntity {
         result.username = obj.username;
         result.secret = obj.secret;
         result.id = obj.id;
-        result.lastModified = obj.lastModified;
+        result.lastModified = obj.lastModified || new Date().getTime() + '';
         result.encrypted = obj.encrypted || false;
         result.deleted = obj.deleted || false;
-        result.digits = obj.digits || 6;
-        result.encoding = obj.encoding || 'ascii';
-        result.algorithm = obj.algorithm || 'sha1';
+        result.digits = obj.digits;
+        result.encoding = obj.encoding;
+        result.algorithm = obj.algorithm;
         result.epoch = obj.epoch;
-        result.step = obj.step || 30;
-        result.window = obj.window || 0;
+        result.step = obj.step;
+        result.window = obj.window;
         result.icon = obj.icon;
         return result;
     }

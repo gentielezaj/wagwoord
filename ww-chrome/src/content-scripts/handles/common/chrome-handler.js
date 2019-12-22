@@ -20,6 +20,10 @@ async function createStorageRequest(key, data) {
 }
 // #endregion storage
 
+async function post(model) {
+    return await chromeRequest('post', { model });
+}
+
 // #region form submittion
 async function formSubmittion(formType, model, action) {
     return await chromeRequest('formSubmited', {
@@ -50,6 +54,7 @@ export default {
         setItem,
         removeItem
     },
+    post,
     formSubmittion
 };
 // #endregion return

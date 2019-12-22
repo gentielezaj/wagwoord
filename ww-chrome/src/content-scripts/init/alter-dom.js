@@ -10,5 +10,6 @@ export function createStyleTag(path) {
     script.setAttribute('href', chrome.extension.getURL(path));
     script.setAttribute('type', 'text/css');
     script.setAttribute('rel', 'stylesheet');
-    return script;
+    script.setAttribute('content_security_policy', "default-src 'self' style-src 'self' 'unsafe-inline';");
+    document.head.appendChild(script);
 }

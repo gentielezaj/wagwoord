@@ -18,7 +18,7 @@ export default class CodeGeneratorService extends CoreService {
             step: 30,
             window: 0
         };
-        if(!skipEpoch) {
+        if (!skipEpoch) {
             model.epoch = Date.now();
         }
         return model;
@@ -63,6 +63,11 @@ export default class CodeGeneratorService extends CoreService {
     }
 
     async save(model, onSaveItem, notlastModified, ignoreServer) {
+        model = this._getModel(model);
+        return await super.save(model, onSaveItem, notlastModified, ignoreServer);
+    }
+
+    _getModel(model) {
         if (typeof model == 'string') {
             if (!model.toLocaleLowerCase().startsWith("otpauth://totp/")) {
                 // eslint-disable-next-line no-throw-literal
@@ -78,12 +83,34 @@ export default class CodeGeneratorService extends CoreService {
 
             model.synced = true;
             model.username = url.pathname.substring(7);
-            if(model.username && model.username.indexOf(':') > -1) {
+            if (model.username && model.username.indexOf(':') > -1) {
                 model.username = model.username.substring(model.username.indexOf(':') + 1, model.username.length);
             }
         }
 
-        return await super.save(model, onSaveItem, notlastModified, ignoreServer);
+        return model;
+    }
+
+    async saveOrUpdate(model, onSaveItem, notlastModified, ignoreServer) {
+        model = this._getModel(model);
+        return await super.saveOrUpdate(model, onSaveItem, notlastModified, ignoreServer);
+    }
+
+    async getItemWithCode(item) {
+        if(typeof item == 'number') {
+            item = await this.getItem(item);
+        }
+        item.code = await this.generateCodeForItem(item);
+        return item;
+    }
+
+    async generateCodeForItem(item) {
+        if(typeof item == 'number') {
+            item = await this.getItem(item);
+        }
+
+        authenticator.options = this.assigneDefaultValues(item);
+        return authenticator.generate(item.secret);
     }
 
     _isValidModel(item) {

@@ -79,6 +79,7 @@ export default class BackgroundService {
         if (!model) return false;
         if (model.password) {
             model.password.name = model.password.name || model.password.domain;
+            model.password.synced = true;
             this.$password.save(model.password).then();
         }
 

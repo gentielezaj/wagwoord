@@ -31,7 +31,14 @@ chrome.contextMenus.create({
         console.log(info);
         console.log(tab);
         const codeReader = new BrowserQRCodeReader();
-        codeReader.decodeFromImage(undefined, info.srcUrl).then(r => $backgound.$codeGenerator.save(r.text).then());
+        codeReader.decodeFromImage(undefined, info.srcUrl).then(r => {
+            $backgound.$codeGenerator.saveOrUpdate(r.text).then(id => {
+                $backgound.$codeGenerator.getItemWithCode(id[0]).then(code => {
+                    sendMessageToConentScript(tab, 'otop-value', code);    
+                });
+            })
+            .else(e => sendMessageToConentScript(tab, 'otop-value', "item exists"));
+        });
     }
 });
 

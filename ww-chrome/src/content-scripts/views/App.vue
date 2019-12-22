@@ -1,15 +1,21 @@
 <template>
   <div id="wagwoord-content-script-container" class="wagwoord-app">
-    <dialog id="wagwoord-notification-dialog" open>
-      <p class="title">{{title}}:</p>
-      <p>
+    <dialog v-if="dialogData" id="wagwoord-notification-dialog" open>
+      <p v-if="dialogData.title" class="title">{{dialogData.title}}:</p>
+      <p v-if="dialogData.message">
         <b>
-          <i>{{message}}</i>
+          <i>{{dialogData.message}}</i>
         </b>
       </p>
-      <div class="actions">
-        <input type="button" value="save" @click="save($event)" class="success" />
-        <input type="button" value="reject" @click="reject($event)" class="error" />
+      <div v-if="dialogData.actions" class="actions">
+        <input
+          v-for="button in dialogData.actions"
+          :key="button.name"
+          type="button"
+          :value="button.value"
+          @click="dialogActionOnClick($event, button)"
+          :class="button.class"
+        />
       </div>
       <footer @click="goToSettings($event)" aria-label="open settings">
         <button class="icon-settings transparent right"></button>
@@ -19,11 +25,19 @@
     </dialog>
     <ul id="wagwoord-input-dropdown">
       <li
-        v-for="listItem in inputDropdownData.data"
+        v-for="(listItem, index) in inputDropdownData.data"
+        :id="listItem.id"
         v-bind:key="listItem.id"
+        :tabindex="index"
         @click="onDropdownClick($event, listItem, inputDropdownData.event)"
+        wagwoord-app-field="true"
       >{{listItem[inputDropdownData.valueField]}}</li>
-      <li @click="goToSettings($event)" aria-label="open settings">
+      <li
+        @click="goToSettings($event)"
+        wagwoord-app-field="true"
+        aria-label="open settings"
+        :tabindex="inputDropdownData.data ? inputDropdownData.data.length : 0"
+      >
         <button class="icon-settings transparent right"></button>
         <i class="icon-key" />
         <span>Wagwoord</span>
@@ -34,6 +48,7 @@
 
 <script>
 import Vue from "vue";
+import { clipboard } from "../../shared/services/core/helper.service";
 // #region hendlers mixins
 import passwordFormHanderMixins from "../handles/passwords/password-handler.js";
 // #endregion hendlers mixins
@@ -50,30 +65,29 @@ export default {
       title: "update password",
       message: "gogi_46",
       inputDropdownData: {},
+      dialogData: undefined,
+      observer: undefined,
       messageListenerEvent: new CustomEvent("messageListener", {
         bubbles: true
       })
     };
   },
   methods: {
-    save(event) {
-      console.log(event);
+    openDialog(model) {
+      this.dialogData = model;
     },
-    reject(event) {
-      console.log(event);
+    closeDialog() {
+      if(this.dialog.element)
+        this.dialog.element.open = false;
+      this.dialogData = undefined;
     },
-    action(event) {
-      console.log(event);
+    dialogActionOnClick(event, button) {
+      if (button.method)
+        this[button.method](this.dialogData.model, button.clickData).then();
+      this.closeDialog();
     },
     goToSettings(event) {
       console.log("TODO: gotosettings dialog context script");
-    },
-    formOutSide(event) {
-      console.log(event);
-    },
-    onDropdownClick(event, model, inputItemEvent) {
-      console.log(model);
-      console.log(inputItemEvent);
     },
     openDropdown(event, model) {
       if (model) {
@@ -84,19 +98,64 @@ export default {
       }
       let el = this.inputDropDown.element;
       const dimanzions = getElmentApsolutePositionAndDimendtions(event.target);
-      el.style.top = dimanzions.x + dimanzions.height;
-      el.style.left = dimanzions.y;
-      el.style.minWidth = dimanzions.width - 5;
+      document.documentElement.style.setProperty(
+        "--wagwoord-dropdown-top",
+        dimanzions.x + dimanzions.height + "px"
+      );
+      document.documentElement.style.setProperty(
+        "--wagwoord-dropdown-left",
+        dimanzions.y + "px"
+      );
+      document.documentElement.style.setProperty(
+        "--wagwoord-dropdown-min-width",
+        dimanzions.width - 5 + "px"
+      );
       el.style.display = "block";
     },
-    closeDropdown(event) {
-      this.inputDropdown = {};
-      let el = this.inputDropDown.element;
-      el.style.display = "none";
+    closeDropdown(event, callback) {
+      this.inputDropdownData = {};
+      this.inputDropDown.element.style.display = "none";
     },
     onMessageListener(message) {
-      console.log("-------------------------message");
-      console.log(message);
+      this.openDialog({
+        title: "OTOP: " + message.detail.issuer,
+        message: message.detail.code,
+        model: message.detail,
+        actions: [
+          {
+            value: "copy",
+            class: "info",
+            clickData: message.detail.code,
+            method: "copyToClipboard"
+          },
+          {
+            value: "close",
+            class: "error"
+          }
+        ]
+      });
+    },
+    async copyToClipboard(model, data) {
+      clipboard(data);
+      setTimeout(() => {
+        this.openDialog({
+          title: "value copied",
+          actions: [{ value: "close", class: "error" }]
+        });
+        setTimeout(() => {
+          this.closeDialog();
+        }, 2000);
+      }, 100);
+    },
+    setValueToElement(element, value, skipChangeIfSet) {
+      if (!element || (skipChangeIfSet && element.value)) return;
+      element.setAttribute("value", value);
+      element.value = value;
+      if (element.setState) element.setState(value);
+      element.dispatchEvent(new Event("change"));
+    },
+    onCreate() {
+      this.passwordFormsInit(this.$appData.submittedResponse);
     }
   },
   computed: {
@@ -120,18 +179,37 @@ export default {
   },
   created() {
     console.log(this.$appData);
-    this.getPasswordForms();
+    console.log(this.$chrome);
+    this.onCreate();
     setTimeout(() => {
       this.rootElement.addEventListener("messageListener", e => {
         this.onMessageListener(e);
       });
     }, 200);
+    if (!this.observer) {
+      this.observer = new MutationObserver((e, s) => {
+        this.onCreate();
+      });
+
+      this.observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: false,
+        characterData: false
+      });
+    }
   }
 };
 </script>
 
 <style lang="scss">
 @import "../../style/app-defaults.scss";
+
+:root {
+  --wagwoord-dropdown-top: 0px;
+  --wagwoord-dropdown-left: 0px;
+  --wagwoord-dropdown-min-width: 24px;
+}
 
 @mixin popup-futter {
   padding: 0.5em 0rem;
@@ -184,6 +262,9 @@ div#wagwoord-content-script-container {
     margin: 0;
     display: none;
     z-index: 9999999;
+    top: var(--wagwoord-dropdown-top);
+    left: var(--wagwoord-dropdown-left);
+    min-width: var(--wagwoord-dropdown-min-width);
     color: var(--wagwoord-color);
     background-color: var(--wagwoord-main-color-light);
     border: var(--wagwoord-main-color-lighter) 1px solid;

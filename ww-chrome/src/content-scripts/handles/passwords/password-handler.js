@@ -1,6 +1,9 @@
 import {
     getLoginForms
 } from '../common/form-detectors.js';
+import {
+    uuidv4
+} from '../../../shared/services/core/helper.service';
 
 export default {
     data() {
@@ -9,28 +12,136 @@ export default {
         };
     },
     methods: {
-        getPasswordForms() {
-            this.passwordForms = getLoginForms(window.location.host);
-            this.setPasswordForms();
+        passwordFormsInit(submittedResponse) {
+            if (submittedResponse && submittedResponse.password)
+                this.openDialog({
+                    title: submittedResponse.password.action == 'update' ? 'Update password' : 'Save password',
+                    message: submittedResponse.password.model.username || '[No username]',
+                    model: submittedResponse.password.model,
+                    action: 'dialogPasswordSave'
+                });
+            const forms = getLoginForms(window.location.host) || [];
+            forms.forEach(f => {
+                let form = f.formElement;
+                if (f.formElement.getAttribute('wagwoord-form-id')) return;
+                const formId = uuidv4();
+                form.setAttribute('wagwoord-form-id', formId);
+                f.id = formId;
+                form.setAttribute('autocomplete', 'off');
+                form.setAttribute('wagwoord-form-type', 'password');
+
+                this.setOnClickOpenPopUp(f.passwordElement, 'password');
+                this.setOnClickOpenPopUp(f.usernameElement, 'username');
+
+                form.addEventListener('submit', event => {
+                    this.onPasswordFormSumbit(event);
+                });
+
+                this.setPasswordFormValue(f);
+
+                this.passwordForms.push(f);
+            });
         },
-        setPasswordForms() {
-            this.setOnClickOpenPopUp(document.getElementById('login-form-username'));
+        async onPasswordFormSumbit(event) {
+            const formId = event.target.getAttribute('wagwoord-form-id');
+            if (!formId) return;
+            const form = this.passwordForms.find(f => f.id == formId);
+            if(!form.passwordElement.value) return;
+            console.log(`wagwoord form values: pas: ${form.passwordElement.value}, user: ${form.usernameElement.value}`);
+
+            const model = {
+                password: {
+                    username: form.usernameElement.value,
+                    password: form.passwordElement.value,
+                    domain: window.location.href
+                }
+            };
+
+            const response = await this.$chrome.formSubmittion("password", JSON.stringify(model));
+            if (response.hasAction && response.password) {
+                this.openDialog({
+                    title: response.password.action == 'update' ? 'Update password' : 'Save password',
+                    message: response.password.model.username || '[No username]',
+                    model: response.password.model,
+                    actions: [
+                        {
+                            value: 'save',
+                            class: 'success',
+                            clickData: 'save',
+                            method: 'dialogPasswordSubmit'
+                        },
+                        {
+                            value: 'reject',
+                            class: 'error',
+                            clickData: 'reject',
+                            method: 'dialogPasswordSubmit'
+                        }
+                    ]
+                });
+            }
         },
-        setOnClickOpenPopUp(element) {
+        async dialogPasswordSubmit(model, type) {
+            if (!type || type == 'reject') {
+                await this.$chrome.storage.removeItem('submitted');
+            }
+
+            this.$chrome.post({
+                password: model
+            });
+        },
+        setOnClickOpenPopUp(element, type) {
+            if (!element) return;
+
+            if (type) {
+                element.setAttribute('wagwood-input-type', type);
+            }
+
             element.addEventListener('focus', event => {
                 this.openDropdown(event, {
                     valueField: 'username',
                     data: this.$appData.passwords
                 });
             });
-            element.addEventListener('focusout', event => {
-                setTimeout(() => {
-                    this.closeDropdown(event, {
-                        valueField: 'username',
-                        data: this.$appData.passwords
-                    });
-                }, 200);
+
+            element.setAttribute('autocomplete', 'off');
+
+            if (this.$appData.passwords.length) {
+                element.addEventListener('keyup', event => {
+                    if (event.target.getAttribute('wagwood-input-type') == 'username') {
+                        let data = this.$appData.passwords;
+                        if (event.target.value) {
+                            data = this.$appData.passwords.filter(p => p.username.startsWith(event.target.value.toLowerCase()));
+                        }
+                        this.inputDropdownData.data = data && data.length ? data : this.$appData.passwords;
+                    } else {
+                        if (event.target.value) {
+                            this.closeDropdown();
+                        } else {
+                            this.openDropdown(event, {
+                                valueField: 'username',
+                                data: this.$appData.passwords
+                            });
+                        }
+                    }
+                });
+            }
+            element.addEventListener('blur', event => {
+                this.closeDropdown(event);
+                const selectedElement = event.relatedTarget;
+                if (!selectedElement || !selectedElement.getAttribute('wagwoord-app-field')) return;
+                const form = this.passwordForms.find(f => f.id == event.target.form.getAttribute('wagwoord-form-id'));
+                const passwordItem = this.$appData.passwords.find(p => p.id == selectedElement.id);
+                this.setPasswordFormValue(form, passwordItem, event.target);
             });
+        },
+        setPasswordFormValue(form, passwordItem, element) {
+            if (!passwordItem && this.$appData.passwords.length) {
+                passwordItem = this.$appData.passwords[0];
+            }
+
+            if (!passwordItem || !form) return;
+            this.setValueToElement(form.passwordElement, passwordItem.password);
+            this.setValueToElement(form.usernameElement, passwordItem.username, element && element.getAttribute('wagwood-input-type') == 'password');
         }
     }
 };

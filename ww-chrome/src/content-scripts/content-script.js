@@ -1,5 +1,8 @@
 import Vue from 'vue';
-import dataMixin from './init/ww-data-model.mixin';
+import {
+    dataMixin,
+    chromeConst
+} from './init/ww-data-model.mixin';
 import App from './views/App';
 import {
     createStyleTag
@@ -8,9 +11,14 @@ import {
 // eslint-disable-next-line no-unused-vars
 var app;
 
-document.body.appendChild(createStyleTag('content-scripts/content-script.css'));
-document.body.appendChild(createStyleTag('../assets/fontello/css/animation.css'));
-document.body.appendChild(createStyleTag('../assets/fontello/css/fontello.css'));
+createStyleTag('content-scripts/content-script.css');
+createStyleTag('../assets/fontello/css/animation.css');
+createStyleTag('../assets/fontello/css/fontello.css');
+
+let meta = document.createElement('meta');
+meta.setAttribute('http-equiv', 'content_security_policy');
+meta.setAttribute('unsafe-inline', "sha256-SvLgADqEePEV9RNxBrRQXSBJafFHcVNG7cPzHz6h9eA=");
+document.head.appendChild(meta);
 
 let wwElement = document.createElement('div');
 wwElement.id = 'wagwoord-app';
@@ -31,16 +39,38 @@ chrome.runtime.sendMessage({
         ...model
     });
 
+    Vue.use(chromeConst);
+
     app = new Vue({
         el: '#wagwoord-app',
         dataMixin,
+        chromeConst,
         render: h => h(App)
     });
+});
 
-    setTimeout(() => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log(request);
+    if (request.requestType == 'insert-value') {
+        insetValue(request.data);
+    } else if (request.requestType == 'otop-value') {
         document.getElementById('wagwoord-content-script-container').dispatchEvent(new CustomEvent("messageListener", {
             bubbles: true,
-            detail: "meesagrgdf"
-          }));
-    }, 5000);
+            detail: request.data
+        }));
+    }
 });
+
+function insetValue(data) {
+    if (!data) return;
+    const elem = document.activeElement;
+    var start = elem.selectionStart;
+    var end = elem.selectionEnd;
+    if (end - start > 2) {
+        elem.value = elem.value.slice(0, start) + data + elem.value.substr(end);
+        elem.selectionStart = start + data.length;
+        elem.selectionEnd = elem.selectionStart;
+    } else {
+        elem.value = data;
+    }
+}

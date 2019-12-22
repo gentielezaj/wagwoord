@@ -1,5 +1,5 @@
 <template>
-  <div id="wagwoord-content-script-container">
+  <div id="wagwoord-content-script-container" class="wagwoord-app">
     <dialog id="wagwoord-notification-dialog" open>
       <p class="title">{{title}}:</p>
       <p>

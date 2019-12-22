@@ -26,191 +26,194 @@
 
 /* #endregion variables */
 
-// #region app
+.wagwoord-app {
 
-.hidden {
-    display: none;
+    // #region app
+
+    .hidden {
+        display: none;
+    }
+
+    .right {
+        float: right;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    ::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: var(--wagwoord-color);
+        opacity: 0.6;
+        /* Firefox */
+    }
+
+    /* #region button */
+
+    button,
+    input[type=button] {
+        background: var(--wagwoord-main-color-light);
+        border: none;
+        color: var(--wagwoord-color);
+        padding: 0.4rem 0.4rem;
+        text-align: center;
+        cursor: pointer;
+        transition: width 0.2s;
+    }
+
+    button.loader,
+    input[type=button].loader {
+        display: flex;
+        padding-right: 0.6rem;
+    }
+
+    button:disabled,
+    input[type=button]:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled),
+    input[type=button]:hover:not(:disabled),
+    button:active:not(:disabled),
+    input[type=button]:active:not(:disabled),
+    button:focus:not(:disabled),
+    input[type=button]:focus:not(:disabled) {
+        background: var(--wagwoord-main-color-lighter);
+        outline: none;
+    }
+
+    button.success,
+    input[type=button].success {
+        background: var(--wagwoord-color-success);
+        color: #fff;
+    }
+
+    button.success:hover:not(:disabled),
+    input[type=button].success:hover:not(:disabled),
+    button.success:active:not(:disabled),
+    input[type=button].success:active:not(:disabled),
+    button.success:focus:not(:disabled),
+    input[type=button].success:focus:not(:disabled) {
+        background: var(--wagwoord-color-success-secend);
+    }
+
+    button.error,
+    input[type=button].error {
+        background: var(--wagwoord-color-error);
+        color: #fff;
+    }
+
+    button.error:hover:not(:disabled),
+    input[type=button].error:hover:not(:disabled),
+    button.error:active:not(:disabled),
+    input[type=button].error:active:not(:disabled),
+    button.error:focus:not(:disabled),
+    input[type=button].error:focus:not(:disabled) {
+        background: var(--wagwoord-color-error-secend);
+    }
+
+    button.info,
+    input[type=button].info {
+        background: var(--wagwoord-color-info);
+        color: #fff;
+    }
+
+    button.info:hover:not(:disabled),
+    input[type=button].info:hover:not(:disabled),
+    button.info:active:not(:disabled),
+    input[type=button].info:active:not(:disabled),
+    button.info:focus:not(:disabled),
+    input[type=button].info:focus:not(:disabled) {
+        background: var(--wagwoord-color-info-secend);
+    }
+
+    button.transparent,
+    input[type=button].transparent,
+    button.transparent:hover:not(:disabled),
+    input[type=button].transparent:hover:not(:disabled),
+    button.transparent:active:not(:disabled),
+    input[type=button].transparent:active:not(:disabled),
+    button.transparent:focus:not(:disabled),
+    input[type=button].transparent:focus:not(:disabled) {
+        background: transparent;
+        color: #fff;
+    }
+
+    button.icon {
+        display: flex;
+        transition: width 10s ease-out;
+    }
+
+    button.icon .pre,
+    button.icon .pre svg {
+        padding-right: 0.5rem;
+    }
+
+    button.icon .suffix svg {
+        padding-left: 0.5rem;
+    }
+
+    button.icon svg {
+        width: 0.6rem;
+        height: 0.7rem;
+    }
+
+    button.icon.text span {
+        display: none;
+    }
+
+
+
+    button.icon.text:hover span,
+    button.icon.text:active span {
+        display: inline;
+    }
+
+
+    button.icon.text .suffix svg,
+    button.icon.text .pre svg {
+        padding: 0;
+    }
+
+    button.icon.text:hover .pre svg,
+    button.icon.text:active .pre svg {
+        padding-right: 0.5rem;
+    }
+
+    button.icon.text:hover .suffix svg,
+    button.icon.text:active .suffix svg {
+        padding-left: 0.5rem;
+    }
+
+    /* #endregion button */
+
+    /* #region a */
+    a {
+        color: var(--wagwoord-color);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    a:hover,
+    a:active {
+        text-decoration: underline;
+    }
+
+    /* #endregion a */
+
+    // #endregion app
 }
-
-.right {
-    float: right;
-}
-
-.flex {
-    display: flex;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.pointer {
-    cursor: pointer;
-}
-
-::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: var(--wagwoord-color);
-    opacity: 0.6;
-    /* Firefox */
-}
-
-/* #region button */
-
-button,
-input[type=button] {
-    background: var(--wagwoord-main-color-light);
-    border: none;
-    color: var(--wagwoord-color);
-    padding: 0.4rem 0.4rem;
-    text-align: center;
-    cursor: pointer;
-    transition: width 0.2s;
-}
-
-button.loader,
-input[type=button].loader {
-    display: flex;
-    padding-right: 0.6rem;
-}
-
-button:disabled,
-input[type=button]:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-button:hover:not(:disabled),
-input[type=button]:hover:not(:disabled),
-button:active:not(:disabled),
-input[type=button]:active:not(:disabled),
-button:focus:not(:disabled),
-input[type=button]:focus:not(:disabled) {
-    background: var(--wagwoord-main-color-lighter);
-    outline: none;
-}
-
-button.success,
-input[type=button].success {
-    background: var(--wagwoord-color-success);
-    color: #fff;
-}
-
-button.success:hover:not(:disabled),
-input[type=button].success:hover:not(:disabled),
-button.success:active:not(:disabled),
-input[type=button].success:active:not(:disabled),
-button.success:focus:not(:disabled),
-input[type=button].success:focus:not(:disabled) {
-    background: var(--wagwoord-color-success-secend);
-}
-
-button.error,
-input[type=button].error {
-    background: var(--wagwoord-color-error);
-    color: #fff;
-}
-
-button.error:hover:not(:disabled),
-input[type=button].error:hover:not(:disabled),
-button.error:active:not(:disabled),
-input[type=button].error:active:not(:disabled),
-button.error:focus:not(:disabled),
-input[type=button].error:focus:not(:disabled) {
-    background: var(--wagwoord-color-error-secend);
-}
-
-button.info,
-input[type=button].info {
-    background: var(--wagwoord-color-info);
-    color: #fff;
-}
-
-button.info:hover:not(:disabled),
-input[type=button].info:hover:not(:disabled),
-button.info:active:not(:disabled),
-input[type=button].info:active:not(:disabled),
-button.info:focus:not(:disabled),
-input[type=button].info:focus:not(:disabled) {
-    background: var(--wagwoord-color-info-secend);
-}
-
-button.transparent,
-input[type=button].transparent,
-button.transparent:hover:not(:disabled),
-input[type=button].transparent:hover:not(:disabled),
-button.transparent:active:not(:disabled),
-input[type=button].transparent:active:not(:disabled),
-button.transparent:focus:not(:disabled),
-input[type=button].transparent:focus:not(:disabled) {
-    background: transparent;
-    color: #fff;
-}
-
-button.icon {
-    display: flex;
-    transition: width 10s ease-out;
-}
-
-button.icon .pre,
-button.icon .pre svg {
-    padding-right: 0.5rem;
-}
-
-button.icon .suffix svg {
-    padding-left: 0.5rem;
-}
-
-button.icon svg {
-    width: 0.6rem;
-    height: 0.7rem;
-}
-
-button.icon.text span {
-    display: none;
-}
-
-
-
-button.icon.text:hover span,
-button.icon.text:active span {
-    display: inline;
-}
-
-
-button.icon.text .suffix svg,
-button.icon.text .pre svg {
-    padding: 0;
-}
-
-button.icon.text:hover .pre svg,
-button.icon.text:active .pre svg {
-    padding-right: 0.5rem;
-}
-
-button.icon.text:hover .suffix svg,
-button.icon.text:active .suffix svg {
-    padding-left: 0.5rem;
-}
-
-/* #endregion button */
-
-/* #region a */
-a {
-    color: var(--wagwoord-color);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-a:hover,
-a:active {
-    text-decoration: underline;
-}
-
-/* #endregion a */
-
-// #endregion app

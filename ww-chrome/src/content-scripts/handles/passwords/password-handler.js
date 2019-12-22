@@ -2,7 +2,8 @@ import {
     getLoginForms
 } from '../common/form-detectors.js';
 import {
-    uuidv4
+    uuidv4,
+    getName
 } from '../../../shared/services/core/helper.service';
 
 export default {
@@ -46,7 +47,7 @@ export default {
             const formId = event.target.getAttribute('wagwoord-form-id');
             if (!formId) return;
             const form = this.passwordForms.find(f => f.id == formId);
-            if(!form.passwordElement.value) return;
+            if (!form.passwordElement.value) return;
             console.log(`wagwoord form values: pas: ${form.passwordElement.value}, user: ${form.usernameElement.value}`);
 
             const model = {
@@ -63,8 +64,7 @@ export default {
                     title: response.password.action == 'update' ? 'Update password' : 'Save password',
                     message: response.password.model.username || '[No username]',
                     model: response.password.model,
-                    actions: [
-                        {
+                    actions: [{
                             value: 'save',
                             class: 'success',
                             clickData: 'save',
@@ -96,7 +96,7 @@ export default {
                 element.setAttribute('wagwood-input-type', type);
             }
 
-            element.addEventListener('focus', event => {
+            element.addEventListener('click', event => {
                 this.openDropdown(event, {
                     valueField: 'username',
                     data: this.$appData.passwords
@@ -126,12 +126,21 @@ export default {
                 });
             }
             element.addEventListener('blur', event => {
-                this.closeDropdown(event);
                 const selectedElement = event.relatedTarget;
-                if (!selectedElement || !selectedElement.getAttribute('wagwoord-app-field')) return;
-                const form = this.passwordForms.find(f => f.id == event.target.form.getAttribute('wagwoord-form-id'));
-                const passwordItem = this.$appData.passwords.find(p => p.id == selectedElement.id);
-                this.setPasswordFormValue(form, passwordItem, event.target);
+                if (!selectedElement || !selectedElement.getAttribute('wagwoord-app-field')) {
+                    this.closeDropdown(event);
+                    return;
+                }
+                if (selectedElement.getAttribute('wagwoord-data') == 'open-settings') {
+                    let url = getName(window.location.origin, true);
+                    url = encodeURIComponent(url);
+                    this.goToSettings('?search=' + url);
+                    this.closeDropdown(event);
+                } else {
+                    const form = this.passwordForms.find(f => f.id == event.target.form.getAttribute('wagwoord-form-id'));
+                    const passwordItem = this.$appData.passwords.find(p => p.id == selectedElement.id);
+                    this.setPasswordFormValue(form, passwordItem, event.target);
+                }
             });
         },
         setPasswordFormValue(form, passwordItem, element) {

@@ -64,6 +64,7 @@ export default class CodeGeneratorService extends CoreService {
 
     async save(model, onSaveItem, notlastModified, ignoreServer) {
         model = this._getModel(model);
+        if(!model.issuer || !model.secret || !model.username) return false;
         return await super.save(model, onSaveItem, notlastModified, ignoreServer);
     }
 
@@ -86,6 +87,10 @@ export default class CodeGeneratorService extends CoreService {
             if (model.username && model.username.indexOf(':') > -1) {
                 model.username = model.username.substring(model.username.indexOf(':') + 1, model.username.length);
             }
+            
+            if (model.username && model.username.indexOf('@') > -1) {
+                model.username = model.username.substring(model.username.indexOf('@') + 1, model.username.length);
+            }
         }
 
         return model;
@@ -93,6 +98,7 @@ export default class CodeGeneratorService extends CoreService {
 
     async saveOrUpdate(model, onSaveItem, notlastModified, ignoreServer) {
         model = this._getModel(model);
+        if(!model.issuer || !model.secret || !model.username) return false;
         return await super.saveOrUpdate(model, onSaveItem, notlastModified, ignoreServer);
     }
 

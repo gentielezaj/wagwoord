@@ -33,11 +33,14 @@ chrome.contextMenus.create({
         const codeReader = new BrowserQRCodeReader();
         codeReader.decodeFromImage(undefined, info.srcUrl).then(r => {
             $backgound.$codeGenerator.saveOrUpdate(r.text).then(id => {
-                $backgound.$codeGenerator.getItemWithCode(id[0]).then(code => {
-                    sendMessageToConentScript(tab, 'otop-value', code);    
-                });
-            })
-            .else(e => sendMessageToConentScript(tab, 'otop-value', "item exists"));
+                    if (id)
+                        $backgound.$codeGenerator.getItemWithCode(id[0]).then(code => {
+                            sendMessageToConentScript(tab, 'otop-value', code);
+                        });
+                    else
+                        sendMessageToConentScript(tab, 'otop-value', 'error');
+                })
+                .else(e => sendMessageToConentScript(tab, 'otop-value', "error"));
         });
     }
 });

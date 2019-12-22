@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import {coreComponentMixin} from "./core.component";
+import { coreComponentMixin } from "./core.component";
 import loaderComponent from "./loader.component";
 
 export default {
@@ -72,17 +72,18 @@ export default {
     };
   },
   computed: {
+    // eslint-disable-next-line vue/no-async-in-computed-properties
     async time() {
-      if(this.comp) await this.refresh();
+      // eslint-disable-next-line vue/no-async-in-computed-properties
+      if (this.comp) await this.refresh();
+      // eslint-disable-next-line vue/no-async-in-computed-properties
       return await this.$store.getters[this.options.store + "/createdTime"];
     }
   },
   methods: {
     async refresh() {
       this.list.loading = true;
-      const listData = await this.$store.getters[
-        this.options.store + "/list"
-      ]({
+      const listData = await this.$store.getters[this.options.store + "/list"]({
         searchText: this.searchInput,
         take: this.take
       });
@@ -96,16 +97,22 @@ export default {
     }
   },
   async created() {
-    console.log('list component created');
-    if(this.$constants.scope === 'popup') {
-      const url = (await this.$store.getters['chrome/selectedTab']).wwurl;
-      if(url && !url.startsWith('chrome') && !url.toLowerCase().startsWith('newtab')) {
+    console.log("list component created");
+    if (this.$constants.scope === "popup") {
+      const url = (await this.$store.getters["chrome/selectedTab"]).wwurl;
+      if (
+        url &&
+        !url.startsWith("chrome") &&
+        !url.toLowerCase().startsWith("newtab")
+      ) {
         this.searchInput = url;
       }
     }
     this.comp = true;
+    if (this.$route.query.search) {
+      this.searchInput = this.$route.query.search ? decodeURIComponent(this.$route.query.search) : '';
+    }
     await this.refresh();
   }
 };
-
 </script>

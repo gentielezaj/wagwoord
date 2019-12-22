@@ -29,6 +29,7 @@
         :id="listItem.id"
         v-bind:key="listItem.id"
         :tabindex="index"
+        :class="{'active': listItem.active}"
         @click="onDropdownClick($event, listItem, inputDropdownData.event)"
         wagwoord-app-field="true"
       >{{listItem[inputDropdownData.valueField]}}</li>
@@ -36,9 +37,10 @@
         @click="goToSettings($event)"
         wagwoord-app-field="true"
         aria-label="open settings"
+        wagwoord-data="open-settings"
         :tabindex="inputDropdownData.data ? inputDropdownData.data.length : 0"
       >
-        <button class="icon-settings transparent right"></button>
+        <i class="icon-settings transparent right"></i>
         <i class="icon-key" />
         <span>Wagwoord</span>
       </li>
@@ -77,8 +79,7 @@ export default {
       this.dialogData = model;
     },
     closeDialog() {
-      if(this.dialog.element)
-        this.dialog.element.open = false;
+      if (this.dialog.element) this.dialog.element.open = false;
       this.dialogData = undefined;
     },
     dialogActionOnClick(event, button) {
@@ -86,8 +87,11 @@ export default {
         this[button.method](this.dialogData.model, button.clickData).then();
       this.closeDialog();
     },
-    goToSettings(event) {
-      console.log("TODO: gotosettings dialog context script");
+    goToSettings(url) {
+      // TODO: resolve tab not open corectly on windows open
+      url = 'options/options.html#/' + (url || '');
+      url = chrome.runtime.getURL(url);
+      window.open(url, '_blank').focus();
     },
     openDropdown(event, model) {
       if (model) {
@@ -114,26 +118,39 @@ export default {
     },
     closeDropdown(event, callback) {
       this.inputDropdownData = {};
-      this.inputDropDown.element.style.display = "none";
+      if (this.inputDropDown.element)
+        this.inputDropDown.element.style.display = "none";
     },
     onMessageListener(message) {
-      this.openDialog({
-        title: "OTOP: " + message.detail.issuer,
-        message: message.detail.code,
-        model: message.detail,
-        actions: [
-          {
-            value: "copy",
-            class: "info",
-            clickData: message.detail.code,
-            method: "copyToClipboard"
-          },
-          {
-            value: "close",
-            class: "error"
-          }
-        ]
-      });
+      if (message.detail == "error") {
+        setTimeout(() => {
+          this.openDialog({
+            message: "error accured",
+            actions: [{ value: "close", class: "error" }]
+          });
+          setTimeout(() => {
+            this.closeDialog();
+          }, 2000);
+        }, 100);
+      } else {
+        this.openDialog({
+          title: "OTOP: " + message.detail.issuer,
+          message: message.detail.code,
+          model: message.detail,
+          actions: [
+            {
+              value: "copy",
+              class: "info",
+              clickData: message.detail.code,
+              method: "copyToClipboard"
+            },
+            {
+              value: "close",
+              class: "error"
+            }
+          ]
+        });
+      }
     },
     async copyToClipboard(model, data) {
       clipboard(data);
@@ -151,10 +168,11 @@ export default {
       if (!element || (skipChangeIfSet && element.value)) return;
       element.setAttribute("value", value);
       element.value = value;
-      if (element.setState) element.setState(value);
-      element.dispatchEvent(new Event("change"));
+      element.dispatchEvent(new Event("change", { bubbles: true }));
+      element.dispatchEvent(new Event("blur", { bubbles: true }));
     },
     onCreate() {
+      console.log("refresh");
       this.passwordFormsInit(this.$appData.submittedResponse);
     }
   },
@@ -276,6 +294,9 @@ div#wagwoord-content-script-container {
       }
       &:last-child {
         @include popup-futter;
+      }
+      &.active {
+        background: var(--wagwoord-main-color-lighter);
       }
     }
   }

@@ -12,7 +12,7 @@ import {
 var app;
 
 createStyleTag('content-scripts/content-script.css');
-createStyleTag('../assets/fontello/css/animation.css');
+// createStyleTag('../assets/fontello/css/animation.css');
 createStyleTag('../assets/fontello/css/fontello.css');
 
 let meta = document.createElement('meta');

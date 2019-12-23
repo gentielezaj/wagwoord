@@ -48,7 +48,7 @@ export class CoreService {
     async delete(id, dontUpdateServer) {
         const item = await this.getItem(id);
         if (!item) return true;
-        const deleted = await this.db.delete(id);
+        const deleted = await this.db.delete(item.id);
         if (deleted && item.serverId && !dontUpdateServer && !(await this.proxy.delete(item.serverId)).success) {
             let unsyced = localStorage.getItem(this.deletedUnsyncStorageKey);
             unsyced = unsyced ? unsyced.split(',') : [];

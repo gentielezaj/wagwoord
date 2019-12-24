@@ -34,7 +34,7 @@ chrome.contextMenus.create({
         codeReader.decodeFromImage(undefined, info.srcUrl).then(r => {
             $backgound.$codeGenerator.saveOrUpdate(r.text).then(id => {
                     if (id)
-                        $backgound.$codeGenerator.getItemWithCode(id[0]).then(code => {
+                        $backgound.$codeGenerator.getItemWithCode(id).then(code => {
                             sendMessageToConentScript(tab, 'otop-value', code);
                         });
                     else

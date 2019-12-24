@@ -87,7 +87,9 @@ export class CoreService {
     }
 
     async _saveArray(model, onSaveItem, notlastModified, ignoreServer, canUpdate) {
+        let isArrayModel = true;
         if (!Array.isArray(model)) {
+            isArrayModel = false;
             model = [model];
         }
 
@@ -109,7 +111,8 @@ export class CoreService {
             else results.push(await this._coreSave(model[i], onSaveItem, notlastModified, true, canUpdate));
         }
 
-        return results;
+        if(isArrayModel) return results;
+        return results && results.length ? results[0] : 0;
     }
 
     async _coreSave(model, onSaveItem, notlastModified, ignoreServer, canUpdate) {
@@ -159,7 +162,7 @@ export class CoreService {
 
         item = await this._convertServerToLocalEntity(item);
 
-        return await this._coreSave(item, onSaveItem, true, true, true);
+        return await this._saveArray(item, onSaveItem, true, true, true);
     };
 
     _isValidModel(item) {
@@ -186,20 +189,20 @@ export class CoreService {
     // #endregion converters
 
     // #region sever sync
-    async sync() {
+    async sync(forece) {
         const deleted = await this._syncDeleted();
-        const local = await this._syncFromServer();
-        const server = await this._syncServer();
+        const local = await this._syncFromServer(forece);
+        const server = await this._syncServer(forece ? 'all' : undefined);
         // eslint-disable-next-line no-unneeded-ternary
         const result = deleted && local && server ? true : false;
         if (result) localStorage.setItem(this.lastModifiedStorageKey, new Date().getTime());
     };
 
-    async _syncFromServer() {
+    async _syncFromServer(forece) {
         let item = (await this.db.store.orderBy('lastModified').reverse().first()) || {};
         let localStorageLastModified = localStorage.getItem(this.lastModifiedStorageKey);
         let lastModified = item.lastModified > localStorageLastModified ? item.lastModified : localStorageLastModified;
-        if (localStorageLastModified == "-1") lastModified = 0;
+        if (localStorageLastModified == "-1" || forece) lastModified = 0;
         const data = await this.proxy.patch(lastModified || 0);
         const result = await this._saveServerItemsLocaly(data);
         return result;

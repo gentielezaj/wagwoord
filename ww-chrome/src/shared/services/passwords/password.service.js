@@ -177,9 +177,12 @@ export default class PasswordService extends CoreService {
             if (typeof passwords[0] == 'string') {
                 passwords = this.getCSVPasswords(passwords);
             }
-    
-            if(await this.proxy.isSet()) await this.syncServer(passwords, onSaveItem);
-            else await this.save(passwords, onSaveItem);
+            
+            passwords.forEach(password => {
+                password.synced = true;
+            });
+
+            await this.saveOrUpdate(passwords, onSaveItem);
             return true;
         } catch (error) {
             throw error;

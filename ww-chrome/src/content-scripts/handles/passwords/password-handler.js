@@ -14,13 +14,10 @@ export default {
     },
     methods: {
         passwordFormsInit(submittedResponse) {
-            if (submittedResponse && submittedResponse.password)
-                this.openDialog({
-                    title: submittedResponse.password.action == 'update' ? 'Update password' : 'Save password',
-                    message: submittedResponse.password.model.username || '[No username]',
-                    model: submittedResponse.password.model,
-                    action: 'dialogPasswordSave'
-                });
+            if (submittedResponse && submittedResponse.password) {
+                this.openPasswordDialog(Object.assign({}, submittedResponse.password));
+                submittedResponse.password = undefined;
+            }
             const forms = getLoginForms(window.location.host) || [];
             forms.forEach(f => {
                 let form = f.formElement;
@@ -43,6 +40,26 @@ export default {
                 this.passwordForms.push(f);
             });
         },
+        openPasswordDialog(password) {
+            this.openDialog({
+                title: password.action == 'update' ? 'Update password' : 'Save password',
+                message: password.model.username || '[No username]',
+                model: password.model,
+                actions: [{
+                        value: 'save',
+                        class: 'success',
+                        clickData: 'save',
+                        method: 'dialogPasswordSubmit'
+                    },
+                    {
+                        value: 'reject',
+                        class: 'error',
+                        clickData: 'reject',
+                        method: 'dialogPasswordSubmit'
+                    }
+                ]
+            });
+        },
         async onPasswordFormSumbit(event) {
             const formId = event.target.getAttribute('wagwoord-form-id');
             if (!formId) return;
@@ -60,24 +77,7 @@ export default {
 
             const response = await this.$chrome.formSubmittion("password", JSON.stringify(model));
             if (response.hasAction && response.password) {
-                this.openDialog({
-                    title: response.password.action == 'update' ? 'Update password' : 'Save password',
-                    message: response.password.model.username || '[No username]',
-                    model: response.password.model,
-                    actions: [{
-                            value: 'save',
-                            class: 'success',
-                            clickData: 'save',
-                            method: 'dialogPasswordSubmit'
-                        },
-                        {
-                            value: 'reject',
-                            class: 'error',
-                            clickData: 'reject',
-                            method: 'dialogPasswordSubmit'
-                        }
-                    ]
-                });
+                this.openPasswordDialog(response.password);
             }
         },
         async dialogPasswordSubmit(model, type) {

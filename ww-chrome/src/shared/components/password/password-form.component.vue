@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import {formCoreComponentMixin} from "../common/core.component";
+import { formCoreComponentMixin } from "../common/core.component";
 import Vue from 'vue';
 
 export default {

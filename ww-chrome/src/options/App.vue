@@ -2,7 +2,7 @@
   <div>
     <nav :class="{collapsed: collapsed}" id="app-nav">
       <ul>
-        <li  @click="toggleCollapsed()">
+        <li @click="toggleCollapsed()">
           <div>
             <i></i>
           </div>
@@ -29,17 +29,17 @@
       <div clss="section-content">
         <router-view></router-view>
       </div>
-    </section> 
+    </section>
     <notification-component></notification-component>
   </div>
 </template>
 
 <script>
-import notificationComponent from '../shared/components/common/notification.component'
+import notificationComponent from "../shared/components/common/notification.component";
 export default {
   name: "App",
   components: {
-    'notification-component': notificationComponent
+    "notification-component": notificationComponent
   },
   data: () => {
     return {
@@ -49,16 +49,18 @@ export default {
           page: "password",
           link: "/",
           icon: "icon-combination_lock"
-        },{
+        },
+        {
           title: "Addresses",
           page: "address",
           link: "/address",
           icon: "icon-fort"
-        },{
+        },
+        {
           title: "Credit Cards",
           page: "credit-card",
           link: "/credit-card",
-          icon: "icon-card" //TODO:change card icon
+          icon: "icon-card"
         },
         {
           title: "Code Generateor",
@@ -100,7 +102,7 @@ export default {
     },
     toggleCollapsed(collapsed) {
       this.collapsed = collapsed === undefined ? !this.collapsed : collapsed;
-      if(this.collapsed) localStorage.setItem("nav-collapsed", "true");
+      if (this.collapsed) localStorage.setItem("nav-collapsed", "true");
       else localStorage.removeItem("nav-collapsed");
     },
     changeTab(link) {
@@ -110,7 +112,8 @@ export default {
   created() {
     console.log(this.$store);
     console.log(this.$constants);
-    if(localStorage.getItem('nav-collapsed') == 'true') {
+    this.$store.commit("address/setCountries");
+    if (localStorage.getItem("nav-collapsed") == "true") {
       this.toggleCollapsed(true);
     }
   }

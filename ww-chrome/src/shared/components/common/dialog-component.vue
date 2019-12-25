@@ -15,10 +15,6 @@ export default {
   props: {
     options: { required: true }
   },
-  data() {
-    return {
-    };
-  },
   methods: {
     close(fromOutSide) {
       if (fromOutSide && this.options.disableClose) {
@@ -29,7 +25,6 @@ export default {
       if(dialog) dialog.open = false;
     }
   },
-  computed: {},
   created() {
     if (!this.options.id) this.options.id = new Date().getTime();
     
@@ -38,7 +33,7 @@ export default {
 
     this.options.componentOptions.onSubmit = (success) => {
       this.close();
-    }
+    };
 
     if (this.options.open) {
       setTimeout(() => {

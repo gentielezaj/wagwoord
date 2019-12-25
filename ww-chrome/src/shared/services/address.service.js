@@ -68,7 +68,12 @@ export default class AddressService extends CoreService {
             username: item.username,
             postalCode: item.postalCode,
             organization: item.organization,
-            phone: item.phone
+            phone: item.phone,
+            callingCode: item.callingCode,
+            region: item.region,
+            subregion: item.subregion,
+            countryAlpha2Code: item.countryAlpha2Code,
+            countryAlpha3Code: item.countryAlpha3Code
         };
 
         if (!result.encrypted) {
@@ -104,7 +109,12 @@ export default class AddressService extends CoreService {
             organization: item.organization,
             phone: item.phone,
             id: item.localId,
-            synced: true
+            synced: true,
+            callingCode: item.callingCode,
+            region: item.region,
+            subregion: item.subregion,
+            countryAlpha2Code: item.countryAlpha2Code,
+            countryAlpha3Code: item.countryAlpha3Code
         };
 
         if (result.encrypted) {

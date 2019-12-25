@@ -22,4 +22,11 @@ db.version(4).stores({
     address: '++id,firtName,lastName,birthDate,street,secundStreet,city,state,country,username,postalCode,searchField,serverId,lastModified,organization,phone,encrypted,synced,count'
 });
 
+db.version(5).stores({
+    creditcard: '++id,name,cardType,expiredMonth,expiredYear,searchField,serverId,lastModified,encrypted,synced,count,&cardNumber,bank,nfc'
+});
+db.version(7).stores({
+    address: '++id,firtName,lastName,birthDate,street,secundStreet,city,state,country,username,postalCode,searchField,serverId,lastModified,organization,phone,encrypted,synced,count,callingCode,region,subregion,countryAlpha2Code,countryAlpha3Code,[callingCode+phone]'
+});
+
 export default db;

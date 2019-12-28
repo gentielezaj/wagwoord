@@ -113,6 +113,7 @@ export default {
     console.log(this.$store);
     console.log(this.$constants);
     this.$store.commit("address/setCountries");
+    this.$store.commit("address/getLocationInfo");
     if (localStorage.getItem("nav-collapsed") == "true") {
       this.toggleCollapsed(true);
     }

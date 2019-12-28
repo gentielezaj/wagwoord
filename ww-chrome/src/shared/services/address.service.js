@@ -127,6 +127,10 @@ export default class AddressService extends CoreService {
             }
         }
 
+        if(result.birthDate && typeof result.birthDate != 'object') {
+            result.birthDate = new Date(result.birthDate);
+        }
+
         return result;
     }
     // #endregion abstract

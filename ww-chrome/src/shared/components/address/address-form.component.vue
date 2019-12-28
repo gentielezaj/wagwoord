@@ -11,6 +11,7 @@
         <label for="address-form-firstName">firstName</label>
         <div class="input-container">
           <input
+            tabindex="1"
             id="address-form-firstName"
             maxlength="64"
             minlength="2"
@@ -27,6 +28,7 @@
         <label for="address-form-lastName">lastName</label>
         <div class="input-container">
           <input
+            tabindex="2"
             id="address-form-lastName"
             maxlength="64"
             minlength="2"
@@ -41,15 +43,45 @@
       </div>
     </div>
     <div class="form-item">
-      <label for="address-form-birthDay">birthDay</label>
+      <label for="address-form-birthDate-day">birthDay</label>
       <div class="input-container">
         <input
-          id="address-form-birthDay"
+          tabindex="3"
+          id="address-form-birthDate-day"
           required
           v-form-field
-          name="birthDay"
-          v-model="model.birthDate"
-          type="date"
+          placeholder="day"
+          min="1"
+          :max="maxDay"
+          name="birthDateDey"
+          v-model.number="birthDateDay"
+          type="number"
+        />
+        <span>/</span>
+        <input
+          tabindex="4"
+          id="address-form-birthDate-month"
+          required
+          v-form-field
+          placeholder="month"
+          name="birthDateMonth"
+          min="1"
+          max="12"
+          v-model.number="birthDateMonth"
+          type="number"
+        />
+        <span>/</span>
+        <input
+          tabindex="5"
+          id="address-form-birthDate-year"
+          required
+          v-form-field
+          min="1970"
+          :max="new Date().getFullYear()"
+          placeholder="year"
+          name="birthDateYear"
+          v-model.number="birthDateYear"
+          type="number"
         />
       </div>
     </div>
@@ -57,6 +89,7 @@
       <label for="address-form-username">username</label>
       <div class="input-container">
         <input
+          tabindex="6"
           id="address-form-username"
           name="username"
           v-form-field
@@ -69,15 +102,17 @@
     </div>
     <div class="form-item-group">
       <div class="form-item phone">
-        <label for="address-form-phone">code</label>
+        <label for="address-form-callingCode">code</label>
         <div class="input-container">
           <span>+</span>
           <select
-            id="address-form-phone-callingCode"
-            name="phone"
+            tabindex="7"
+            id="address-form-callingCode"
+            name="callingCode"
             v-form-field
             autocomplete="off"
             v-model="model.callingCode"
+            @change="changeValue($event, 'country')"
             required
           >
             <option
@@ -92,6 +127,7 @@
         <label for="address-form-phone">phone</label>
         <div class="input-container">
           <input
+            tabindex="8"
             id="address-form-phone"
             name="phone"
             v-form-field
@@ -108,6 +144,7 @@
       <label for="address-form-organization">organization</label>
       <div class="input-container">
         <input
+          tabindex="9"
           id="address-form-organization"
           name="organization"
           v-form-field
@@ -121,6 +158,7 @@
       <label for="address-form-street">street</label>
       <div class="input-container">
         <input
+          tabindex="10"
           id="address-form-street"
           name="street"
           v-form-field
@@ -135,6 +173,7 @@
       <label for="address-form-secundStreet">secundStreet</label>
       <div class="input-container">
         <input
+          tabindex="11"
           id="address-form-secundStreet"
           name="secundStreet"
           v-form-field
@@ -148,6 +187,7 @@
       <label for="address-form-city">city</label>
       <div class="input-container">
         <input
+          tabindex="12"
           id="address-form-city"
           name="city"
           v-form-field
@@ -162,6 +202,7 @@
       <label for="address-form-state">state</label>
       <div class="input-container">
         <input
+          tabindex="13"
           id="address-form-state"
           name="state"
           v-form-field
@@ -175,11 +216,13 @@
       <label for="address-form-country">country</label>
       <div class="input-container">
         <select
+          tabindex="14"
           id="address-form-country"
           name="country"
           v-form-field
           autocomplete="off"
           v-model="model.country"
+            @change="changeValue($event, 'callingCode')"
           required
         >
           <option
@@ -194,6 +237,7 @@
       <label for="address-form-postalCode">postalCode</label>
       <div class="input-container">
         <input
+          tabindex="15"
           id="address-form-postalCode"
           name="postalCode"
           v-form-field
@@ -206,6 +250,7 @@
     </div>
     <div class="form-item cbx">
       <input
+        tabindex="16"
         type="checkbox"
         v-model="model.synced"
         name="synced"
@@ -240,15 +285,26 @@
 <script>
 import { formCoreComponentMixin } from "../common/core.component";
 import { copy } from "../../services/core/helper.service";
+import { mapGetters } from "vuex";
+import Vue from 'vue';
 
 export default {
   mixins: [formCoreComponentMixin("address")],
+  data() {
+    return {
+      birthDateDay: undefined,
+      birthDateMonth: undefined,
+      birthDateYear: undefined
+    };
+  },
   methods: {
     async save(event) {
       if (event) event.preventDefault();
       if (!this.checkFormVaidity()) return;
-      if(this.model.country) {
-        const selectedCountiry = this.countries.find(c => c.name == this.model.country);
+      if (this.model.country) {
+        const selectedCountiry = this.countries.find(
+          c => c.name == this.model.country
+        );
         this.model.region = selectedCountiry.region;
         this.model.subregion = selectedCountiry.subregion;
         this.model.countryAlpha2Code = selectedCountiry.alpha2Code;
@@ -259,24 +315,51 @@ export default {
         this.model.countryAlpha2Code = undefined;
         this.model.countryAlpha3Code = undefined;
       }
+
+      this.model.birthDate = new Date(this.birthDateYear, this.birthDateMonth, this.birthDateYear);
+      console.log(this.model);
       await this.coreSave(event);
+    },
+    changeValue($event, property) {
+      // FIXME: not working with new forms
+      if(document.getElementById('address-form-' + property).getAttribute('touched')) return;
+      let value = this.callingCodes.find(c => c[$event.target.name] == $event.target.value)[property];
+      Vue.set(this.model, property, value);
     },
     async onCreate() {
       if (this.options.itemId) {
         this.model = await this.$store.getters[this.storeName + "/item"](
           this.options.itemId
         );
+
+        if(typeof this.model.birthDate != 'object') {
+          this.model.birthDate = new Date(this.model.birthDate);
+        }
+
+        this.birthDateDay = this.model.birthDate.getDate();
+        this.birthDateMonth = this.model.birthDate.getMonth();
+        this.birthDateYear = this.model.birthDate.getFullYear();
       } else {
         this.model = copy(this.baseModel);
+        if (this.userLocation) {
+          this.model.city = this.userLocation.city;
+          this.model.country = this.userLocation.countryName;
+          // this.model.state = this.userLocation.state || this.userLocation.country;
+          this.model.callingCode = this.userLocation.callingCodes.length
+            ? this.userLocation.callingCodes[0]
+            : undefined;
+        }
       }
     }
   },
   computed: {
-    callingCodes() {
-      return this.$store.getters["address/callingCodes"];
-    },
-    countries() {
-      return this.$store.getters["address/countries"];
+    ...mapGetters("address", ["callingCodes", "countries", "userLocation"]),
+    maxDay() {
+      return new Date(
+        this.birthDateYear || new Date().getFullYear,
+        this.birthDateMonth || 0,
+        0
+      ).getDate();
     }
   }
 };
@@ -295,5 +378,9 @@ export default {
       padding-left: 0;
     }
   }
+}
+.form-item span {
+  font-size: 1rem;
+  padding: 0.2rem 0 0.2rem 0.2rem;
 }
 </style>

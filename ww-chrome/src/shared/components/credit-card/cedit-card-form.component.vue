@@ -166,7 +166,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import { formCoreComponentMixin } from "../common/core.component";
 
 export default {
@@ -200,7 +199,6 @@ export default {
       )
         return;
       let curorPosition = event.target && event.target.selectionStart != this.model.cardNumber.length ? Number(event.target.selectionStart) : -1;
-      console.log(curorPosition)
       if (this.model.cardNumber && this.model.cardNumber.length > 4) {
         let val = "";
         this.model.cardNumber = this.model.cardNumber.replace(/( )/g, "");
@@ -237,7 +235,7 @@ export default {
   },
   async created() {
     await this.onCreate(); 
-    this.checkCardNumber({key: 'Backspace'});
+    this.checkCardNumber({ key: 'Backspace' });
   }
 };
 </script>

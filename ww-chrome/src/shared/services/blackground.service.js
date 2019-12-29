@@ -47,6 +47,7 @@ export default class BackgroundService {
         if (typeof model === 'string') model = JSON.parse(model);
         let result = {};
         if (model.password) {
+            result.password = {};
             const passwordModel = model.password.model ? model.password.model : model.password;
             let password = await this.$password.getItem({
                 username: passwordModel.username,
@@ -56,22 +57,35 @@ export default class BackgroundService {
                 password.count++;
                 this.$password.save(password);
                 if (password.password == passwordModel.password) {
-                    result.password = false;
+                    result.password.action = false;
                 } else {
-                    result.password = 'update';
+                    result.password.action = 'update';
                 }
             } else {
-                result.password = 'new';
+                result.password.action = 'new';
+            }
+            result.password.model = passwordModel;
+        }
+        if (model.creditcard) {
+            result.creditcard = {};
+            const creditcardModel = model.creditcard.model ? model.creditcard.model : model.creditcard;
+            result.creditcard.model = creditcardModel;
+            var creditcard = await this.$creditCards.getItem({
+                cardNumber: creditcardModel.cardNumber
+            });
+            if(creditcard) {
+                creditcard.count++;
+                this.$creditCards.save(creditcard);
+                if(creditcard.name != creditcardModel.name || creditcard.cvv != creditcardModel.cvv || creditcard.expiredMonth != creditcardModel.expiredMonth || creditcard.expiredYear != creditcardModel.expiredYear) {
+                    result.creditcard.action = 'update';
+                }
+            } else {
+                result.creditcard.action = 'new';
             }
         }
 
-        return {
-            password: {
-                action: result.password,
-                model: model.password.model ? model.password.model : model.password
-            },
-            hasAction: result.password != undefined && result.password != false
-        };
+        result.hasAction = result.password.action && result.creditcard.action;
+        return result;
     }
 
     // #region save

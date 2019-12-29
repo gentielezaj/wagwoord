@@ -34,6 +34,12 @@ async function formSubmittion(formType, model, action) {
 }
 // #endregion form submittion
 
+async function get(type, data) {
+    return await chromeRequest(type, {
+        type,
+        data
+    });
+}
 // #region request
 
 function chromeRequest(requestType, data) {
@@ -55,6 +61,7 @@ export default {
         removeItem
     },
     post,
-    formSubmittion
+    formSubmittion,
+    get
 };
 // #endregion return

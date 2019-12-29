@@ -316,15 +316,22 @@ export default {
         this.model.countryAlpha3Code = undefined;
       }
 
-      this.model.birthDate = new Date(this.birthDateYear, this.birthDateMonth, this.birthDateYear);
+      this.model.birthDate = this.getDate();
       console.log(this.model);
       await this.coreSave(event);
     },
+    getDate() {
+      let day = this.birthDateDay > 9 ? this.birthDateDay + '' : '0' + this.birthDateDay;
+      let month = this.birthDateMonth > 9 ? this.birthDateMonth + '' : '0' + this.birthDateMonth;
+      const val = `${this.birthDateYear}-${month}-${day}T00:00:00.000Z`;
+      console.log(val);
+      return new Date(val);
+    },
     changeValue($event, property) {
       // FIXME: not working with new forms
-      if(document.getElementById('address-form-' + property).getAttribute('touched')) return;
-      let value = this.callingCodes.find(c => c[$event.target.name] == $event.target.value)[property];
-      Vue.set(this.model, property, value);
+      // if(document.getElementById('address-form-' + property).getAttribute('touched')) return;
+      // let value = this.callingCodes.find(c => c[$event.target.name] == $event.target.value)[property];
+      // Vue.set(this.model, property, value);
     },
     async onCreate() {
       if (this.options.itemId) {
@@ -337,7 +344,7 @@ export default {
         }
 
         this.birthDateDay = this.model.birthDate.getDate();
-        this.birthDateMonth = this.model.birthDate.getMonth();
+        this.birthDateMonth = this.model.birthDate.getMonth() + 1;
         this.birthDateYear = this.model.birthDate.getFullYear();
       } else {
         this.model = copy(this.baseModel);

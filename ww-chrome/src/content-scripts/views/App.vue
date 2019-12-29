@@ -29,10 +29,15 @@
         :id="listItem.id"
         v-bind:key="listItem.id"
         :tabindex="index"
+        class="data"
         :class="{'active': listItem.active}"
         @click="onDropdownClick($event, listItem, inputDropdownData.event)"
         wagwoord-app-field="true"
-      >{{listItem[inputDropdownData.valueField]}}</li>
+      >
+        <span>{{listItem[inputDropdownData.valueField]}}</span>
+        <span v-if="inputDropdownData.info" v-html="typeof inputDropdownData.info == 'function' ? inputDropdownData.info(listItem) : listItem[inputDropdownData.info]"></span>
+        <span v-if="inputDropdownData.infoSecundary" v-html="typeof inputDropdownData.infoSecundary == 'function' ? inputDropdownData.infoSecundary(listItem) : listItem[inputDropdownData.infoSecundary]"></span>
+      </li>
       <li
         @click="goToSettings($event)"
         wagwoord-app-field="true"
@@ -53,15 +58,17 @@ import Vue from "vue";
 import { clipboard } from "../../shared/services/core/helper.service";
 // #region hendlers mixins
 import passwordFormHanderMixins from "../handles/passwords/password-handler.js";
+import creditCardFormHanderMixins from "../handles/passwords/creditcard-handler";
 // #endregion hendlers mixins
 
 // #region helpers
 import { getElmentApsolutePositionAndDimendtions } from "../handles/common/input-data";
+import { getForms } from "../handles/common/form-detectors";
 // #endregion helpers
 
 export default {
   name: "wagwoordAppComponent",
-  mixins: [passwordFormHanderMixins],
+  mixins: [passwordFormHanderMixins, creditCardFormHanderMixins],
   data() {
     return {
       title: "update password",
@@ -69,6 +76,7 @@ export default {
       inputDropdownData: {},
       dialogData: undefined,
       observer: undefined,
+      forms: [],
       messageListenerEvent: new CustomEvent("messageListener", {
         bubbles: true
       })
@@ -89,9 +97,9 @@ export default {
     },
     goToSettings(url) {
       // TODO: resolve tab not open corectly on windows open
-      url = 'options/options.html#/' + (url || '');
+      url = "options/options.html#/" + (url || "");
       url = chrome.runtime.getURL(url);
-      window.open(url, '_blank').focus();
+      window.open(url, "_blank").focus();
     },
     openDropdown(event, model) {
       if (model) {
@@ -152,7 +160,7 @@ export default {
         });
       }
     },
-    async copyToClipboard(model, data) {
+    copyToClipboard(model, data) {
       clipboard(data);
       setTimeout(() => {
         this.openDialog({
@@ -171,9 +179,10 @@ export default {
       element.dispatchEvent(new Event("change", { bubbles: true }));
       element.dispatchEvent(new Event("blur", { bubbles: true }));
     },
-    onCreate() {
-      console.log("refresh");
+    async onCreate() {
+      this.forms = [...this.forms, ...getForms()];
       this.passwordFormsInit(this.$appData.submittedResponse);
+      await this.creditcardFormsInit(this.$appData.submittedResponse);
     }
   },
   computed: {
@@ -195,10 +204,10 @@ export default {
       return document.getElementById("wagwoord-content-script-container");
     }
   },
-  created() {
+  async created() {
     console.log(this.$appData);
     console.log(this.$chrome);
-    this.onCreate();
+    await this.onCreate();
     setTimeout(() => {
       this.rootElement.addEventListener("messageListener", e => {
         this.onMessageListener(e);
@@ -206,7 +215,7 @@ export default {
     }, 200);
     if (!this.observer) {
       this.observer = new MutationObserver((e, s) => {
-        this.onCreate();
+        this.onCreate().then();
       });
 
       this.observer.observe(document.body, {
@@ -288,7 +297,14 @@ div#wagwoord-content-script-container {
     border: var(--wagwoord-main-color-lighter) 1px solid;
     li {
       padding: 5px;
-      &:is(:hover, :focus) {
+      border-bottom: 1px solid var(--wagwoord-main-color-lighter);
+      &.data {
+        display: grid;
+      }
+      img {
+        height: 1em;
+      }
+      &:hover, &:focus {
         font-display: inherit;
         background: var(--wagwoord-main-color);
       }

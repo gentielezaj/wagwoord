@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import {listItemCoreComponentMixin} from "../common/core.component";
+import { listItemCoreComponentMixin } from "../common/core.component";
 import form from "./cedit-card-form.component";
 
 export default {

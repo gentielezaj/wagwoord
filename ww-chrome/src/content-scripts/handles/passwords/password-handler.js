@@ -1,16 +1,13 @@
 import {
-    getLoginForms
-} from '../common/form-detectors.js';
-import {
     uuidv4,
     getName
 } from '../../../shared/services/core/helper.service';
 
 export default {
-    data() {
-        return {
-            passwordForms: []
-        };
+    computed: {
+        passwordForms() {
+            return this.forms.filter(f => f.type == 'password');
+        }
     },
     methods: {
         passwordFormsInit(submittedResponse) {
@@ -18,8 +15,8 @@ export default {
                 this.openPasswordDialog(Object.assign({}, submittedResponse.password));
                 submittedResponse.password = undefined;
             }
-            const forms = getLoginForms(window.location.host) || [];
-            forms.forEach(f => {
+
+            this.passwordForms.forEach(f => {
                 let form = f.formElement;
                 if (f.formElement.getAttribute('wagwoord-form-id')) return;
                 const formId = uuidv4();
@@ -36,8 +33,6 @@ export default {
                 });
 
                 this.setPasswordFormValue(f);
-
-                this.passwordForms.push(f);
             });
         },
         openPasswordDialog(password) {

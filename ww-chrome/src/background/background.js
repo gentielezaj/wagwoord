@@ -66,6 +66,14 @@ chrome.runtime.onMessage.addListener(
             return true;
         }
 
+        if (request.requestType == 'creditcards') {
+            $backgound.$creditCards.get().then((p) => {
+                sendResponse(p);
+            });
+
+            return true;
+        }
+
         if (request.requestType == 'formSubmited') {
             $backgound.getSubmittedResponse(request.model).then(r => {
                 if (r.hasAction) storage(sender.tab, 'submitted', r);

@@ -4,10 +4,11 @@ export const dataMixin = {
     install: function (Vue, options) {
         const obj = {
             envirement: "debug",
-            ...options
+            ...options,
+            setData(key, value) {
+                this[key] = value;
+            }
         };
-
-        Object.freeze(obj);
 
         Vue.prototype.$appData = obj;
     }

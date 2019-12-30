@@ -10,138 +10,19 @@ function getDefaultForm(formSettings) {
     for (let index = 0; index < formElement.length; index++) {
         if (formElement[index].getAttribute('wagwoord-form-id')) continue;
         const pform = checkLoginForm(formElement[index], inputTypes);
-        if (pform) {
+        if(pform) {
             results.push(pform);
             continue;
         }
         const ccForm = checkCreditCardForm(formElement[index], inputTypes);
-        if (ccForm) {
+        if(ccForm) {
             results.push(ccForm);
             continue;
         }
-        const addressForm = checkAddressForm(formElement[index]);
-        if(addressForm) results.push(addressForm);
     }
 
     return results;
 }
-// #region address form
-
-function checkAddressForm(form) {
-    if (form.getAttribute('wagwoord-form-id')) return;
-    if (!form.elements.length) {
-        return;
-    }
-
-    let result = {
-        formElement: form,
-        type: 'address'
-    };
-    const fields = [{
-            name: 'firstName',
-            regex: /.*(first|given)[ _-]?(name).*/g
-        },
-        {
-            name: 'lastName',
-            regex: /.*(last|sur|family)[ _-]?(name).*/g
-        },
-        {
-            name: 'name',
-            regex: /.*(full)?[ _-]?(name).*/g
-        },
-        {
-            name: 'birthDate',
-            regex: /.*(birth)[ _-]?(day|date).*/g
-        },
-        {
-            name: 'street',
-            regex: /.*(street|home|primary|address)[ _-]?(address|line|level)?.*/g
-        },
-        {
-            name: 'city',
-            regex: /.*(city|town).*/g
-        },
-        {
-            name: 'state',
-            regex: /.*(state).*/g
-        },
-        {
-            name: 'country',
-            regex: /.*(country).*/g
-        },
-        {
-            name: 'postalCode',
-            regex: /.*(postal|zip)[ _-]?(code)?.*/g
-        },
-        {
-            name: 'organization',
-            regex: /.*(organization).*/g
-        },
-        {
-            name: 'phone',
-            regex: /.*(phone|tel|mobile)[ _-]?(number|nu|nr|no)?.*/g
-        },
-        {
-            name: 'callingCode',
-            regex: /.*(calling|country)[ _-]?(code)?.*/g
-        },
-        {
-            name: 'region',
-            regex: /.*(region).*/g
-        },
-        {
-            name: 'subregion',
-            regex: /.*(subregion).*/g
-        },
-        {
-            name: 'countryCode',
-            regex: /.*(country)[ _-]?(code).*/g
-        },
-        {
-            name: 'username',
-            regex: /.*(username|email|mail|id).*/g
-        },
-        {
-            name: 'email',
-            regex: /.*(username|email|mail|id).*/g
-        },
-        {
-            name: 'password',
-            regex: /.*(new)?[ _-]?(password).*/g
-        },
-        {
-            name: 'newPassword',
-            regex: /.*(confirm)[ _-]?(password).*/g
-        }
-    ];
-    let hasFields = false;
-    for (let i = 0; i < form.elements.length; i++) {
-        const element = form.elements[i];
-        for (let j = 0; j < fields.length; j++) {
-            const field = fields[j];
-            if (testTag(element, field.regex)) {
-                hasFields = true;
-                element.setAttribute('wagwood-input-type', field.name);
-                switch (field.name) {
-                    case 'name':
-                        if (!result.lastNameElement) result[field.name + 'Element'] = element;
-                        else result.firstNameElement = element;
-                        break;
-                    default:
-                        result[field.name + 'Element'] = element;
-                        break;
-                }
-
-                break;
-            }
-        }
-    }
-    if (hasFields) {
-        console.log(result);
-        return result;
-    }
-}
-// #endregion address form
 
 // #region credit card form
 
@@ -153,7 +34,7 @@ function checkCreditCardForm(form, inputTypes) {
         return;
     }
     let cscInput = getFormInputOrDefault(fields, /.*(cvv|csc|cvc).*/g);
-    if (!cscInput && isNotCCFrom) return;
+    if(!cscInput && isNotCCFrom) return;
     return {
         formElement: form,
         cvcElement: cscInput,
@@ -209,9 +90,9 @@ function checkLoginForm(form, inputTypes) {
 function getFormInputOrDefault(inputs, regex, def) {
     if (!inputs) return;
     if (!Array.isArray) inputs = [inputs];
-    if (!inputs.length) return;
+    if(!inputs.length) return;
     for (let i = 0; i < inputs.length; i++) {
-        if (testTag(inputs[i], regex)) return inputs[i];
+        if(testTag(inputs[i], regex)) return inputs[i];
     }
 
     return def;
@@ -223,10 +104,10 @@ function getFormInput(inputs, regex) {
 
 function testTag(input, regex) {
     if (input.id && regex.test(input.id.toLowerCase())) return true;
-    else if (input.name && typeof input.name == 'string' && regex.test(input.name.toLowerCase())) return true;
-    else if (input.autocapitalize && typeof input.autocapitalize == 'string' && regex.test(input.autocapitalize.toLowerCase())) return true;
-    else if (input.autocomplete && typeof input.autocomplete == 'string' && regex.test(input.autocomplete.toLowerCase())) return true;
-    else if (input.type && typeof input.type == 'string' && regex.test(input.type.toLowerCase())) return true;
+    else if (input.name && regex.test(input.name.toLowerCase())) return true;
+    else if (input.autocapitalize && regex.test(input.autocapitalize.toLowerCase())) return true;
+    else if (input.autocomplete && regex.test(input.autocomplete.toLowerCase())) return true;
+    else if (input.type && regex.test(input.type.toLowerCase())) return true;
     // else if (input.className && regex.test(input.className)) return true;
     return false;
 }

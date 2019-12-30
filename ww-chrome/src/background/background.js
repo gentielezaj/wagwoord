@@ -73,13 +73,6 @@ chrome.runtime.onMessage.addListener(
 
             return true;
         }
-        if (request.requestType == 'addresses') {
-            $backgound.$addressService.get().then((p) => {
-                sendResponse(p);
-            });
-
-            return true;
-        }
 
         if (request.requestType == 'formSubmited') {
             $backgound.getSubmittedResponse(request.model).then(r => {

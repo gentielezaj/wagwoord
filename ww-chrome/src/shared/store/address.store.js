@@ -68,7 +68,7 @@ const store = {
         getLocationInfo: async (state) => {
             try {
                 // TODO: not good idea to set oken here
-                const response = await fetch('http://ipinfo.io?token=');
+                const response = await fetch('http://ipinfo.io?token=b757332292372d');
                 let data = await response.json();
                 console.log('use locati');
                 console.log(data);

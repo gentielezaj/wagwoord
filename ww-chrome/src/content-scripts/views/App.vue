@@ -59,6 +59,7 @@ import { clipboard } from "../../shared/services/core/helper.service";
 // #region hendlers mixins
 import passwordFormHanderMixins from "../handles/passwords/password-handler.js";
 import creditCardFormHanderMixins from "../handles/passwords/creditcard-handler";
+import addressFormHanderMixins from "../handles/passwords/address-handler";
 // #endregion hendlers mixins
 
 // #region helpers
@@ -68,7 +69,7 @@ import { getForms } from "../handles/common/form-detectors";
 
 export default {
   name: "wagwoordAppComponent",
-  mixins: [passwordFormHanderMixins, creditCardFormHanderMixins],
+  mixins: [passwordFormHanderMixins, creditCardFormHanderMixins, addressFormHanderMixins],
   data() {
     return {
       title: "update password",
@@ -108,6 +109,7 @@ export default {
         this.inputDropdownData = model;
         Vue.set(this, "inputDropdownData", model);
       }
+      console.log(this.inputDropdownData);
       let el = this.inputDropDown.element;
       const dimanzions = getElmentApsolutePositionAndDimendtions(event.target);
       document.documentElement.style.setProperty(
@@ -181,8 +183,14 @@ export default {
     },
     async onCreate() {
       this.forms = [...this.forms, ...getForms()];
-      this.passwordFormsInit(this.$appData.submittedResponse);
-      await this.creditcardFormsInit(this.$appData.submittedResponse);
+      if(!this.$appData.blacklist || !this.$appData.blacklist.password)
+        this.passwordFormsInit(this.$appData.submittedResponse);
+        
+      if(!this.$appData.blacklist || !this.$appData.blacklist.creditCard)
+        await this.creditcardFormsInit(this.$appData.submittedResponse);
+      
+      if(!this.$appData.blacklist || !this.$appData.blacklist.address)
+        await this.addressFormsInit(this.$appData.submittedResponse);
     }
   },
   computed: {

@@ -9,7 +9,7 @@ export default {
         }
     },
     methods: {
-        getDropDownModel(event) {
+        getCreditcardDropDownModel(event) {
             return {
                 valueField: 'name',
                 info: item => {
@@ -114,7 +114,7 @@ export default {
             }
 
             element.addEventListener('click', event => {
-                this.openDropdown(event, this.getDropDownModel());
+                this.openDropdown(event, this.getCreditcardDropDownModel());
             });
 
             element.setAttribute('autocomplete', 'off');
@@ -131,7 +131,7 @@ export default {
                         if (event.target.value) {
                             this.closeDropdown();
                         } else {
-                            this.openDropdown(event, this.getDropDownModel());
+                            this.openDropdown(event, this.getCreditcardDropDownModel());
                         }
                     }
                 });

@@ -70,7 +70,7 @@ export default class BackgroundService {
             result.creditcard = {};
             const creditcardModel = model.creditcard.model ? model.creditcard.model : model.creditcard;
             result.creditcard.model = creditcardModel;
-            var creditcard = await this.$creditCards.getItem({
+            let creditcard = await this.$creditCards.getItem({
                 cardNumber: creditcardModel.cardNumber
             });
             if(creditcard) {
@@ -83,8 +83,49 @@ export default class BackgroundService {
                 result.creditcard.action = 'new';
             }
         }
+        if (model.address) {
+            result.address = {};
+            const addressModel = model.address.model ? model.address.model : model.address;
+            result.address.model = addressModel;
 
-        result.hasAction = result.password.action && result.creditcard.action;
+            if(addressModel.name) {
+                if(addressModel.name.trim().indexOf(' ') > -1) {
+                    let splitName = addressModel.name.trim().split(' ');
+                    addressModel.firstName = splitName[0];
+                    addressModel.lastName = splitName[1];
+                } else addressModel.firstName = addressModel.name;
+            }
+            if(addressModel.phone && !addressModel.callingCode) {
+                // TODO: check calling code
+            }
+
+            let searchModel = {};
+            if(addressModel.firstName) {
+                searchModel.firstName = addressModel.firstName;
+            }
+            if(addressModel.lastName) {
+                searchModel.lastName = addressModel.lastName;
+            }
+            if(addressModel.username) {
+                searchModel.username = addressModel.username;
+            }
+            if(addressModel.phone) {
+                searchModel.phone = addressModel.phone;
+            }
+            if(addressModel.street) {
+                searchModel.street = addressModel.street;
+            }
+
+            let address = await this.$addressService.getItem(searchModel);
+            if(!address) {
+                result.address.action = 'new';
+            } else {
+                address.count++;
+                this.$addressService.save(address);
+            }
+        }
+
+        result.hasAction = (result.password && result.password.action) || (result.creditcard && result.creditcard.action) || (result.address && result.address.action);
         return result;
     }
 
@@ -95,6 +136,14 @@ export default class BackgroundService {
             model.password.name = model.password.name || model.password.domain;
             model.password.synced = true;
             this.$password.save(model.password).then();
+        }
+        if (model.creditcard) {
+            model.creditcard.synced = true;
+            this.$creditCards.save(model.creditcard).then();
+        }
+        if (model.address) {
+            model.address.synced = true;
+            this.$addressService.save(model.address).then();
         }
 
         return false;

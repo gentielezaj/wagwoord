@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 
 import PasswordPage from '../shared/pages/password';
 import CodeGeneratorPage from '../shared/pages/code-generator';
+import BlacklistItem from '../shared/components/backlist/blacklist-list-item.component';
 
 const routes = [{
         path: '/',
@@ -19,6 +20,14 @@ const routes = [{
         props: {
             removeHeader: true,
             removeForm: true
+        }
+    },
+    {
+        name: 'blacklist',
+        path: '/blacklist',
+        component: BlacklistItem,
+        props: {
+            item: -1
         }
     }
 ];

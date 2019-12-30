@@ -2,7 +2,7 @@ export default {
     install: function (Vue, options) {
         const obj = {
             envirement: "debug",
-            scope: options.scope
+            ...options
         };
 
         Object.freeze(obj);

@@ -29,7 +29,7 @@ export default class BlacklistService extends CoreService {
             await this.delete(oldPasseord.id);
             return false;
         }
-
+        
         return await this.save({
             name: domain,
             password: true,

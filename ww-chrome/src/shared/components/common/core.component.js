@@ -24,6 +24,7 @@ export function coreComponentMixin(store) {
                 });
             },
             notifyError(message, error) {
+                if(this.$constants.scope != 'options') return;
                 if (error == 'item-exists') {
                     this.$store.dispatch('notification/notify', {
                         message: "Item exists",

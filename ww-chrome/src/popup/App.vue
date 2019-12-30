@@ -5,7 +5,7 @@
     </section>
     <footer class="actions">
       <button
-        :class="!tab.blacklist ? 'icon-list-ok' : 'icon-blacklist'"
+        class="icon-blacklist"
         @click="toggleBlackList()"
         ng-if="!tabBlacklisted"
         aria-label="Add to blacklist"
@@ -29,11 +29,12 @@
 <script>
 import listComponent from "../shared/components/common/list.component";
 import passwordItemComponent from "../shared/components/password/password-list-item.component";
-import ChromeService from "../shared/services/chrome.service";
 
 export default {
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     "password-item-component": passwordItemComponent,
+    // eslint-disable-next-line vue/no-unused-components
     "list-component": listComponent
   },
   data() {
@@ -42,42 +43,37 @@ export default {
         itemComponent: passwordItemComponent,
         store: "password"
       },
-      chrome: new ChromeService(),
       tab: {}
     };
   },
   computed: {
     icon() {
-      return this.$route.path == '/' ? 'icon-015-time' : 'icon-combination_lock';
+      return this.$route.path == "/"
+        ? "icon-015-time"
+        : "icon-combination_lock";
     }
   },
   methods: {
     async toggleBlackList() {
-      var tab = await this.chrome.selectedTab();
-      this.tab.blacklist = await this.$store.dispatch(
-        "blacklist/toggle",
-        tab.url
-      );
-      let code = "window.location.reload();";
-      chrome.tabs.reload(tab.id);
+      this.$router.push("/blacklist");
     },
     edit() {
       // TODO: open allready opened tab
-      this.$store.commit('chrome/open',{
+      this.$store.commit("chrome/open", {
         url: "options/options.html"
       });
     },
-    changePage() {
-      const link = this.$route.path == '/' ? '/code-generator' : '/'
-      localStorage.setItem('currentPage', link);
+    changePage(link) {
+      link = link || this.$route.path == "/" ? "/code-generator" : "/";
+      localStorage.setItem("currentPage", link);
       this.$router.push(link);
     }
   },
   async created() {
     this.tab = await this.$store.getters["chrome/activeTabData"];
-    console.log(localStorage.getItem('currentPage'));
-    const currentPage = localStorage.getItem('currentPage');
-    if(currentPage && currentPage != this.$route.path) this.$router.push(currentPage);
+    const currentPage = localStorage.getItem("currentPage");
+    if (currentPage && currentPage != this.$route.path)
+      this.$router.push(currentPage);
   }
 };
 </script>
@@ -125,6 +121,14 @@ main {
         }
       }
     }
+    div.list-item.blacklist {
+      padding: 0.5rem 0.5rem 2.5rem 0.5rem;
+      .domain.title {
+        font-size: 1.7em;
+        padding-bottom: 0.1em;
+        border-bottom: 1px solid;
+      }
+    }
   }
 }
 
@@ -138,7 +142,7 @@ footer {
   display: flex;
   button {
     width: -webkit-fill-available;
-    margin: 0 0.2rem
+    margin: 0 0.2rem;
   }
 }
 

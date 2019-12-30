@@ -1,7 +1,7 @@
 <template>
-  <div class="list-item">
+  <div class="list-item blacklist">
     <div class="item-actions right">
-        <span v-show="saving" class="loader"></span>
+      <span v-show="saving" class="loader"></span>
       <button @click="edit(item)" class="icon text">
         <span>edit</span>
         <i class="icon-pencil"></i>
@@ -68,19 +68,21 @@
       </div>
     </div>
     <dialog-component :options="dialogOptions"></dialog-component>
+    <delete-dialog-component :options="deleteDialogOptions"></delete-dialog-component>
   </div>
 </template>
 
 <script>
-import {listItemCoreComponentMixin} from "../common/core.component";
+import { listItemCoreComponentMixin } from "../common/core.component";
 import form from "./blacklist-form.component";
+import { getName } from "../../services/core/helper.service";
 
 export default {
   name: "blacklist-list-item",
-  mixins: [listItemCoreComponentMixin('address', form)],
+  mixins: [listItemCoreComponentMixin("blacklist", form)],
   data() {
     return {
-      saving:false
+      saving: false
     };
   },
   methods: {
@@ -96,6 +98,17 @@ export default {
         this.saving = false;
         throw error;
       }
+    }
+  },
+  async created() {
+    if (!this.item || this.item == -1) {
+      const url = getName(this.$constants.tab.url, true);
+      this.item = (await this.$store.getters["blacklist/item"]({
+        name: url
+      })) || {
+        id: -1,
+        name: url
+      };
     }
   }
 };

@@ -1,5 +1,4 @@
 import { CoreService } from "./core.service";
-import { copy } from './helper.service';
 
 export default class SettingsCoreService extends CoreService {
     constructor(setting) {
@@ -33,7 +32,7 @@ export default class SettingsCoreService extends CoreService {
         }
 
         let model = JSON.parse(item.value);
-        model.serverId = copy(item.id);
+        model.serverId = this.util.copy(item.id);
         model.name = item.name;
         model.encrypted = item.encrypted;
         model.lastModified = item.lastModified;

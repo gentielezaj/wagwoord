@@ -1,6 +1,3 @@
-import {
-    uuidv4, getCreditCardImage
-} from '../../../shared/services/core/helper.service';
 
 export default {
     computed: {
@@ -14,7 +11,7 @@ export default {
                 valueField: 'name',
                 info: item => {
                     console.log(item.cardType);
-                    return `<img src="${chrome.runtime.getURL(getCreditCardImage(item.cardType))}">` + " **** " + item.cardNumber.substring(item.cardNumber.length - 4) + ` | exp: ${item.expiredMonth} / ${(item.expiredYear + '').substring(2)}`;
+                    return `<img src="${chrome.runtime.getURL(this.$util.getCreditCardImage(item.cardType))}">` + " **** " + item.cardNumber.substring(item.cardNumber.length - 4) + ` | exp: ${item.expiredMonth} / ${(item.expiredYear + '').substring(2)}`;
                 },
                 data: this.$appData.creditcards
             };
@@ -34,7 +31,7 @@ export default {
             this.creditCardForms.forEach(f => {
                 let form = f.formElement;
                 if (f.formElement.getAttribute('wagwoord-form-id')) return;
-                const formId = uuidv4();
+                const formId = this.$util.uuidv4();
                 form.setAttribute('wagwoord-form-id', formId);
                 f.id = formId;
                 form.setAttribute('autocomplete', 'off');

@@ -51,7 +51,7 @@ export default {
         return this.item.expiredMonth < 10 ? ("0" + this.item.expiredMonth) : this.item.expiredMonth;
     },
     cardIcon() {
-        return this.$store.getters['creditcard/creditCardImage'](this.item.cardType);
+        return this.$util.getCreditCardImage(this.item.cardType);
     }
   },
   beforeDestroy() {

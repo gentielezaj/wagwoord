@@ -284,9 +284,7 @@
 
 <script>
 import { formCoreComponentMixin } from "../common/core.component";
-import { copy } from "../../services/core/helper.service";
 import { mapGetters } from "vuex";
-import Vue from 'vue';
 
 export default {
   mixins: [formCoreComponentMixin("address")],
@@ -347,7 +345,7 @@ export default {
         this.birthDateMonth = this.model.birthDate.getMonth() + 1;
         this.birthDateYear = this.model.birthDate.getFullYear();
       } else {
-        this.model = copy(this.baseModel);
+        this.model = this.$util.copy(this.baseModel);
         if (this.userLocation) {
           this.model.city = this.userLocation.city;
           this.model.country = this.userLocation.countryName;

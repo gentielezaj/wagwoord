@@ -3,9 +3,6 @@ import dialogComponent from './dialog-component';
 import deleteDialogComponent from './delete-dialog.component';
 import sctionHeader from './section-header';
 import listComponent from './list.component';
-import {
-    clipboard, copy
-} from '../../services/core/helper.service';
 
 export function coreComponentMixin(store) {
     return {
@@ -184,7 +181,7 @@ export function listItemCoreComponentMixin(store, form, page) {
                 this.toggelDialog(true, "deleteDialogOptions");
             },
             clipboard(value) {
-                if (clipboard(value)) this.notify("copied to clipboard");
+                if (this.$util.clipboard(value)) this.notify("copied to clipboard");
             }
         }
     };
@@ -219,7 +216,7 @@ export function formCoreComponentMixin(store, formId) {
         },
         methods: {
             reset() {
-                this.model = copy(this.baseModel);
+                this.model = this.$util.copy(this.baseModel);
                 if (this.options && typeof this.options.onSubmit == "function") {
                     this.options.onSubmit();
                 }
@@ -264,7 +261,7 @@ export function formCoreComponentMixin(store, formId) {
                         this.options.itemId
                     );
                 } else {
-                    this.model = copy(this.baseModel);
+                    this.model = this.$util.copy(this.baseModel);
                 }
             }
         },

@@ -75,7 +75,6 @@
 <script>
 import { listItemCoreComponentMixin } from "../common/core.component";
 import form from "./blacklist-form.component";
-import { getName } from "../../services/core/helper.service";
 
 export default {
   name: "blacklist-list-item",
@@ -98,11 +97,22 @@ export default {
         this.saving = false;
         throw error;
       }
+    },
+    async edit() {
+      if (this.isOptionsScope) this.toggelDialog();
+      else {
+        // TODO: resolve page
+        this.$store.commit("chrome/open", {
+          url: `options/options.html#/blacklist?edit=${
+            this.item.id
+          }&name=${encodeURIComponent(this.item.name)}`
+        });
+      }
     }
   },
   async created() {
     if (!this.item || this.item == -1) {
-      const url = getName(this.$constants.tab.url, true);
+      const url = this.$util.getName(this.$constants.tab.url, true);
       this.item = (await this.$store.getters["blacklist/item"]({
         name: url
       })) || {

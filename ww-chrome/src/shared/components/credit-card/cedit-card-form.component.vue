@@ -37,7 +37,7 @@
           v-model="model.cardNumber"
           type="text"
         />
-        <img v-if="cardIcon" :src="cardIcon"/>
+        <img v-if="cardIcon" :src="cardIcon" />
       </div>
     </div>
     <div class="form-item-group">
@@ -169,7 +169,7 @@
 import { formCoreComponentMixin } from "../common/core.component";
 
 export default {
-  mixins: [formCoreComponentMixin("creditcard", 'credit-card-form')],
+  mixins: [formCoreComponentMixin("creditcard", "credit-card-form")],
   data() {
     return {
       cardIcon: undefined
@@ -198,7 +198,11 @@ export default {
         event.key != "Delete"
       )
         return;
-      let curorPosition = event.target && event.target.selectionStart != this.model.cardNumber.length ? Number(event.target.selectionStart) : -1;
+      let curorPosition =
+        event.target &&
+        event.target.selectionStart != this.model.cardNumber.length
+          ? Number(event.target.selectionStart)
+          : -1;
       if (this.model.cardNumber && this.model.cardNumber.length > 4) {
         let val = "";
         this.model.cardNumber = this.model.cardNumber.replace(/( )/g, "");
@@ -213,29 +217,36 @@ export default {
         }
         this.model.cardNumber = val;
       }
-      if (curorPosition !== -1 && curorPosition < this.model.cardNumber.length) {
-        if((curorPosition == 5 || curorPosition == 9 || curorPosition == 15) && event.key != "Backspace" && event.key != "Delete") {
-          curorPosition++; 
+      if (
+        curorPosition !== -1 &&
+        curorPosition < this.model.cardNumber.length
+      ) {
+        if (
+          (curorPosition == 5 || curorPosition == 9 || curorPosition == 15) &&
+          event.key != "Backspace" &&
+          event.key != "Delete"
+        ) {
+          curorPosition++;
         }
         setTimeout(() => {
           event.target.selectionStart = curorPosition;
           event.target.selectionEnd = curorPosition;
         });
       }
-      this.getCreditCardType();
+      this.cardIcon = this.$util.getCreditCardImage(this.model.cardNumber);
     },
-    getCreditCardType() {
-      this.cardIcon = this.$store.getters['creditcard/creditCardImage'](this.model.cardNumber);
-    },
-    async saveItem() {
-      this.model.cardNumber = this.model.cardNumber ? this.model.cardNumber.replace(/( )/g, '') : this.model.cardNumber;
-      this.model.cardType = this.$store.getters['creditcard/creditCardType'](this.model.cardNumber);
+    async saveItem(event) {
+      if (event) event.preventDefault();
+      this.model.cardNumber = this.model.cardNumber
+        ? this.model.cardNumber.replace(/( )/g, "")
+        : this.model.cardNumber;
+      this.model.cardType = this.$util.getCreditcardType(this.model.cardNumber);
       await this.save();
     }
   },
   async created() {
-    await this.onCreate(); 
-    this.checkCardNumber({ key: 'Backspace' });
+    await this.onCreate();
+    this.checkCardNumber({ key: "Backspace" });
   }
 };
 </script>

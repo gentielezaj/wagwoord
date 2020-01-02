@@ -1,3 +1,5 @@
+import { WWUtil } from './ww-util';
+
 export default {
     install: function (Vue, options) {
         const obj = {
@@ -8,5 +10,6 @@ export default {
         Object.freeze(obj);
 
         Vue.prototype.$constants = obj;
+        Vue.prototype.$util = WWUtil;
     }
 };

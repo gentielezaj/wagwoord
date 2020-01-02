@@ -10,13 +10,23 @@
 </template>
 
 <script>
-import {pageCoreComponentMixin} from "../components/common/core.component";
+import { pageCoreComponentMixin } from "../components/common/core.component";
 import form from "../components/backlist/blacklist-form.component";
 import listItem from "../components/backlist/blacklist-list-item.component";
 
 export default {
   name: "blacklist-page",
-  mixins:[pageCoreComponentMixin('blacklist', 'Blacklist', form, listItem)]
+  mixins: [pageCoreComponentMixin("blacklist", "Blacklist", form, listItem)],
+  created() {
+    console.log(this.$route.query);
+    if (this.$route.query.edit) {
+      this.dialogOptions.componentOptions.itemId = Number(
+        this.$route.query.edit
+      );
+      this.dialogOptions.componentOptions.name = this.$route.query.name;
+      this.dialogOptions.open = true;
+    }
+  }
 };
 </script>
 

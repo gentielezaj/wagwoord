@@ -1,6 +1,3 @@
-import {
-    uuidv4
-} from '../../../shared/services/core/helper.service';
 
 export default {
     computed: {
@@ -58,7 +55,7 @@ export default {
             this.addressForms.forEach(f => {
                 let form = f.formElement;
                 if (f.formElement.getAttribute('wagwoord-form-id')) return;
-                const formId = uuidv4();
+                const formId = this.$util.uuidv4();
                 form.setAttribute('wagwoord-form-id', formId);
                 f.id = formId;
                 form.setAttribute('autocomplete', 'off');

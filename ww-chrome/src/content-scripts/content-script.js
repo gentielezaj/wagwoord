@@ -3,6 +3,7 @@ import {
     dataMixin,
     chromeConst
 } from './init/ww-data-model.mixin';
+import constants from '../shared/util/ww-constants';
 import App from './views/App';
 import {
     createStyleTag
@@ -40,10 +41,12 @@ chrome.runtime.sendMessage({
     });
 
     Vue.use(chromeConst);
+    Vue.use(constants);
 
     app = new Vue({
         el: '#wagwoord-app',
         dataMixin,
+        constants,
         chromeConst,
         render: h => h(App)
     });

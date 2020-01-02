@@ -89,17 +89,29 @@
 import { formCoreComponentMixin } from "../common/core.component";
 
 export default {
-  mixins: [formCoreComponentMixin('blacklist')],
+  mixins: [formCoreComponentMixin("blacklist")],
   computed: {
     baseModel() {
       return {
-          name: "",
-          synced: true,
-          password: true,
-          address: true,
-          codeGenerator: true,
-          creditCard: true
+        name: "",
+        synced: true,
+        password: true,
+        address: true,
+        codeGenerator: true,
+        creditCard: true
       };
+    }
+  },
+  methods: {
+    async onCreate() {
+      if (this.options.itemId && this.options.itemId != -1) {
+        this.model = await this.$store.getters[this.storeName + "/item"](
+          this.options.itemId
+        );
+      } else {
+        this.model = this.$util.copy(this.baseModel);
+        if(this.options.name) this.model.name = this.options.name;
+      }
     }
   }
 };

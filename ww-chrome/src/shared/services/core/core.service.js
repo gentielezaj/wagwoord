@@ -4,24 +4,24 @@ import {
 import EncryptionService from '../encryprion.service';
 
 import DB from '../database/db.service';
-import {
-    copy
-} from './helper.service';
+
+import { WWUtil } from '../../util/ww-util';
 
 export class CoreService {
+    constructor(entityName) {
+        this.proxy = new ProxyService(entityName);
+        this.db = new DB(entityName);
+        this.entityName = entityName;
+        this.encryption = new EncryptionService();
+        this.util = WWUtil;
+    }
+
     get deletedUnsyncStorageKey() {
         return `${this.entityName}deletedUnsyncStorageKey`;
     }
 
     get lastModifiedStorageKey() {
         return `${this.entityName}lastModifiedStorageKey`;
-    }
-
-    constructor(entityName) {
-        this.proxy = new ProxyService(entityName);
-        this.db = new DB(entityName);
-        this.entityName = entityName;
-        this.encryption = new EncryptionService();
     }
 
     // #region get
@@ -130,7 +130,7 @@ export class CoreService {
 
         model.id = await this.db.save(model);
         if (model.id && !ignoreServer && model.synced === true && await this.proxy.isSet()) {
-            await this._syncServer(copy(model));
+            await this._syncServer(this.util.copy(model));
         }
         if (typeof onSaveItem === 'function') {
             onSaveItem(model);
@@ -172,7 +172,7 @@ export class CoreService {
 
     // #region converters
     async _convertServerToLocalEntity(item) {
-        item.serverId = copy(item.id);
+        item.serverId = this.util.copy(item.id);
         item.id = item.localId;
         item.synced = true;
 
@@ -180,8 +180,8 @@ export class CoreService {
     }
 
     async _convertLocalToServerEntity(item) {
-        item.localId = copy(item.id);
-        item.id = copy(item.serverId);
+        item.localId = this.util.copy(item.id);
+        item.id = this.util.copy(item.serverId);
         if(item.hasOwnProperty('synced')) delete item.synced;
 
         return item;

@@ -4,11 +4,6 @@ import CodeGeneratorService from "./code-generator/code-generator.service";
 import CreditCardService from "./credit-card.service";
 import AddressService from "./address.service";
 
-import {
-    getName,
-    getDomain
-} from './core/helper.service';
-
 export default class BackgroundService {
     constructor() {
         this.$password = new PasswordService();
@@ -19,7 +14,7 @@ export default class BackgroundService {
     }
 
     async getDataFroDomain(url, submitted) {
-        url = getName(url, true);
+        url = this.util.getName(url, true);
         const passwords = await this.$password.get({
             searchText: `${url}-`,
             order: {
@@ -51,7 +46,7 @@ export default class BackgroundService {
             const passwordModel = model.password.model ? model.password.model : model.password;
             let password = await this.$password.getItem({
                 username: passwordModel.username,
-                domain: getDomain(passwordModel.domain)
+                domain: this.util.getDomain(passwordModel.domain)
             });
             if (password) {
                 password.count++;

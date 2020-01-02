@@ -1,11 +1,10 @@
-import {
-    getDomain, copy
-} from './core/helper.service';
+import { WWUtil } from '../util/ww-util';
 
 export default class ChromeService {
     constructor(key) {
         this.key = key;
         Object.freeze(this.key);
+        this.util = WWUtil;
     }
 
     async get() {
@@ -48,9 +47,9 @@ export default class ChromeService {
             hardMatch = url.hardMatch;
             url = url.url;
         }
-        let searchUrl = copy(url);
+        let searchUrl = this.util.copy(url);
         if (!hardMatch) {
-            searchUrl = getDomain(searchUrl);
+            searchUrl = this.util.getDomain(searchUrl);
         }
 
         chrome.tabs.query({

@@ -2,11 +2,6 @@ import {
     CoreService
 } from "../core/core.service";
 import PasswordSettingsService from './password-settings.service';
-import {
-    getTextFromFile,
-    getName,
-    getDomain
-} from '../core/helper.service';
 
 export default class PasswordService extends CoreService {
     constructor() {
@@ -63,8 +58,8 @@ export default class PasswordService extends CoreService {
 
     // #region abstract
     async _preSave(item, canUpdate) {
-        item.domain = getDomain(item.domain);
-        item.name = getName(item.domain);
+        item.domain = this.util.getDomain(item.domain);
+        item.name = this.util.getName(item.domain);
 
         const oldPasseord = await this.getItem({
             domain: item.domain,
@@ -157,7 +152,7 @@ export default class PasswordService extends CoreService {
 
     // #region import passwords
     async readPasswordsFromFile(file, onSave) {
-        const fileText = await getTextFromFile(file);
+        const fileText = await this.util.getTextFromFile(file);
         let data;
         if (file.type == 'application/json') {
             data = JSON.parse(fileText).passwords.filter(d => d.name);

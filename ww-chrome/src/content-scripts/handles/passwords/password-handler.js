@@ -1,7 +1,3 @@
-import {
-    uuidv4,
-    getName
-} from '../../../shared/services/core/helper.service';
 
 export default {
     computed: {
@@ -19,7 +15,7 @@ export default {
             this.passwordForms.forEach(f => {
                 let form = f.formElement;
                 if (f.formElement.getAttribute('wagwoord-form-id')) return;
-                const formId = uuidv4();
+                const formId = this.$util.uuidv4();
                 form.setAttribute('wagwoord-form-id', formId);
                 f.id = formId;
                 form.setAttribute('autocomplete', 'off');
@@ -127,7 +123,7 @@ export default {
                     return;
                 }
                 if (selectedElement.getAttribute('wagwoord-data') == 'open-settings') {
-                    let url = getName(window.location.origin, true);
+                    let url = this.$util.getName(window.location.origin, true);
                     url = encodeURIComponent(url);
                     this.goToSettings('?search=' + url);
                     this.closeDropdown(event);

@@ -55,7 +55,6 @@
 
 <script>
 import Vue from "vue";
-import { clipboard } from "../../shared/services/core/helper.service";
 // #region hendlers mixins
 import passwordFormHanderMixins from "../handles/passwords/password-handler.js";
 import creditCardFormHanderMixins from "../handles/passwords/creditcard-handler";
@@ -163,7 +162,7 @@ export default {
       }
     },
     copyToClipboard(model, data) {
-      clipboard(data);
+      this.$util.clipboard(data);
       setTimeout(() => {
         this.openDialog({
           title: "value copied",

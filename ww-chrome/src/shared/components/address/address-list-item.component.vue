@@ -5,7 +5,7 @@
         <span>edit</span>
         <i class="icon-pencil"></i>
       </button>
-      <button @click="deleteItem(item)" v-if="isOptionsScope" class="icon text">
+      <button @click="deleteItem(item)" class="icon text">
         <span>delete</span>
         <i class="icon-delete"></i>
       </button>

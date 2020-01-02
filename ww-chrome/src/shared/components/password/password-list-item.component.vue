@@ -5,7 +5,7 @@
         <span>edit</span>
         <i class="icon-pencil"></i>
       </button>
-      <button @click="deleteItem(item)" v-if="isOptionsScope" class="icon text">
+      <button @click="deleteItem(item)" class="icon text">
         <span>delete</span>
         <i class="icon-delete"></i>
       </button>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import {listItemCoreComponentMixin} from "../common/core.component";
+import { listItemCoreComponentMixin } from "../common/core.component";
 import form from "./password-form.component";
 
 export default {
@@ -53,7 +53,7 @@ export default {
   data() {
     return {
       showPassword: false
-    }
+    };
   }
 };
 </script>

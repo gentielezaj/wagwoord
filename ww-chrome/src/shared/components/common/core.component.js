@@ -11,6 +11,7 @@ export function coreComponentMixin(store) {
     return {
         methods: {
             notify(message, type, error) {
+                if(!this.isOptionsScope) return;
                 this.$store.dispatch('notification/notify', {
                     message,
                     type: type || 'info',
@@ -18,13 +19,14 @@ export function coreComponentMixin(store) {
                 });
             },
             notifySuccess(message) {
+                if(!this.isOptionsScope) return;
                 this.$store.dispatch('notification/notify', {
                     message,
                     type: 'success'
                 });
             },
             notifyError(message, error) {
-                if(this.$constants.scope != 'options') return;
+                if(!this.isOptionsScope) return;
                 if (error == 'item-exists') {
                     this.$store.dispatch('notification/notify', {
                         message: "Item exists",

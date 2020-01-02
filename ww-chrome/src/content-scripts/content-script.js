@@ -29,6 +29,13 @@ chrome.runtime.sendMessage({
     requestType: "get",
     submitted: sessionStorage.getItem('submitted')
 }, function (response) {
+    if(response.blacklist && response.blacklist.password && response.blacklist.address && response.blacklist.creditCard && response.blacklist.codeGenerator) {
+        return;
+    }
+
+    if(response.blacklist) {
+        response.blacklist.totalBlack = false;
+    }
     const model = {
         passwords: response && response.passwords ? response.passwords : [],
         settings: response && response.settings ? response.settings : [],

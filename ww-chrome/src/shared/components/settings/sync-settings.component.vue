@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import {coreComponentMixin} from "../common/core.component";
+import { coreComponentMixin } from "../common/core.component";
 
 export default {
   name: "sync-settings",

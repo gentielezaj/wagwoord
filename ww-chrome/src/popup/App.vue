@@ -5,20 +5,28 @@
     </section>
     <footer class="actions">
       <button
+        class="icon-combination_lock"
+        :class="isActive('')"
+        @click="goTo()"
+        aria-label="Settings"
+        aria-details="Go to settings"
+      ></button>
+      <button
+        @click="goTo('code-generator')"
+        class="icon-015-time"
+        :class="isActive('code-generator')"
+        aria-label="Settings"
+        aria-details="Go to settings"
+      ></button>
+      <button
         class="icon-blacklist"
-        @click="toggleBlackList()"
-        ng-if="!tabBlacklisted"
+        :class="isActive('blacklist')"
+        @click="goTo('blacklist')"
         aria-label="Add to blacklist"
       ></button>
       <button
         class="icon-settings"
         @click="edit()"
-        aria-label="Settings"
-        aria-details="Go to settings"
-      ></button>
-      <button
-        @click="changePage()"
-        :class="icon"
         aria-label="Settings"
         aria-details="Go to settings"
       ></button>
@@ -47,26 +55,22 @@ export default {
     };
   },
   computed: {
-    icon() {
-      return this.$route.path == "/"
-        ? "icon-015-time"
-        : "icon-combination_lock";
-    }
   },
   methods: {
-    async toggleBlackList() {
-      this.$router.push("/blacklist");
+    isActive(path) {
+      path = '/' + (path || '');
+      return this.$route.path == path
+        ? 'active'
+        : '';
+    },
+    goTo(address) {
+      this.$router.push("/" + (address || ''));
     },
     edit() {
       // TODO: open allready opened tab
       this.$store.commit("chrome/open", {
         url: "options/options.html"
       });
-    },
-    changePage(link) {
-      link = link || this.$route.path == "/" ? "/code-generator" : "/";
-      localStorage.setItem("currentPage", link);
-      this.$router.push(link);
     }
   },
   async created() {
@@ -143,6 +147,9 @@ footer {
   button {
     width: -webkit-fill-available;
     margin: 0 0.2rem;
+    &.active {
+      border-bottom: 1px solid var(--wagwoord-color);
+    }
   }
 }
 

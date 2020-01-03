@@ -150,7 +150,6 @@ function checkAddressForm(form) {
         }
     }
     if (hasFields) {
-        console.log(result);
         return result;
     }
 }

@@ -315,14 +315,12 @@ export default {
       }
 
       this.model.birthDate = this.getDate();
-      console.log(this.model);
       await this.coreSave(event);
     },
     getDate() {
       let day = this.birthDateDay > 9 ? this.birthDateDay + '' : '0' + this.birthDateDay;
       let month = this.birthDateMonth > 9 ? this.birthDateMonth + '' : '0' + this.birthDateMonth;
       const val = `${this.birthDateYear}-${month}-${day}T00:00:00.000Z`;
-      console.log(val);
       return new Date(val);
     },
     changeValue($event, property) {

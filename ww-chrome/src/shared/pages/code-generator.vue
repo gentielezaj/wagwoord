@@ -4,7 +4,6 @@
     <main class="section-content">
       <list-component v-bind:options="listOptions"></list-component>
     </main>
-    <dialog-component v-if="!removeForm" :options="dialogOptions"></dialog-component>
     <div class="hidden">{{syncing}}</div>
   </div>
 </template>

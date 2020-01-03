@@ -34,8 +34,6 @@
         :style="widthStyle"
       ></div>
     </div>
-    <dialog-component v-if="isOptionsScope" :options="dialogOptions"></dialog-component>
-    <delete-dialog-component :options="deleteDialogOptions"></delete-dialog-component>
   </div>
 </template>
 

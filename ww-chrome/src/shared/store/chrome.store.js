@@ -11,7 +11,6 @@ export default {
         selectedTab: async store => {
             let tab = await store.chrome.selectedTab();
             tab.wwurl = store.chrome.util.getName(tab.url, true);
-            console.log(tab);
             return tab;
         },
         activeTabData: async store => {

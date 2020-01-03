@@ -22,8 +22,6 @@
         <i class="icon-copy-1"></i>
       </span>
     </div>
-    <dialog-component v-if="isOptionsScope" :options="dialogOptions"></dialog-component>
-    <delete-dialog-component :options="deleteDialogOptions"></delete-dialog-component>
   </div>
 </template>
 

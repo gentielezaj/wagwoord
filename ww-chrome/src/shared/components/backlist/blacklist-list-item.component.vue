@@ -67,8 +67,6 @@
         <label :for="'blacklist-codeGenerator' + item.id" class>Code generator</label>
       </div>
     </div>
-    <dialog-component :options="dialogOptions"></dialog-component>
-    <delete-dialog-component :options="deleteDialogOptions"></delete-dialog-component>
   </div>
 </template>
 

@@ -16,7 +16,7 @@ chrome.contextMenus.create({
     onclick: function (info, tab) {
         console.log(info);
         console.log(tab);
-        // TODO: check settings of input
+        // TODO: "Generate password context menu check input attributes"
         $backgound.$password.generate().then(r => sendMessageToConentScript(tab, 'insert-value', r));
     }
 });
@@ -28,8 +28,6 @@ chrome.contextMenus.create({
     contexts: ["image"],
     visible: true,
     onclick: function (info, tab) {
-        console.log(info);
-        console.log(tab);
         const codeReader = new BrowserQRCodeReader();
         codeReader.decodeFromImage(undefined, info.srcUrl).then(r => {
             $backgound.$codeGenerator.saveOrUpdate(r.text).then(id => {

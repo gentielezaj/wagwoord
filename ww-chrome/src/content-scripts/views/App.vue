@@ -108,7 +108,6 @@ export default {
         this.inputDropdownData = model;
         Vue.set(this, "inputDropdownData", model);
       }
-      console.log(this.inputDropdownData);
       let el = this.inputDropDown.element;
       const dimanzions = getElmentApsolutePositionAndDimendtions(event.target);
       document.documentElement.style.setProperty(

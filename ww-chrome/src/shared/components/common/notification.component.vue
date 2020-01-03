@@ -20,7 +20,7 @@ export default {
   data() {
     return {};
   },
-  computed:{
+  computed: {
     notfs() { 
       return this.$store.getters['notification/notifications'];
     }

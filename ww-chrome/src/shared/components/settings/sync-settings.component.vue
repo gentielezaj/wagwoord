@@ -72,7 +72,6 @@ export default {
       if (!this.domainInput || !this.domainInput.validity.valid) return;
       this.loader = true;
       try {
-        console.log("jerere");
         if (await this.$store.dispatch("proxy/save", this.model)) {
           this.notifySuccess("Sync data saved!");
         } else {
@@ -89,7 +88,6 @@ export default {
     this.loader = true;
     this.model = (await this.$store.getters["proxy/model"]) || {};
 
-    console.log(this.model);
     this.loader = false;
   }
 };

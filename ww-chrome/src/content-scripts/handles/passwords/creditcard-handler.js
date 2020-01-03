@@ -10,7 +10,6 @@ export default {
             return {
                 valueField: 'name',
                 info: item => {
-                    console.log(item.cardType);
                     return `<img src="${chrome.runtime.getURL(this.$util.getCreditCardImage(item.cardType))}">` + " **** " + item.cardNumber.substring(item.cardNumber.length - 4) + ` | exp: ${item.expiredMonth} / ${(item.expiredYear + '').substring(2)}`;
                 },
                 data: this.$appData.creditcards
@@ -25,7 +24,6 @@ export default {
             if (this.creditCardForms.length && !this.$appData.creditcards) {
                 const creditcards = await this.$chrome.get('creditcards');
                 this.$appData.setData('creditcards', creditcards);
-                console.log(this.$appData.creditcards);
             }
 
             this.creditCardForms.forEach(f => {
@@ -77,7 +75,6 @@ export default {
             if (!formId) return;
             const form = this.forms.find(f => f.id == formId);
             if (!form.cvcElement.value) return;
-            console.log(`wagwoord form values: creditcard: `);
 
             const model = {
                 creditcard: {

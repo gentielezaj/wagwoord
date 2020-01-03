@@ -8,7 +8,10 @@ import constants from '../shared/util/ww-constants';
 import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
 import chromeStore from '../shared/store/chrome.store';
+import dialogStore from '../shared/store/dialog.store';
 import codeGenerator from '../shared/store/code-generator.store';
+import notificationStore from '../shared/store/notification.store';
+
 import ChromeService from '../shared/services/chrome.service';
 
 Vue.use(Vuex);
@@ -17,13 +20,14 @@ const store = new Vuex.Store({
     password: passwordStore,
     blacklist: blacklistStore,
     chrome: chromeStore,
-    codegenerator: codeGenerator
+    codegenerator: codeGenerator,
+    dialog: dialogStore,
+    notification: notificationStore
   }
 });
 // #endregion stores
 
 new ChromeService().selectedTab().then(t => {
-  console.log(t);
   // #region constants
   Vue.use(constants, {
     scope: 'popup',

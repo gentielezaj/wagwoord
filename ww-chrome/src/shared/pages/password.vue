@@ -4,9 +4,6 @@
     <div class="password-list">
       <list-component v-bind:options="listOptions"></list-component>
     </div>
-    <div v-if="!removeForm" class="content">
-      <dialog-component :options="dialogOptions"></dialog-component>
-    </div>
     <div class="hidden">{{syncing}}</div>
   </div>
 </template>
@@ -18,9 +15,13 @@ import listItem from "../components/password/password-list-item.component";
 
 export default {
   name: "password-page",
-  mixins: [pageCoreComponentMixin('password', 'Passwords', form, listItem)]
+  mixins: [pageCoreComponentMixin("password", "Passwords", form, listItem)],
+  methods: {
+    toggelDialog() {
+      this.$store.commit('dialog/open', this.dialogOptions);
+    }
+  }
 };
-
 </script>
 
 <style>
@@ -63,5 +64,4 @@ div .list {
 }
 
 @import url(../../style/password-list.scss);
-
 </style>

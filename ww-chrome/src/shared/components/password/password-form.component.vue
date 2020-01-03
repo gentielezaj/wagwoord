@@ -113,7 +113,6 @@ export default {
   methods: {
     async generatePassword() {
       const gp = await this.$store.dispatch('password/generate');
-      console.log(gp);
       Vue.set(this.model, 'password', gp);
     },
     showPassword() {

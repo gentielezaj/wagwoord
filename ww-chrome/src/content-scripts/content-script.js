@@ -60,7 +60,6 @@ chrome.runtime.sendMessage({
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log(request);
     if (request.requestType == 'insert-value') {
         insetValue(request.data);
     } else if (request.requestType == 'otop-value') {

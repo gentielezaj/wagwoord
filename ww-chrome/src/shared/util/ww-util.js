@@ -62,12 +62,6 @@ export class WWUtil {
 
     static getDomain(domain, removePort) {
         if (!domain || domain.startsWith('android:')) return domain;
-        // const regex = /(chrome-)?(extension:){1}(\/){2}\w+\//g;
-        // if(regex.test(domain)) {
-        //     domain = domain.match(regex);
-        //     console.log('domain ' + domain);
-        //     return;
-        // }
 
         if (!(/http(s)?:/.test(domain))) {
             return domain;
@@ -119,7 +113,6 @@ export class WWUtil {
 
         for (var key in re) {
             if (re[key].test(cardNumber)) {
-                console.log('card is: ' + key);
                 return key;
             }
         }

@@ -4,7 +4,6 @@
     <div class="content blacklist-list">
       <list-component v-bind:options="listOptions"></list-component>
     </div>
-    <dialog-component :options="dialogOptions"></dialog-component>
     <div class="hidden">{{syncing}}</div>
   </div>
 </template>
@@ -18,7 +17,6 @@ export default {
   name: "blacklist-page",
   mixins: [pageCoreComponentMixin("blacklist", "Blacklist", form, listItem)],
   created() {
-    console.log(this.$route.query);
     if (this.$route.query.edit) {
       this.dialogOptions.componentOptions.itemId = Number(
         this.$route.query.edit

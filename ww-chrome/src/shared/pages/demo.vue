@@ -402,12 +402,11 @@
 
 <script>
 import loader from "../components/common/loader.component";
-import { mapGetters } from "vuex";
-import {pageCoreComponentMixin} from "../components/common/core.component";
+import { pageCoreComponentMixin } from "../components/common/core.component";
 
 export default {
   name: "demo-page",
-  mixins: [pageCoreComponentMixin('demo', 'Demo')],
+  mixins: [pageCoreComponentMixin("demo", "Demo")],
   components: {
     loader: loader
   },

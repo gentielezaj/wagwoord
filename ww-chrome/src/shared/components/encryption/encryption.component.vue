@@ -15,22 +15,16 @@
     <div class="form-item">
       <button @click="toggelDialog(true);">Manage EncryptonKey</button>
     </div>
-    <dialog-component :options="dialogOptions"></dialog-component>
   </div>
 </template>
 
 <script>
-import {coreComponentMixin} from "../common/core.component";
-import dialog from "../common/dialog-component";
+import { coreComponentMixin } from "../common/core.component";
 import form from "./encryption-form.component";
 
 export default {
   name: "encryption-component",
   mixins: [coreComponentMixin('encryption')],
-  components: {
-    "dialog-component": dialog,
-    "encryption-form-component": form
-  },
   data() {
     return {
       savingencryptionKey: false,
@@ -43,7 +37,7 @@ export default {
   },
   methods: {
     async save() {
-      this.savingencryptionKey= true;
+      this.savingencryptionKey = true;
       let result = await this.$store.dispatch(
         "encryption/save",
         this.encryptLocal

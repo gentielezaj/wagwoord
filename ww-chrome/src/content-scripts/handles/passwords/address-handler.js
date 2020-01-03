@@ -49,7 +49,6 @@ export default {
             if (this.addressForms.length && !this.$appData.addresses) {
                 const addresses = await this.$chrome.get('addresses');
                 this.$appData.setData('addresses', addresses);
-                console.log(this.$appData.addresses);
             }
 
             this.addressForms.forEach(f => {

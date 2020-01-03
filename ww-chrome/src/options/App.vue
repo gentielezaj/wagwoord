@@ -31,15 +31,18 @@
       </div>
     </section>
     <notification-component></notification-component>
+    <dalog-component></dalog-component>
   </div>
 </template>
 
 <script>
 import notificationComponent from "../shared/components/common/notification.component";
+import dialogComponent from '../shared/components/common/dialog.component';
 export default {
   name: "App",
   components: {
-    "notification-component": notificationComponent
+    "notification-component": notificationComponent,
+    "dalog-component": dialogComponent
   },
   data: () => {
     return {

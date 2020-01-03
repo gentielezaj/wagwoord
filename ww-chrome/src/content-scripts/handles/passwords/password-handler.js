@@ -56,7 +56,6 @@ export default {
             if (!formId) return;
             const form = this.passwordForms.find(f => f.id == formId);
             if (!form.passwordElement.value) return;
-            console.log(`wagwoord form values: pas: ${form.passwordElement.value}, user: ${form.usernameElement.value}`);
 
             const model = {
                 password: {

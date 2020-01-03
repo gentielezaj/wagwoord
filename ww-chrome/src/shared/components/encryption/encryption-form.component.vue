@@ -8,6 +8,7 @@
       <button
         @click="encryptionKey = ''"
         v-show="encryptionKey"
+        type="button"
         class="icon-cancel-alt-filled right"
       ></button>
       <div class="input-container">
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import {coreComponentMixin} from "../common/core.component";
+import { coreComponentMixin } from "../common/core.component";
 
 export default {
   mixins: [coreComponentMixin()],
@@ -57,15 +58,21 @@ export default {
     },
     async save() {
       this.savingencryptionKey = true;
-      let result = await this.$store.dispatch(
-        "encryption/save",
-        this.encryptionKey
-      );
+      try {
+        if(await this.$store.dispatch(
+          "encryption/save",
+          this.encryptionKey
+        )) this.notifySuccess('saved enryptionkey');
+        else this.notifyError('enryption key cannot save');
+      } catch (error) {
+        this.notifyError('enryption key cannot save', error);
+      }
       this.cancel();
     },
     reset() {
       this.savingencryptionKey = false;
       this.encryptionKey = "";
+      this.$store.commit("dialog/close");
     }
   },
   async created() {

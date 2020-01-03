@@ -1,6 +1,4 @@
 import Vue from 'vue';
-import dialogComponent from './dialog-component';
-import deleteDialogComponent from './delete-dialog.component';
 import sctionHeader from './section-header';
 import listComponent from './list.component';
 
@@ -8,7 +6,6 @@ export function coreComponentMixin(store) {
     return {
         methods: {
             notify(message, type, error) {
-                if(!this.isOptionsScope) return;
                 this.$store.dispatch('notification/notify', {
                     message,
                     type: type || 'info',
@@ -16,14 +13,12 @@ export function coreComponentMixin(store) {
                 });
             },
             notifySuccess(message) {
-                if(!this.isOptionsScope) return;
                 this.$store.dispatch('notification/notify', {
                     message,
                     type: 'success'
                 });
             },
             notifyError(message, error) {
-                if(!this.isOptionsScope) return;
                 if (error == 'item-exists') {
                     this.$store.dispatch('notification/notify', {
                         message: "Item exists",
@@ -38,12 +33,9 @@ export function coreComponentMixin(store) {
                     });
                 }
             },
-            toggelDialog(value, id) {
-                let options = typeof id === 'string' && this.hasOwnProperty(id) ? this[id] : this.dialogOptions;
-                id = typeof id === 'string' && this.hasOwnProperty(id) ? id : 'dialogOptions';
-                Vue.set(this[id], 'open', value || !options.open);
-                const dialog = document.getElementById(options.id);
-                dialog.open = value || options.open;
+            toggelDialog(id) {
+                const options = typeof id === 'string' && this.hasOwnProperty(id) ? this[id] : this.dialogOptions;
+                this.$store.commit('dialog/open', options);
             }
         },
         computed: {
@@ -65,7 +57,6 @@ export function pageCoreComponentMixin(store, pageTitle, formComponent, listItem
         mixins: [coreComponentMixin(store)],
         components: {
             "section-header": sctionHeader,
-            "dialog-component": dialogComponent,
             "list-component": listComponent
         },
         props: {
@@ -121,7 +112,9 @@ export function pageCoreComponentMixin(store, pageTitle, formComponent, listItem
                 this.dialogOptions.componentOptions.itemId = Number(
                     this.$route.query.edit
                 );
-                this.dialogOptions.open = true;
+                setTimeout(() => {
+                    this.$store.commit('dialog/open', this.dialogOptions);
+                }, 100);
             }
         },
         methods: {
@@ -137,10 +130,6 @@ export function pageCoreComponentMixin(store, pageTitle, formComponent, listItem
 export function listItemCoreComponentMixin(store, form, page) {
     return {
         mixins: [coreComponentMixin(store)],
-        components: {
-            "dialog-component": dialogComponent,
-            "delete-dialog-component": deleteDialogComponent
-        },
         data() {
             return {
                 deleteDialogOptions: {
@@ -168,9 +157,8 @@ export function listItemCoreComponentMixin(store, form, page) {
         },
         methods: {
             async edit() {
-                if (this.isOptionsScope) this.toggelDialog();
+                if (this.isOptionsScope) this.$store.commit('dialog/open', this.dialogOptions);
                 else {
-                    // TODO: resolve page
                     this.$store.commit('chrome/open', {
                         url: "options/options.html#/" + (page || page === '' ? page : store) +
                             (this.item && this.item.id ? "?edit=" + this.item.id : "")
@@ -178,7 +166,7 @@ export function listItemCoreComponentMixin(store, form, page) {
                 }
             },
             async deleteItem() {
-                this.toggelDialog(true, "deleteDialogOptions");
+                this.$store.commit('dialog/delete', this.deleteDialogOptions);
             },
             clipboard(value) {
                 if (this.$util.clipboard(value)) this.notify("copied to clipboard");
@@ -220,27 +208,31 @@ export function formCoreComponentMixin(store, formId) {
                 if (this.options && typeof this.options.onSubmit == "function") {
                     this.options.onSubmit();
                 }
+                this.$store.commit('dialog/close');
             },
             changeModelProperty(property, value) {
                 this.vue.set(this.model, property, value);
             },
             async save(event) {
-                if(event) event.preventDefault();
-                if(!this.checkFormVaidity()) return;
+                if (event) event.preventDefault();
+                if (!this.checkFormVaidity()) return;
                 await this.coreSave(event);
             },
             async coreSave(event) {
-                if(event) event.preventDefault();
+                if (event) event.preventDefault();
                 this.saving = true;
                 try {
                     let result = await this.$store.dispatch(
                         this.storeName + "/save",
                         this.model
                     );
-                    if (result) this.notifySuccess(store + " saved");
-                    else this.notifyError("Error while saving " + store);
+                    if (result) {
+                        this.notifySuccess(store + " saved");
+                        this.reset();
+                    } else {
+                        this.notifyError("Error while saving " + store);
+                    }
                     this.saving = false;
-                    this.reset();
                 } catch (error) {
                     this.notifyError("Error while saving " + store, error);
                     this.saving = false;
@@ -249,7 +241,7 @@ export function formCoreComponentMixin(store, formId) {
             },
             checkFormVaidity(event) {
                 if (!document.getElementById(this.formId).checkValidity()) {
-                    if(event) event.preventDefault();
+                    if (event) event.preventDefault();
                     this.notifyError("Invalide form");
                     return false;
                 }

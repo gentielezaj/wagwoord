@@ -38,8 +38,6 @@
         <i v-show="!showPassword" class="icon-eye"></i>
       </span>
     </div>
-    <dialog-component v-if="isOptionsScope" :options="dialogOptions"></dialog-component>
-    <delete-dialog-component :options="deleteDialogOptions"></delete-dialog-component>
   </div>
 </template>
 

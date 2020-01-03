@@ -31,19 +31,20 @@
         aria-details="Go to settings"
       ></button>
     </footer>
+    <notification-component></notification-component>
+    <dalog-component></dalog-component>
   </main>
 </template>
 
 <script>
-import listComponent from "../shared/components/common/list.component";
 import passwordItemComponent from "../shared/components/password/password-list-item.component";
+import dialogComponent from "../shared/components/common/dialog.component";
+import notificationComponent from "../shared/components/common/notification.component";
 
 export default {
   components: {
-    // eslint-disable-next-line vue/no-unused-components
-    "password-item-component": passwordItemComponent,
-    // eslint-disable-next-line vue/no-unused-components
-    "list-component": listComponent
+    "notification-component": notificationComponent,
+    "dalog-component": dialogComponent
   },
   data() {
     return {
@@ -54,17 +55,14 @@ export default {
       tab: {}
     };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     isActive(path) {
-      path = '/' + (path || '');
-      return this.$route.path == path
-        ? 'active'
-        : '';
+      path = "/" + (path || "");
+      return this.$route.path == path ? "active" : "";
     },
     goTo(address) {
-      this.$router.push("/" + (address || ''));
+      this.$router.push("/" + (address || ""));
     },
     edit() {
       // TODO: open allready opened tab
@@ -96,6 +94,64 @@ body {
   scroll-behavior: smooth;
   padding: 0;
   margin: 0;
+}
+
+#app-notificaitons {
+  z-index: var(--zindex-notifications-nav);
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  right: 0;
+  left: 0;
+  bottom: 2.8rem;
+  color: #fff;
+  ul {
+    text-decoration: none;
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-direction: column-reverse;
+    li {
+      padding: 0.5rem;
+      width: 100%;
+      font-size: 0.8rem;
+      text-align: center;
+      cursor: pointer;
+      border-bottom: 1px solid #fff;
+
+      transition: all 0.5s ease-out;
+
+      &:first-child {
+        border-bottom: none;
+      }
+
+      &.removed {
+        margin-right: -10rem;
+      }
+
+      &.info {
+        background-color: var(--wagwoord-color-info);
+      }
+
+      &.success {
+        background-color: var(--wagwoord-color-success);
+      }
+
+      &.error {
+        background-color: var(--wagwoord-color-error);
+      }
+
+      span {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        max-width: 15rem;
+        font-size: 0.8rem;
+        text-align: end;
+        max-width: 15rem;
+      }
+    }
+  }
 }
 
 main {
@@ -152,7 +208,9 @@ footer {
     }
   }
 }
-
+dialog > div.dialog-wraper {
+  opacity: 0.9;
+}
 main .list .data-container ul li .domain.title {
   font-size: unset;
 }

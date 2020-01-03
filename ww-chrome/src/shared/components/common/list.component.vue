@@ -97,7 +97,6 @@ export default {
     }
   },
   async created() {
-    console.log("list component created");
     if (this.$constants.scope === "popup") {
       const url = (await this.$store.getters["chrome/selectedTab"]).wwurl;
       if (

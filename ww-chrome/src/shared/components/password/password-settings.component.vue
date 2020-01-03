@@ -77,16 +77,15 @@
       </div>
     </form>
 
-    <div @click="downloadPasswords()" class="form-item button">
-      <button class="info loader">
+    <div class="form-item button">
+      <button @click="downloadPasswords()"  class="info loader">
         Download passwords
         <span v-show="saving == 'downloadPasswords'" class="loader"></span>
       </button>
     </div>
-    <div @click="deletePasswords()" class="form-item button">
-      <button class="error">Delete all Passwords</button>
+    <div class="form-item button">
+      <button @click="deletePasswords()"  class="error">Delete all Passwords</button>
     </div>
-    <delete-dialog :options="dialogOptions"></delete-dialog>
     <article>
       <header>
         <h2>Import password</h2>
@@ -120,16 +119,12 @@
 </template>
 
 <script>
-import {coreComponentMixin} from "../common/core.component";
-import deleteDialog from "../common/delete-dialog.component";
+import { coreComponentMixin } from "../common/core.component";
 import Vue from "vue";
 
 export default {
   name: "password-settings-component",
   mixins: [coreComponentMixin('password')],
-  components: {
-    "delete-dialog": deleteDialog
-  },
   params: {
     options: {
       loader: {
@@ -188,7 +183,7 @@ export default {
       }
     },
     deletePasswords() {
-      this.toggelDialog();
+      this.$store.commit('dialog/delete', this.dialogOptions);
     },
 
     openFileImport(event) {
@@ -276,6 +271,7 @@ export default {
       container.addEventListener(
         "drop",
         e => {
+          // eslint-disable-next-line no-unused-vars
           let files = e.dataTransfer.files;
           let fileInput = document.getElementById("settingsFileImport");
           fileInput.files = e.dataTransfer.files;

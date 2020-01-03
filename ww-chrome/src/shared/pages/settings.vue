@@ -52,7 +52,7 @@
 import sctionHeader from "../components/common/section-header";
 import encryptionComponent from "../components/encryption/encryption.component";
 import syncSettingComponent from "../components/settings/sync-settings.component";
-import passwordSettingsComponent from '../components/password/password-settings.component'
+import passwordSettingsComponent from '../components/password/password-settings.component';
 
 export default {
   name: "settings-page",

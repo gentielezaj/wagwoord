@@ -50,6 +50,9 @@ export default class ChromeService {
         let searchUrl = this.util.copy(url);
         if (!hardMatch) {
             searchUrl = this.util.getDomain(searchUrl);
+            if(searchUrl.indexOf('#') > -1) {
+                searchUrl = searchUrl.substring(0, searchUrl.indexOf('#'));
+            }
         }
 
         chrome.tabs.query({

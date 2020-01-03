@@ -3,7 +3,7 @@ import Vue from 'vue';
 var formField = {
     name: 'form',
     update: function (el, attr, vnode) {
-        console.log('TODO: implement form updated');
+        // TODO: implement form updated
     },
     inserted(el, attr, vnode) {
         // eslint-disable-next-line no-return-assign

@@ -108,7 +108,7 @@ chrome.runtime.onMessage.addListener(
     });
 
 function storage(tab, key, data) {
-    const storageKey = `${tab.id}-${tab.window}-${key}`;
+    const storageKey = `${tab.id}-${key}`;
     if (data === 'remove') {
         sessionStorage.removeItem(storageKey);
         return true;

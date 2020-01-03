@@ -3,6 +3,7 @@ import BlacklistService from "./blacklist/blacklist.service";
 import CodeGeneratorService from "./code-generator/code-generator.service";
 import CreditCardService from "./credit-card.service";
 import AddressService from "./address.service";
+import { WWUtil } from '../util/ww-util';
 
 export default class BackgroundService {
     constructor() {
@@ -11,6 +12,7 @@ export default class BackgroundService {
         this.$codeGenerator = new CodeGeneratorService();
         this.$creditCards = new CreditCardService();
         this.$addressService = new AddressService();
+        this.util = WWUtil;
     }
 
     async getDataFroDomain(url, submitted) {

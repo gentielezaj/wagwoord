@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0a4d985b-1bcd-401c-9c96-0fa23aab7fd5}</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectView>ProjectFiles</ProjectView>
+    <StartupFile>dist/server.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <EnableTypeScript>true</EnableTypeScript>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+    <ScriptArguments>npm run dev</ScriptArguments>
+    <NodejsPort>4040</NodejsPort>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include=".env" />
+    <Content Include=".eslintrc" />
+    <Content Include="ormlogs.log" />
+    <Content Include="src\controllers\encryptionController.ts" />
+    <Content Include="typeormcommand.txt" />
+    <Content Include="package-lock.json" />
+    <Content Include="package.json" />
+    <None Include="tsconfig.json" />
+    <None Include="src\app.ts" />
+    <None Include="src\server.ts" />
+    <None Include="src\controllers\baseController.ts" />
+    <None Include="src\controllers\settingsController.ts" />
+    <None Include="src\controllers\testController.ts" />
+    <None Include="src\database\db.ts" />
+    <None Include="src\utils\appLogger.ts" />
+    <None Include="src\utils\converter.ts" />
+    <None Include="src\utils\index.ts" />
+    <Content Include="src\views\index.html" />
+    <None Include="src\database\migrations\1568749315876-CreatePasswordDataBase.ts" />
+    <None Include="src\database\migrations\1570054034480-AddDeletedToPasswords.ts" />
+    <None Include="src\database\migrations\1570887412274-CreateTableBlacklist.ts" />
+    <None Include="src\database\migrations\1572105037030-AddCountToPasswordTable.ts" />
+    <None Include="src\database\migrations\1572106005058-addSettingsTable.ts" />
+    <None Include="src\database\migrations\1572107633655-AddEncryptedColumnToSettings.ts" />
+    <None Include="src\database\migrations\1574877308169-CreateCodeGeneratorTable.ts" />
+    <None Include="src\database\migrations\1575390106307-AddCreditCardAndAddressTables.ts" />
+    <None Include="src\database\migrations\1575652421265-AddColumnsOnCreditCardTable.ts" />
+    <None Include="src\database\migrations\1575653106625-AddUniqueIndexToCardNumver.ts" />
+    <None Include="src\database\migrations\1575915427308-ReinsertAddressTable.ts" />
+    <None Include="src\database\migrations\1577008971490-UpdateCodeGeneratorEncodingToHex.ts" />
+    <None Include="src\database\migrations\1577286712824-AlterAddresses.ts" />
+    <None Include="src\database\models\addressEntity.ts" />
+    <None Include="src\database\models\baseEntity.ts" />
+    <None Include="src\database\models\blacklistEntity.ts" />
+    <None Include="src\database\models\codegeneratorEntity.ts" />
+    <None Include="src\database\models\creadit-card.ts" />
+    <None Include="src\database\models\passwordEntity.ts" />
+    <None Include="src\database\models\settingsEntity.ts" />
+    <None Include="src\database\querys\modelDecorator.ts" />
+    <None Include="src\database\querys\query.ts" />
+    <None Include="src\database\repositories\baseRepository.ts" />
+    <None Include="src\database\repositories\settingsRepository.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src" />
+    <Folder Include="src\controllers" />
+    <Folder Include="src\database" />
+    <Folder Include="src\database\migrations" />
+    <Folder Include="src\database\models" />
+    <Folder Include="src\database\querys" />
+    <Folder Include="src\database\repositories" />
+    <Folder Include="src\testdata" />
+    <Folder Include="src\utils" />
+    <Folder Include="src\views" />
+    <Folder Include="WebApi" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\controllers\coreController.ts" />
+    <TypeScriptCompile Include="src\utils\constants.ts" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

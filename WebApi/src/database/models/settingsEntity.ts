@@ -7,7 +7,7 @@ export class SettingsEntity extends BaseEntity {
     public name: string;
 
     @Column({ nullable: false, type: 'varchar' })
-    public value: boolean;
+    public value: string;
 
     @Column({nullable: false, default: false, type:'int'})
     public encrypted: boolean;

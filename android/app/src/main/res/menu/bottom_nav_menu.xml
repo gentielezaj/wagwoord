@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_totp"
+        android:icon="@drawable/ic__time"
+        android:title="@string/totp" />
+    <item
+        android:id="@+id/navigation_password"
+        android:icon="@drawable/ic_key"
+        android:title="@string/passwords" />
+
+    <item
+        android:id="@+id/navigation_creditcard"
+        android:icon="@drawable/ic_card"
+        android:title="@string/creditcards" />
+
+    <item
+        android:id="@+id/navigation_address"
+        android:icon="@drawable/ic_fort"
+        android:title="@string/addresses" />
+
+    <item
+        android:id="@+id/navigation_demo"
+        android:icon="@drawable/ic_demo"
+        android:title="Demo" />
+
+</menu>

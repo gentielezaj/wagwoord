@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_totp">
+
+    <fragment
+        android:id="@+id/navigation_totp"
+        android:name="me.gentielezaj.wagwoord.fragments.totp.TotpListFragment"
+        android:label="@string/totp_full"
+        tools:layout="@layout/fragment_totp_list" />
+
+    <fragment
+        android:id="@+id/navigation_password"
+        android:name="me.gentielezaj.wagwoord.fragments.passwords.PasswordListFragment"
+        android:label="@string/passwords"
+        tools:layout="@layout/fragment_password_list" />
+
+    <fragment
+        android:id="@+id/navigation_creditcard"
+        android:name="me.gentielezaj.wagwoord.fragments.creditcards.CreditcardListFragment"
+        android:label="@string/creditcards"
+        tools:layout="@layout/fragment_creditcard_list" />
+    <fragment
+        android:id="@+id/navigation_address"
+        android:name="me.gentielezaj.wagwoord.fragments.addresses.AddressListFragment"
+        android:label="@string/addresses"
+        tools:layout="@layout/fragment_address_list" />
+    <fragment
+        android:id="@+id/navigation_demo"
+        android:name="me.gentielezaj.wagwoord.fragments.demo.DemoFragment"
+        android:label="Demo"
+        tools:layout="@layout/fragment_demo" />
+</navigation>

@@ -15,7 +15,6 @@
           minlength="2"
           pattern="^[A-Za-z0-9_\-.@:]{1,64}$"
           name="name"
-          required
           v-form-field
           v-model="model.name"
           type="text"

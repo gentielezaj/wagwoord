@@ -27,6 +27,15 @@ export default {
     mutations: {
         refresh: (state) => {
             state.encryption = new EncryptionService();
+        },
+        checkServer: async (state) => {
+            try {
+                const results = await state.encryption.checkProxy();
+                return results;
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
         }
     }
 };

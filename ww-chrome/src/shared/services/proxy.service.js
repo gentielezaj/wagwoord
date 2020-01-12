@@ -6,11 +6,39 @@ export class ProxySettingsService {
     }
 
     async get(property) {
-        const model = await this.chrome.get();
+        let model = await this.chrome.get();
+        if(model && model.headers) model.headers = JSON.parse(model.headers);
         return model && property ? model[property] : model;
     }
 
     // #region crud
+    async setHeaders(headers) {
+        let model = await this.get() || {};
+        model.headers = headers;
+        return await this.save(model);
+    }
+
+    async addHeaders(header) {
+        let model = await this.get() || {};
+        
+        model.headers = {
+            ...model.headers,
+            ...header
+        };
+
+        return await this.save(model);
+    }
+
+    async removeHeaders(headerKey) {
+        let model = await this.get();
+        if(!model) return true;
+
+        if(model.headers.hasOwnProperty(headerKey))
+            delete model.headers[headerKey];
+
+        return await this.save(model);
+    }
+
     async save(model) {
         if (typeof model !== 'object' && model !== undefined) return false;
 
@@ -21,6 +49,10 @@ export class ProxySettingsService {
 
         if (model.domain && model.domain.trim() === '') {
             model.domain = undefined;
+        }
+
+        if(typeof model.headers == 'object') {
+            model.headers = JSON.stringify(model.headers);
         }
 
         if (model.headers && model.headers.trim() === '') {
@@ -77,13 +109,43 @@ export class ProxyService {
         return this.request('PATCH', undefined, params, action, controller, domain, headers);
     }
 
+    async setHeaders(headers) {
+        if(!headers) this.chrome.remove();
+    }
+
     async isSet() {
+        let hasValue = await this.settings.chrome.get('server-status');
+        if(!hasValue) hasValue = await this.checkProxy();
+
+        if(!hasValue || hasValue == 'error') return false;
+
         const config = await this.settings.get();
         return !config || !config.domain ? undefined : config;
     }
 
+    async checkProxy() {
+        try {
+            const response = await this.baseRequest('GET', undefined, undefined, 'isValidConnection', 'util');
+            const ok = response.hasOwnProperty('unsetProxy') ? false : response.status == 200;
+            await this.settings.chrome.set((ok ? 'ok' : 'error'), 'server-status');
+
+            return ok;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // #region core request
     async request(method, data, params, action, controller, domain, headers) {
+        try {
+            let response = await this.baseRequest(method, data, params, action, controller, domain, headers);
+            return response.hasOwnProperty('unsetProxy') ? response : await response.json();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async baseRequest(method, data, params, action, controller, domain, headers) {
         const config = await this.settings.get();
         if (!config || (!config.domain && !domain)) return {
             success: true,
@@ -99,8 +161,7 @@ export class ProxyService {
         };
 
         try {
-            let response = await fetch(url, requestData);
-            return await response.json();
+            return await fetch(url, requestData);
         } catch (error) {
             throw error;
         }

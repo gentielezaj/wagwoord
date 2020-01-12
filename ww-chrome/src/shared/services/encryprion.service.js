@@ -1,9 +1,17 @@
 import ChromeService from './chrome.service';
 import * as CryptoJS from 'crypto-js';
+import {
+    ProxyService
+} from './proxy.service';
 
 export default class EncryptionService {
     constructor() {
+        this.proxy = new ProxyService('util');
         this.chrome = new ChromeService('encryption');
+    }
+
+    async checkProxy() {
+        return this.proxy.checkProxy();
     }
 
     // #region encryption / decryption
@@ -44,7 +52,7 @@ export default class EncryptionService {
     };
 
     _skipCryption(encryption, checkLocal) {
-        return !encryption || !encryption.encryptionKey || (checkLocal && !encryption.encryptLocal);
+        return !encryption || !encryption.encryptionKey || typeof encryption.encryptionKey !== 'string' || encryption.encryptionKey.trim() === '' || (checkLocal && !encryption.encryptLocal);
     }
     // #endregion encryption / decryption
 
@@ -56,7 +64,7 @@ export default class EncryptionService {
     async save(model) {
         if (model === undefined || model == null) return false;
         if (this.isValid(model)) {
-            await this.chrome.set(model);
+            await this.coreSave(model);
             return true;
         }
 
@@ -67,8 +75,34 @@ export default class EncryptionService {
         } else item.encryptLocal = typeof model == 'boolean' ? model : (model == 'true');
 
         try {
-            await this.chrome.set(item);
+            await this.coreSave(item);
             return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async coreSave(model) {
+        const encryptionHash = model.encryptionKey ? CryptoJS.MD5(model.encryptionKey).toString(CryptoJS.enc.Base64) : '';
+        try {
+            if (await this.proxy.isSet()) {
+                const headers = await this.proxy.post({
+                        encryptionHash: encryptionHash || ''
+                    },
+                    undefined,
+                    'encryptionHash'
+                );
+                if(headers.success)
+                    this.proxy.settings.setHeaders(headers.data.headers);
+            } else {
+                console.log('encry set ');
+                if(encryptionHash) await this.proxy.settings.addHeaders({ encryptionHash });
+                else await this.proxy.settings.removeHeaders('encryptionHash');
+            }
+
+            await this.proxy.checkProxy();
+            
+            await this.chrome.set(model);
         } catch (error) {
             throw error;
         }

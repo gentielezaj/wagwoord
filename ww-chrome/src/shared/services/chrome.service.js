@@ -7,22 +7,23 @@ export default class ChromeService {
         this.util = WWUtil;
     }
 
-    async get() {
-        const result = await chromeStorage('get', this.key);
-        return typeof result[this.key] !== 'string' ? result[this.key] : JSON.parse(result[this.key]);
+    async get(key) {
+        let result = await chromeStorage('get', key || this.key);
+        if(typeof result[key || this.key] == 'string' && !result[key || this.key].startsWith('{')) return result[key || this.key];
+        return typeof result[key || this.key] !== 'string' ? result[key || this.key] : JSON.parse(result[key || this.key]);
     }
 
-    async set(value) {
+    async set(value, key) {
         if (!value) return false;
 
         let save = {};
-        save[this.key] = JSON.stringify(value);
+        save[key || this.key] = typeof value == 'string' ? value : JSON.stringify(value);
 
         return await chromeStorage('set', save);
     }
 
-    async remove() {
-        return await chromeStorage('remove', this.key);
+    async remove(key) {
+        return await chromeStorage('remove', key || this.key);
     };
 
     async selectedTab() {

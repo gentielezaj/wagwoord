@@ -66,6 +66,7 @@ export default {
     },
     edit() {
       // TODO: open allready opened tab
+    this.$store.commit('encryption/checkServer');
       this.$store.commit("chrome/open", {
         url: "options/options.html"
       });

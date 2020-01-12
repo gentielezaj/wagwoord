@@ -3,7 +3,12 @@ import BlacklistService from "./blacklist/blacklist.service";
 import CodeGeneratorService from "./code-generator/code-generator.service";
 import CreditCardService from "./credit-card.service";
 import AddressService from "./address.service";
-import { WWUtil } from '../util/ww-util';
+import {
+    WWUtil
+} from '../util/ww-util';
+import {
+    ProxyService
+} from "./proxy.service";
 
 export default class BackgroundService {
     constructor() {
@@ -12,6 +17,7 @@ export default class BackgroundService {
         this.$codeGenerator = new CodeGeneratorService();
         this.$creditCards = new CreditCardService();
         this.$addressService = new AddressService();
+        this.$proxy = new ProxyService('util');
         this.util = WWUtil;
     }
 
@@ -70,10 +76,10 @@ export default class BackgroundService {
             let creditcard = await this.$creditCards.getItem({
                 cardNumber: creditcardModel.cardNumber
             });
-            if(creditcard) {
+            if (creditcard) {
                 creditcard.count++;
                 this.$creditCards.save(creditcard);
-                if(creditcard.name != creditcardModel.name || creditcard.cvv != creditcardModel.cvv || creditcard.expiredMonth != creditcardModel.expiredMonth || creditcard.expiredYear != creditcardModel.expiredYear) {
+                if (creditcard.name != creditcardModel.name || creditcard.cvv != creditcardModel.cvv || creditcard.expiredMonth != creditcardModel.expiredMonth || creditcard.expiredYear != creditcardModel.expiredYear) {
                     result.creditcard.action = 'update';
                 }
             } else {
@@ -85,36 +91,36 @@ export default class BackgroundService {
             const addressModel = model.address.model ? model.address.model : model.address;
             result.address.model = addressModel;
 
-            if(addressModel.name) {
-                if(addressModel.name.trim().indexOf(' ') > -1) {
+            if (addressModel.name) {
+                if (addressModel.name.trim().indexOf(' ') > -1) {
                     let splitName = addressModel.name.trim().split(' ');
                     addressModel.firstName = splitName[0];
                     addressModel.lastName = splitName[1];
                 } else addressModel.firstName = addressModel.name;
             }
-            if(addressModel.phone && !addressModel.callingCode) {
+            if (addressModel.phone && !addressModel.callingCode) {
                 // TODO: check calling code
             }
 
             let searchModel = {};
-            if(addressModel.firstName) {
+            if (addressModel.firstName) {
                 searchModel.firstName = addressModel.firstName;
             }
-            if(addressModel.lastName) {
+            if (addressModel.lastName) {
                 searchModel.lastName = addressModel.lastName;
             }
-            if(addressModel.username) {
+            if (addressModel.username) {
                 searchModel.username = addressModel.username;
             }
-            if(addressModel.phone) {
+            if (addressModel.phone) {
                 searchModel.phone = addressModel.phone;
             }
-            if(addressModel.street) {
+            if (addressModel.street) {
                 searchModel.street = addressModel.street;
             }
 
             let address = await this.$addressService.getItem(searchModel);
-            if(!address) {
+            if (!address) {
                 result.address.action = 'new';
             } else {
                 address.count++;
@@ -147,12 +153,20 @@ export default class BackgroundService {
     }
     // #endregion save
 
+    async checkServer() {
+        const response = await this.$proxy.checkProxy();
+        console.log('is connection set ok: ' + response);
+        return response;
+    }
+
     async sync() {
-        await this.$password.sync();
-        await this.$password.settings.sync();
-        await this.$blacklist.sync();
-        await this.$codeGenerator.sync();
-        await this.$addressService.sync();
-        await this.$creditCards.sync();
+        if (await this.checkServer()) {
+            await this.$password.sync();
+            await this.$password.settings.sync();
+            await this.$blacklist.sync();
+            await this.$codeGenerator.sync();
+            await this.$addressService.sync();
+            await this.$creditCards.sync();
+        }
     }
 }

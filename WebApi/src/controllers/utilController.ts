@@ -23,6 +23,10 @@ export class UtilController extends BaseController {
             this.startup(req, res).then().catch(e => this.sendErrorResponse(res, 500));
         });
 
+        router.get('/isValidConnection', (req: Request, res: Response) => {
+            this.isValidConnection(req, res).then().catch(e => this.sendErrorResponse(res, 500));
+        });
+
         router.get('/:key', (req: Request, res: Response) => {
             this.get(req, res).then().catch(e => this.sendErrorResponse(res, 500));
         });
@@ -30,24 +34,30 @@ export class UtilController extends BaseController {
         return router;
     }
 
+    protected async isValidConnection(req: Request, res: Response) {
+        const encryptionHash = this.localStorage.getItem(Constants.EncryptionHashKey);
+        if (req.header(Constants.EncryptionHashKey) == encryptionHash && req.header(Constants.WagwoordId) == process.env.WAGWOORD_ID) {
+            this.sendErrorResponse(res, 200);
+        } else {
+            this.sendErrorResponse(res, 400);
+        }
+    }
 
     protected async startup(req: Request, res: Response) {
         const encryptionHash = this.localStorage.getItem(Constants.EncryptionHashKey);
         if (req.header(Constants.EncryptionHashKey) != encryptionHash) {
             this.sendErrorResponse(res, 401);
+            return;
         }
 
         this.sendResponse(res, this.repository.returnHeadersModel(encryptionHash));
     }
 
     protected async save(req: Request, res: Response) {
-        if (!req.body || !req.body.hasOwnProperty(Constants.EncryptionHashKey)) {
-            this.sendErrorResponse(res, 400);
-            return;
-        }
+        const encryptionHashReq = req.body ? req.body[Constants.EncryptionHashKey] : '';
         try {
             if (req.header('wagwoordId') == process.env.WAGWOORD_ID && req.header(Constants.EncryptionHashKey) == this.localStorage.getItem(Constants.EncryptionHashKey)) {
-                let encryptionHash = await this.repository.SaveEncryptionHash(req.body[Constants.EncryptionHashKey]);
+                let encryptionHash = await this.repository.SaveEncryptionHash(encryptionHashReq);
                 this.sendResponse(res, this.repository.returnHeadersModel(encryptionHash));
             } else {
                 this.sendErrorResponse(res, 401);

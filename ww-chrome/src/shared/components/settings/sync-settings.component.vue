@@ -30,8 +30,8 @@
         <span>Domain headers</span>
         <span v-show="loader" class="loader right"></span>
         <button
-          @click="model.headers = ''"
-          v-show="model.headers"
+          @click="headers = ''; save()"
+          v-show="headers"
           class="icon-cancel-alt-filled transparent right"
         ></button>
       </label>
@@ -42,7 +42,7 @@
           placeholder="Leave it blank to disable"
           name="headers"
           v-on:focusout="save()"
-          v-model="model.headers"
+          v-model="headers"
         ></textarea>
         <span v-show="loader.headers" class="loader"></span>
       </div>
@@ -59,6 +59,7 @@ export default {
   data() {
     return {
       model: {},
+      headers: '',
       loader: false
     };
   },
@@ -72,6 +73,7 @@ export default {
       if (!this.domainInput || !this.domainInput.validity.valid) return;
       this.loader = true;
       try {
+        this.model.headers = this.headers ? JSON.parse(this.headers) : undefined;
         if (await this.$store.dispatch("proxy/save", this.model)) {
           this.notifySuccess("Sync data saved!");
         } else {
@@ -87,7 +89,7 @@ export default {
   async created() {
     this.loader = true;
     this.model = (await this.$store.getters["proxy/model"]) || {};
-
+    this.headers = this.model && this.model.headers ? JSON.stringify(this.model.headers) : '';
     this.loader = false;
   }
 };

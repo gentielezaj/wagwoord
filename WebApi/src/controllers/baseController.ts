@@ -1,20 +1,21 @@
 import { Router, Response, Request } from "express";
 import { AppLogger } from "../utils/appLogger";
 import { LocalStorage } from "node-localstorage";
+import { Constants } from "../utils/constants";
 
 export abstract class BaseController {
 
     protected localStorage: LocalStorage;
 
     constructor() {
-        this.localStorage = new LocalStorage('wwStorage');
+        this.localStorage = new LocalStorage(Constants.LocalStorageFolder);
     }
 
 
-    public GetRouter(): Router {
+    public GetRouter(skipCheck?: boolean): Router {
         let router = Router();
 
-        router.use((req: Request, res: Response, next: any) => this.checkAccess(req, res, next));
+        if(!skipCheck) router.use((req: Request, res: Response, next: any) => this.checkAccess(req, res, next));
 
         return router;
     }
@@ -46,6 +47,14 @@ export abstract class BaseController {
                     break;
                 case 401:
                     error = 'unuthorised'
+                    break;
+                case 426:
+                    error = 'upateRequired'
+                    success = false;
+                    break;
+                case 428:
+                    error = 'encryptonHashUpdate'
+                    success = false;
                     break;
                 case 204:
                     error = 'no entity found'

@@ -14,7 +14,7 @@ export class SettingsRepository extends BaseRepository<SettingsEntity> {
     }
 
     public async getItemByName(name: string): Promise<SettingsEntity | undefined> {
-        return await this.dbRepository.createQueryBuilder('item').where('item.name = :name', { name: name }).getOne();
+        return await this.getById({ name });
     }
     // #endregion save
 

@@ -5,23 +5,27 @@ import { IBaseRepository, BaseRepository } from "../database/repositories/baseRe
 import { AppLogger } from "../utils/appLogger";
 import { BaseController } from "./baseController";
 import { Constants } from "../utils/constants";
+import { UtilRepository } from "../database/repositories/utilRepository";
 
 export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepository extends IBaseRepository<TEntity>> extends BaseController {
     protected entity: ObjectType<TEntity>;
     protected repository: TRepository;
     protected controller: string;
+    protected readonly utilRepository: UtilRepository;
 
     constructor(entity: ObjectType<TEntity>, controller: string, repository: TRepository) {
         super();
         this.entity = entity;
         this.repository = repository;
         this.controller = controller;
+        this.utilRepository = new UtilRepository();
     }
 
-    public GetRouter(): Router {
-        let router = super.GetRouter();
+    public GetRouter(skipCheck?: boolean, skipEncryption?: boolean): Router {
+        let router = super.GetRouter(skipCheck);
 
-        router.use((req: Request, res: Response, next: any) => this.checkEncryption(req, res, next));
+        if (!skipEncryption)
+            router.use((req: Request, res: Response, next: any) => this.checkEncryption(req, res, next));
 
         router.post('/', (req: Request, res: Response) => {
             this.save(req, res).then().catch(e => AppLogger.logError(this.controller + ' post', e));
@@ -55,9 +59,13 @@ export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepo
     }
 
     protected checkEncryption(req: Request, res: Response, next: any): void {
-        const encryptionHash = this.localStorage.getItem(Constants.EncryptionHashKey);
-        if (encryptionHash && req.header(Constants.EncryptionHashKey) != encryptionHash) {
-            this.sendErrorResponse(res, 401);
+        try {
+            const encryptionHash = this.localStorage.getItem(Constants.EncryptionHashKey);
+            if (req.header(Constants.EncryptionHashKey) != encryptionHash) {
+                this.sendErrorResponse(res, 428);
+            }
+        } catch (error) {
+            console.error(error);
         }
 
         next();

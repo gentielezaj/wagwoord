@@ -22,10 +22,12 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include=".env2" />
     <Content Include=".env" />
     <Content Include=".eslintrc" />
     <Content Include="ormlogs.log" />
     <Content Include="src\controllers\encryptionController.ts" />
+    <Content Include="src\database\repositories\utilRepository.ts" />
     <Content Include="typeormcommand.txt" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
@@ -75,12 +77,16 @@
     <Folder Include="src\database\repositories" />
     <Folder Include="src\testdata" />
     <Folder Include="src\utils" />
+    <Folder Include="src\utils\prototypes\" />
     <Folder Include="src\views" />
-    <Folder Include="WebApi" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\controllers\coreController.ts" />
+    <TypeScriptCompile Include="src\controllers\utilController.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1578736881743-CreateUtilTable.ts" />
+    <TypeScriptCompile Include="src\database\models\utilEntity.ts" />
     <TypeScriptCompile Include="src\utils\constants.ts" />
+    <TypeScriptCompile Include="src\utils\prototypes\string-prototype.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

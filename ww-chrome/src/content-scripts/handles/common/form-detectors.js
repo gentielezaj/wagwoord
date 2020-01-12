@@ -28,6 +28,7 @@ function getDefaultForm(formSettings) {
 // #region address form
 
 function checkAddressForm(form) {
+    // FIXME: this is bullshit
     if (form.getAttribute('wagwoord-form-id')) return;
     if (!form.elements.length) {
         return;
@@ -75,7 +76,7 @@ function checkAddressForm(form) {
         },
         {
             name: 'street',
-            regex: /.*(street|home|primary|address)[ _-]?(address|line|level)?.*/g
+            regex: /.*(street[ _-]?address|address[ _-]?line1).*/g
         },
         {
             name: 'city',

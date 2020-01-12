@@ -15,3 +15,6 @@ ww-chrome/dist
 WebApi/dist
 /WebApi/bin
 /WebApi/obj/Debug
+/WebApi/src/**/*.js
+/WebApi/src/**/*.js.map
+/WebApi/.env2

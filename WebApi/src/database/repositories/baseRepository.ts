@@ -83,8 +83,22 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
         return await this.dbRepository.createQueryBuilder('item').where('item.lastModified > :lastModified', { lastModified: lastModified }).getMany();
     }
 
-    public async getById(id: number): Promise<TEntity | undefined> {
-        const result = await this.dbRepository.findOne(id)
+    public async getById(id: any): Promise<TEntity | undefined> {
+        if (!id) return;
+        let result: TEntity | undefined;
+        if (Number(id)) result = await this.dbRepository.findOne(id)
+
+        if (typeof id == 'object') {
+            let queryParams = new Array<string>();
+            for (var property in id) {
+                if (id.hasOwnProperty(property)) {
+                    queryParams.push(`item.${property} = :${property}`);
+                }
+            }
+
+            return await this.dbRepository.createQueryBuilder('item').where(queryParams.join(' AND '), id).getOne();
+        }
+
         return <TEntity | undefined>result;
     }
 

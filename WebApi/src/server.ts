@@ -1,8 +1,12 @@
 import "reflect-metadata";
-import app from "./app";
+import { App } from "./app";
 import { createConnection } from "typeorm";
 import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions";
 import { AppLogger } from "./utils/appLogger";
+
+// #region prototypes
+import './utils/prototypes/string-prototype';
+// #endregion prototypes
 
 const PORT = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || '4040';
 const serverAddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || 'localhost';
@@ -11,18 +15,18 @@ if(process.env.NODE_ENV === undefined || process.env.NODE_ENV === 'dev') {
     require('dotenv').config();
 }
 
-async function init() {
+//async function init() {
 
-    await createConnection(getTypeOrmConfig());
+//    await createConnection(getTypeOrmConfig());
 
-    console.log('db set');
+//    console.log('db set');
 
-    app.listen(parseInt(PORT), (e) => {
-        console.log('Express server listening on port ' + PORT);
-    });
-}
+//    app.listen(parseInt(PORT), (e) => {
+//        console.log('Express server listening on port ' + PORT);
+//    });
+//}
 
-init().then(f => console.log('all set up')).catch(e => AppLogger.logError(e, 'at app start \n'));
+//init().then(f => console.log('all set up')).catch(e => AppLogger.logError(e, 'at app start \n'));
 
 function getTypeOrmConfig(): SqliteConnectionOptions {
     return {
@@ -38,3 +42,13 @@ function getTypeOrmConfig(): SqliteConnectionOptions {
         logger: "file"
     }
 }
+
+
+
+createConnection(getTypeOrmConfig()).then(e => {
+    console.log('db set');
+
+    new App().app.listen(parseInt(PORT), (e) => {
+        console.log('Express server listening on port ' + PORT);
+    });
+});

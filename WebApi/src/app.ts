@@ -10,27 +10,30 @@ import { CreditCardModel } from "./database/models/creadit-card";
 import { BlacklistEntity } from "./database/models/blacklistEntity";
 import { CodeGeneratorEntity } from "./database/models/codegeneratorEntity";
 import { PasswordEntity } from "./database/models/passwordEntity";
+import { UtilController } from "./controllers/utilController";
+import { UtilRepository } from "./database/repositories/utilRepository";
 
-
-class App {
+export class App {
 
     public app: express.Application;
+    public readonly utilRepository: UtilRepository;
     //public reouter: Route = new Route();
 
     constructor() {
         this.app = express();
+        this.utilRepository = new UtilRepository();
         this.config();
         this.initControllers();
     }
 
     private config(): void {
+        console.log("configuration app");
         this.app.use
         this.app.use(cros())
         // support application/json type post data
         this.app.use(bodyParser.json());
         //support application/x-www-form-urlencoded post data
         this.app.use(bodyParser.urlencoded({ extended: false }));
-
         // setup view
 
         // this.app.set('views', __dirname + '/views');
@@ -39,6 +42,7 @@ class App {
     }
 
     private initControllers() {
+        this.utilRepository.setup().then();
         this.app.use('/api/password', new CoreController<PasswordEntity>(PasswordEntity, 'password').GetRouter());
         this.app.use('/api/blacklist', new CoreController<BlacklistEntity>(BlacklistEntity, 'blacklist').GetRouter());
         this.app.use('/api/settings', new SettingsController().GetRouter());
@@ -46,11 +50,12 @@ class App {
         this.app.use('/api/test', new TestController().GetRouter());
         this.app.use('/api/address', new CoreController<AddressEntity>(AddressEntity, 'address').GetRouter());
         this.app.use('/api/creditcard', new CoreController<CreditCardModel>(CreditCardModel, 'creditcard').GetRouter());
+        this.app.use('/api/util', new UtilController().GetRouter());
 
         this.app.get('/', function (req, res) {
-            res.sendFile('index.html', {root : __dirname + '/views'});
+            res.sendFile('index.html', { root: __dirname + '/views' });
         });
+
+        console.log('controllers registed')
     }
 }
-
-export default new App().app;

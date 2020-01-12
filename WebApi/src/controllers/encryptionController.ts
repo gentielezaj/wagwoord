@@ -40,6 +40,5 @@ export class EncryptionController extends BaseController {
 
     protected get(req: Request, res: Response) {
         this.sendResponse(res, this.localStorage.getItem(Constants.EncryptionHashKey));
-
     }
 }

@@ -6,6 +6,9 @@
         <article v-searchable v-collapse="'.content'">
           <header>
             <h2>Sever Settings</h2>
+            <div>
+              <button @click="openWizard($event, dialogOptions)">Open wizard</button>
+            </div>
           </header>
           <div search-data="sync server" class="content">
             <sync-settings-component></sync-settings-component>
@@ -52,7 +55,8 @@
 import sctionHeader from "../components/common/section-header";
 import encryptionComponent from "../components/encryption/encryption.component";
 import syncSettingComponent from "../components/settings/sync-settings.component";
-import passwordSettingsComponent from '../components/password/password-settings.component';
+import passwordSettingsComponent from "../components/password/password-settings.component";
+import formwizard from "../components/util/util-form.component";
 
 export default {
   name: "settings-page",
@@ -75,6 +79,11 @@ export default {
             class: "loader icon-sync-1"
           }
         ]
+      },
+      dialogOptions: {
+        id: "startup-wizard-form-component-dialog",
+        component: formwizard,
+        componentOptions: {}
       }
     };
   },
@@ -88,8 +97,11 @@ export default {
         ).offsetTop;
       }
     },
+    openWizard(event, data) {
+      this.$store.commit("dialog/open", data);
+    },
     async sync() {
-      alert('TODO: create sync settings');
+      alert("TODO: create sync settings");
     }
   }
 };

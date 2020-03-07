@@ -7,7 +7,7 @@ export class ProxySettingsService {
 
     async get(property) {
         let model = await this.chrome.get();
-        if(model && model.headers) model.headers = JSON.parse(model.headers);
+        if (model && model.headers) model.headers = JSON.parse(model.headers);
         return model && property ? model[property] : model;
     }
 
@@ -20,7 +20,7 @@ export class ProxySettingsService {
 
     async addHeaders(header) {
         let model = await this.get() || {};
-        
+
         model.headers = {
             ...model.headers,
             ...header
@@ -31,9 +31,9 @@ export class ProxySettingsService {
 
     async removeHeaders(headerKey) {
         let model = await this.get();
-        if(!model) return true;
+        if (!model) return true;
 
-        if(model.headers.hasOwnProperty(headerKey))
+        if (model.headers.hasOwnProperty(headerKey))
             delete model.headers[headerKey];
 
         return await this.save(model);
@@ -51,7 +51,7 @@ export class ProxySettingsService {
             model.domain = undefined;
         }
 
-        if(typeof model.headers == 'object') {
+        if (typeof model.headers == 'object') {
             model.headers = JSON.stringify(model.headers);
         }
 
@@ -79,6 +79,25 @@ export class ProxyService {
         this.settings = new ProxySettingsService();
         this.controller = controller;
     }
+
+    // #region settings
+    async setHeaders(headers) {
+        return this.settings.setHeaders(headers);
+    }
+
+    async save(model) {
+        return this.settings.save(model);
+    }
+
+    async getSettings(key) {
+        return await this.settings.get(key);
+    }
+
+    async getDomain() {
+        return await this.getSettings('domain');
+    }
+    // #endregion settings
+
     // #region get requests
     get(params, action, controller, domain, headers) {
         try {
@@ -109,15 +128,11 @@ export class ProxyService {
         return this.request('PATCH', undefined, params, action, controller, domain, headers);
     }
 
-    async setHeaders(headers) {
-        if(!headers) this.chrome.remove();
-    }
-
     async isSet() {
         let hasValue = await this.settings.chrome.get('server-status');
-        if(!hasValue) hasValue = await this.checkProxy();
+        if (!hasValue) hasValue = await this.checkProxy();
 
-        if(!hasValue || hasValue == 'error') return false;
+        if (!hasValue || hasValue == 'error') return false;
 
         const config = await this.settings.get();
         return !config || !config.domain ? undefined : config;
@@ -146,7 +161,7 @@ export class ProxyService {
     }
 
     async baseRequest(method, data, params, action, controller, domain, headers) {
-        const config = await this.settings.get();
+        const config = await this.getSettings();
         if (!config || (!config.domain && !domain)) return {
             success: true,
             unsetProxy: true
@@ -157,7 +172,7 @@ export class ProxyService {
         const requestData = {
             headers: headers,
             method: method,
-            body: data ? JSON.stringify(data) : undefined
+            body: typeof data == "object" ? JSON.stringify(data) : data
         };
 
         try {
@@ -171,7 +186,10 @@ export class ProxyService {
 
 function getHeaders(headers) {
     if (!headers) return undefined;
-    if (typeof headers === 'object') return headers;
+    if (typeof headers === 'object') {
+        headers.mode = 'cros';
+        return headers;
+    }
     let results = {};
     let s = headers.split('\n');
     s.forEach(h => {

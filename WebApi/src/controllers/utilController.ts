@@ -37,20 +37,24 @@ export class UtilController extends BaseController {
     protected async isValidConnection(req: Request, res: Response) {
         const encryptionHash = this.localStorage.getItem(Constants.EncryptionHashKey);
         if (req.header(Constants.EncryptionHashKey) == encryptionHash && req.header(Constants.WagwoordId) == process.env.WAGWOORD_ID) {
-            this.sendErrorResponse(res, 200);
+            this.sendResponse(res, true, 200);
         } else {
-            this.sendErrorResponse(res, 400);
+            this.sendResponse(res, false, 400);
         }
     }
 
     protected async startup(req: Request, res: Response) {
-        const encryptionHash = this.localStorage.getItem(Constants.EncryptionHashKey);
-        if (req.header(Constants.EncryptionHashKey) != encryptionHash) {
-            this.sendErrorResponse(res, 401);
-            return;
+        const encryptionHashReq = req.body ? req.body[Constants.EncryptionHashKey] : '';
+        try {
+            if (encryptionHashReq == this.localStorage.getItem(Constants.EncryptionHashKey) ?? '') {
+                let encryptionHash = await this.repository.SaveEncryptionHash(encryptionHashReq);
+                this.sendResponse(res, this.repository.returnHeadersModel(encryptionHash));
+            } else {
+                this.sendErrorResponse(res, 401);
+            }
+        } catch (e) {
+            this.sendErrorResponse(res, 500, e);
         }
-
-        this.sendResponse(res, this.repository.returnHeadersModel(encryptionHash));
     }
 
     protected async save(req: Request, res: Response) {

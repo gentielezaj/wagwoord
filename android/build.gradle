@@ -5,11 +5,11 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'org.reflections:reflections:0.9.12'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -19,10 +19,24 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 
-task clean(type: Delete) {
+//task myTask {
+//    doLast {
+//        print("dose this ")
+//        URL[] urls = sourceSets.main.runtimeClasspath.files.collect {
+//            it.toURI().toURL()
+//        }
+//
+//        ClassLoader classLoader = new java.net.URLClassLoader(urls)
+//        Reflections reflections = new Reflections("me.gentielezaj.wagwword", classLoader)
+//        reflections.save("${sourceSets.main.output.getClassesDirs()}/META-INF/reflections/myproject-reflections.xml")
+//    }
+//}
+
+
+task cleans(type: Delete) {
     delete rootProject.buildDir
 }

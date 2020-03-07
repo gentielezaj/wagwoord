@@ -22,6 +22,7 @@ import encryptionStore from '../shared/store/encryption.store';
 import proxyStore from '../shared/store/proxy.store';
 import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
+import utilStore from '../shared/store/util.store';
 import codegeneratorStore from '../shared/store/code-generator.store';
 import creditcardStore from '../shared/store/credit-card.store';
 import addressStore from '../shared/store/address.store';
@@ -34,6 +35,7 @@ const store = new Vuex.Store({
     encryption: encryptionStore,
     proxy: proxyStore,
     password: passwordStore,
+    util: utilStore,
     blacklist: blacklistStore,
     codegenerator: codegeneratorStore,
     creditcard: creditcardStore,

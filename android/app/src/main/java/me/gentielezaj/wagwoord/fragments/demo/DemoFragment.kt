@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.fragments.CoreFragment
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,6 +27,30 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class DemoFragment : CoreFragment(R.layout.fragment_demo) {
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+
+        val button = view!!.findViewById<Button>(R.id.demo_clear_storage)
+
+        button.setOnClickListener { v: View? ->
+            run {
+                var sp = context!!.getSharedPreferences(
+                    Constants.LocalStorageKeys.SHARED_PREFERENCES,
+                    Context.MODE_PRIVATE
+                );
+                with(sp.edit()) {
+                    clear()
+                    commit()
+                }
+            }
+        }
+
+        return view;
+    }
 
     companion object {
         /**

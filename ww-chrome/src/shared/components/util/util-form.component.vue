@@ -69,6 +69,9 @@ export default {
     ...mapActions("util", {
       storeSave: "save"
     }),
+    close() {
+      this.$store.commit("dialog/close");
+    },
     async coreSave(event) {
       if (event) event.preventDefault();
       this.saving = true;

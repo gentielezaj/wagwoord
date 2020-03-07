@@ -167,6 +167,8 @@ export default class BackgroundService {
             await this.$codeGenerator.sync();
             await this.$addressService.sync();
             await this.$creditCards.sync();
+        } else {
+            // TODO: notify not sett
         }
     }
 }

@@ -7,19 +7,23 @@ import me.gentielezaj.sqldroid.models.annotations.column.Unique
 import me.gentielezaj.sqldroid.models.annotations.table.Table
 
 @Table
-class City(
+class City() {
+
+    constructor(name: String) :this() {
+        this.name = name
+    }
 
     @PrimaryKey(true)
     @Column
-    public var id: Int = 0,
+    public var id: Int = 0
 
     @Column(nullable = false)
     @Unique
-    public var name: String,
+    lateinit var name: String
 
     @ForeignKey(property = "cityId")
     public var persons: List<Person>? = null
-)
+}
 
 @Table
 class Person(

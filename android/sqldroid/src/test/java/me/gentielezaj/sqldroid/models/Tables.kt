@@ -24,11 +24,15 @@ class City : Entity()
 }
 
 @Table
-class Person(
+data class Person(
     @Column
     var name: String,
     @Column
     @ForeignKey(City::class, "city")
     var cityId: Int?,
-    var city: City
-) : Entity()
+    var city: City?
+) : Entity() {
+    constructor(): this("", null, null)
+}
+
+class Person1(val person:Person)

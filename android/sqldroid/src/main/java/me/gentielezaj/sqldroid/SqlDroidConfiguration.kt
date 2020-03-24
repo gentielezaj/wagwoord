@@ -99,16 +99,24 @@ open class SqlDroidConfiguration(
     //region session
     fun <T> write(statement: (Database) -> T): T {
         val db = Database(writableDatabase)
-        val result = statement.invoke(db)
-        db.close()
-        return result
+        try {
+            return statement.invoke(db)
+        } catch (e : Exception) {
+            throw e;
+        } finally {
+            db.close()
+        }
     }
 
-    fun <T> read(statement: () -> T): T {
+    fun <T> read(statement: (Database) -> T): T {
         val db = Database(readableDatabase)
-        val result = statement.invoke()
-        db.close()
-        return result
+        try {
+            return statement.invoke(db)
+        } catch (e : Exception) {
+            throw e;
+        } finally {
+            db.close()
+        }
     }
 
 //endregion

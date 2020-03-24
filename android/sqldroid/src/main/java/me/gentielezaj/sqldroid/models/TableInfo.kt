@@ -1,5 +1,6 @@
 package me.gentielezaj.sqldroid.models
 
+import android.database.Cursor
 import me.gentielezaj.sqldroid.common.valueOrDefault
 import me.gentielezaj.sqldroid.exceptions.NoPrimaryKeyException
 import me.gentielezaj.sqldroid.exceptions.TableNotValidException
@@ -21,8 +22,17 @@ data class TableInfo(val name: String,
     val foreignKeys: Collection<ColumnInfo>
         get() = columns.filter { it.isForeignKey }
 
+    fun <T> setValues(c: Cursor): T {
+        var model = clazz.java.getConstructor().newInstance()
+        for(column in columns) {
+            column.setValue(model, c)
+        }
+
+        return model as T
+    }
+
     companion object {
-        fun create(clazz: KClass<*>) : TableInfo {
+        fun <T: Any> create(clazz: KClass<T>) : TableInfo {
             val table = clazz.findAnnotation<Table>()
             if(table == null) throw TableNotValidException()
 

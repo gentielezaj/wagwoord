@@ -6,7 +6,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0a4d985b-1bcd-401c-9c96-0fa23aab7fd5}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>dist/server.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -26,8 +26,8 @@
     <Content Include=".env" />
     <Content Include=".eslintrc" />
     <Content Include="ormlogs.log" />
-    <Content Include="src\controllers\encryptionController.ts" />
-    <Content Include="src\database\repositories\utilRepository.ts" />
+    <Content Include="src\controllers\authController.ts" />
+    <Content Include="src\database\repositories\authRepository.ts" />
     <Content Include="typeormcommand.txt" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
@@ -36,7 +36,6 @@
     <None Include="src\server.ts" />
     <None Include="src\controllers\baseController.ts" />
     <None Include="src\controllers\settingsController.ts" />
-    <None Include="src\controllers\testController.ts" />
     <None Include="src\database\db.ts" />
     <None Include="src\utils\appLogger.ts" />
     <None Include="src\utils\converter.ts" />
@@ -82,9 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\controllers\coreController.ts" />
-    <TypeScriptCompile Include="src\controllers\utilController.ts" />
-    <TypeScriptCompile Include="src\database\migrations\1578736881743-CreateUtilTable.ts" />
-    <TypeScriptCompile Include="src\database\models\utilEntity.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1585071763549-AddAuthTable.ts" />
+    <TypeScriptCompile Include="src\database\models\authEntity.ts" />
     <TypeScriptCompile Include="src\utils\constants.ts" />
     <TypeScriptCompile Include="src\utils\prototypes\string-prototype.ts" />
   </ItemGroup>

@@ -1,16 +1,21 @@
 package me.gentielezaj.sqldroid
 
 import android.content.ContentValues
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.location.Criteria
+import me.gentielezaj.sqldroid.common.DatePatterns
 import me.gentielezaj.sqldroid.exceptions.UnsuportedColumnTypeException
+import me.gentielezaj.sqldroid.exceptions.queryExectution.MultipleRowsException
 import me.gentielezaj.sqldroid.models.ColumnType
 import me.gentielezaj.sqldroid.models.TableInfo
+import me.gentielezaj.sqldroid.query.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
+import kotlin.reflect.KClass
 import kotlin.reflect.jvm.javaField
 
 class Database internal constructor(val db: SQLiteDatabase) {
-
     fun close() = db.close()
 
     //region save
@@ -28,7 +33,7 @@ class Database internal constructor(val db: SQLiteDatabase) {
         val res = db.insertOrThrow(table.name, null, getContentValues(model, table))
         if(table.primaryKey.isAutoIncrement)table.primaryKey.setValue(model, res.toInt())
         if (foreignDepended) saveForeignList(model)
-        return table.primaryKey.property.get(model);
+        return table.primaryKey.property.get(model)!!;
     }
 
     fun <T : Any> update(entity: T, foreignDepended: Boolean = true): Any {
@@ -67,7 +72,38 @@ class Database internal constructor(val db: SQLiteDatabase) {
     }
     // endregion
 
-    // region get
+    // region query
+    inline fun <reified T:Any> getQuery(builder: IQueryBuilder<T>? = null) : IQuery<T, T> = getQuery(T::class, builder)
+
+    fun <T:Any> getQuery(clazz: KClass<T>, builder: IQueryBuilder<T>? = null) : IQuery<T, T> {
+        if(builder == null) {
+            var tableInfo = TableInfo.create(clazz)
+            return QueryExecuterEntity(db, tableInfo)
+        }
+
+        val q = builder as BaseQueryBuilder<T>
+
+        return QueryExecuterEntity(db, q.from, q.where, q.joins, q.orders, q.alias)
+    }
+
+    fun <T: Any> get(clazz: KClass<T>, id: Any?) : T? {
+        if(id == null) return null;
+        var table = TableInfo.create(clazz)
+        return getQuery(clazz).singleOrNull(Restriction(table, table.primaryKey, "=", id))
+    }
+
+    inline fun <reified T: Any> get(id: Any?) : T? = get(T::class, id)
+    // endregion
+
+    // region delete
+
+    fun <T: Any> delete(clazz: KClass<T>, id: Any?) : Boolean {
+        if(id == null) return false;
+        var table = TableInfo.create(clazz)
+        return db.delete(table.name, "${table.primaryKey.name} = ${id}", null) > -1
+    }
+
+    inline fun <reified T: Any> delete(id: Any?) : Boolean = delete(T::class, id)
 
     // endregion
 
@@ -91,15 +127,15 @@ class Database internal constructor(val db: SQLiteDatabase) {
                         if (propertyValue as Boolean) 1 else 0
                     )
                     ColumnType.TIME -> {
-                        val format = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
+                        val format = DateTimeFormatter.ofPattern(DatePatterns.time)
                         values.put(column.name, format.format(propertyValue as TemporalAccessor))
                     }
                     ColumnType.DATETIME -> {
-                        val format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+                        val format = DateTimeFormatter.ofPattern(DatePatterns.dateTime)
                         values.put(column.name, format.format(propertyValue as TemporalAccessor))
                     }
                     ColumnType.DATE -> {
-                        val format = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                        val format = DateTimeFormatter.ofPattern(DatePatterns.date)
                         values.put(column.name, format.format(propertyValue as TemporalAccessor))
                     }
                     else -> throw UnsuportedColumnTypeException()

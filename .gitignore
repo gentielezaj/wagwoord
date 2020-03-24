@@ -19,3 +19,11 @@ WebApi/dist
 /WebApi/src/**/*.js.map
 /WebApi/.env2
 /adroid
+android/sqlite-android-3310100/build
+android/.idea/.name
+android/.idea/gradle.xml
+android/.idea/misc.xml
+android/.idea/runConfigurations.xml
+android/.idea/vcs.xml
+android/.idea/codeStyles/codeStyleConfig.xml
+android/.idea/codeStyles/Project.xml

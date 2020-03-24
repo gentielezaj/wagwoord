@@ -2,6 +2,7 @@ import { Router, Response, Request } from "express";
 import { AppLogger } from "../utils/appLogger";
 import { LocalStorage } from "node-localstorage";
 import { Constants } from "../utils/constants";
+import { authenticator } from 'otplib';
 
 export abstract class BaseController {
 
@@ -12,21 +13,63 @@ export abstract class BaseController {
     }
 
 
-    public GetRouter(skipCheck?: boolean): Router {
+    public GetRouter(skipCheck?: boolean, skipEncryption?: boolean): Router {
         let router = Router();
 
         if(!skipCheck) router.use((req: Request, res: Response, next: any) => this.checkAccess(req, res, next));
 
+        if (!skipEncryption)
+            router.use((req: Request, res: Response, next: any) => this.checkEncryption(req, res, next));
+
         return router;
     }
 
+    // region authorize
+
     protected checkAccess(req: Request, res: Response, next: any): void {
-        if (req.header('wagwoordId') == process.env.WAGWOORD_ID) {
+        if (this.checkWagwoordId(req)) {
             next();
         } else {
             this.sendErrorResponse(res, 401);
         }
     }
+
+    protected checkWagwoordId(req: Request): boolean {
+        return req.header('wagwoordId') == process.env.WAGWOORD_ID;
+    }
+
+    protected checkEncryption(req: Request, res: Response, next: any): void {
+        try {
+            if (!this.isEncryptionEqual(req)) {
+                this.sendErrorResponse(res, 428);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        next();
+    }
+
+    protected isEncryptionEqual(req: Request): boolean {
+        const encryptonHash = this.localStorage.getItem(Constants.EncryptionHashKey);
+        if (!encryptonHash) return true;
+
+        const otp = req.header('otp')
+        if (!otp) return false;
+
+        const code = otp.split('-')[0];
+        const epoch = otp.split('-')[1];
+
+        authenticator.options = {
+            digits: 6,
+            step: 120,
+            epoch: parseInt(epoch)
+        }
+
+        return !encryptonHash || authenticator.check(encryptonHash, code);
+    }
+
+    // endregion
 
     // #region response
     protected sendErrorResponse(res: Response, code: number, exeption?: any, error?: string): void {

@@ -31,12 +31,13 @@ public class InsetUpdateTests {
         var id = 0
         try {
             //id = db.write { it.insert(City(name = "Shtoj", id = 5), false) as Int }
-            id = db.write { it.save(Person(name = "Ucinj" + LocalDateTime.now(), city = City(name = "blabla")), true) as Int }
-            val cityId = db.write { it.save( City(name = "blabla")) }
+            id = db.write { it.save(Person(name = "Ucinj1" + LocalDateTime.now(), city = City(name = "blabla1sdfsdf")), true) as Int }
+            val cityId = db.write { it.save( City(name = "blablaasfasfdasf")) }
         } catch (e: Exception) {
             throw e;
         }
 
         Assert.assertTrue(id == 2)
     }
+
 }

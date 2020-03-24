@@ -2,7 +2,6 @@ import * as express from "express";
 import * as cros from 'cors';
 import * as bodyParser from "body-parser";
 import { SettingsController } from "./controllers/settingsController";
-import { TestController } from "./controllers/testController";
 import { CoreController } from './controllers/coreController';
 
 import { AddressEntity } from "./database/models/addressEntity";
@@ -10,18 +9,18 @@ import { CreditCardModel } from "./database/models/creadit-card";
 import { BlacklistEntity } from "./database/models/blacklistEntity";
 import { CodeGeneratorEntity } from "./database/models/codegeneratorEntity";
 import { PasswordEntity } from "./database/models/passwordEntity";
-import { UtilController } from "./controllers/utilController";
-import { UtilRepository } from "./database/repositories/utilRepository";
+import { AuthController } from "./controllers/authController";
+import { AuthRepository } from "./database/repositories/authRepository";
 
 export class App {
 
     public app: express.Application;
-    public readonly utilRepository: UtilRepository;
+    public readonly authRepository: AuthRepository;
     //public reouter: Route = new Route();
 
     constructor() {
         this.app = express();
-        this.utilRepository = new UtilRepository();
+        this.authRepository = new AuthRepository();
         this.config();
         this.initControllers();
     }
@@ -42,15 +41,14 @@ export class App {
     }
 
     private initControllers() {
-        this.utilRepository.setup().then();
+        this.authRepository.setup().then();
         this.app.use('/api/password', new CoreController<PasswordEntity>(PasswordEntity, 'password').GetRouter());
         this.app.use('/api/blacklist', new CoreController<BlacklistEntity>(BlacklistEntity, 'blacklist').GetRouter());
         this.app.use('/api/settings', new SettingsController().GetRouter());
         this.app.use('/api/codegenerator', new CoreController<CodeGeneratorEntity>(CodeGeneratorEntity, 'codegenerator').GetRouter());
-        this.app.use('/api/test', new TestController().GetRouter());
         this.app.use('/api/address', new CoreController<AddressEntity>(AddressEntity, 'address').GetRouter());
         this.app.use('/api/creditcard', new CoreController<CreditCardModel>(CreditCardModel, 'creditcard').GetRouter());
-        this.app.use('/api/util', new UtilController().GetRouter());
+        this.app.use('/api/auth', new AuthController().GetRouter());
 
         this.app.get('/', function (req, res) {
             res.sendFile('index.html', { root: __dirname + '/views' });

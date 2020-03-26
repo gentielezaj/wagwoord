@@ -5,12 +5,13 @@ import android.content.Context
 import android.view.View
 import androidx.annotation.IdRes
 import com.google.gson.reflect.TypeToken
+import me.gentielezaj.wagwoord.common.LogData
 import me.gentielezaj.wagwoord.models.entities.Totp
 import me.gentielezaj.wagwoord.services.repositories.CoreRepository
 import me.gentielezaj.wagwoord.services.repositories.TotpRepository
-import java.lang.Exception
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.Exception
 import kotlin.reflect.KClass
 
 
@@ -30,14 +31,19 @@ class DI {
 
     companion object {
         inline fun <reified T> resolve(context: Context) : T {
-            val type: TypeLiteral<T> = object : TypeLiteral<T>() {}
-            println(type.type)
-            if(T::class == CoreRepository::class && type.isGeneric) {
-                val className = type.type.typeName.replace(".+<".toRegex(), "").replace(">", "")
-                val cl = Class.forName(className)
-                return T::class.java.getConstructor(Context::class.java, Class::class.java).newInstance(context, cl)
+            try {
+                val type: TypeLiteral<T> = object : TypeLiteral<T>() {}
+                println(type.type)
+                if(T::class == CoreRepository::class && type.isGeneric) {
+                    val className = type.type.typeName.replace(".+<".toRegex(), "").replace(">", "")
+                    val cl = Class.forName(className)
+                    return T::class.java.getConstructor(Context::class.java, Class::class.java).newInstance(context, cl)
+                }
+                else return T::class.java.getConstructor(Context::class.java).newInstance(context)
+            } catch (e: Exception) {
+                LogData(e, "Resolve repository")
+                throw  e
             }
-            else return T::class.java.getConstructor(Context::class.java).newInstance(context)
         }
     }
 }

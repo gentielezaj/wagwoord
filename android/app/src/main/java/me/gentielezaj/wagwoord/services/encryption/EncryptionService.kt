@@ -13,7 +13,7 @@ class EncryptionService(val context: Context) {
     var encryptionKey: String?
         get() = LocalStorage.get(context!!, Constants.LocalStorageKeys.ENCRYPTION_KEY)
         set(value) {
-            if(value.isNullOrEmpty()) LocalStorage.set(context!!, Constants.LocalStorageKeys.ENCRYPTION_KEY, value)
+            if(!value.isNullOrEmpty()) LocalStorage.set(context!!, Constants.LocalStorageKeys.ENCRYPTION_KEY, value)
             else LocalStorage.remove(context!!, Constants.LocalStorageKeys.ENCRYPTION_KEY)
         }
 

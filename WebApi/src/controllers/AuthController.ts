@@ -13,7 +13,7 @@ export class AuthController extends BaseController {
 
     public GetRouter(): Router {
 
-        let router = super.GetRouter();
+        let router = super.GetRouter(true, true);
 
         router.post('/change', (req: Request, res: Response) => {
             if (!this.checkWagwoordId(req) || !this.isEncryptionEqual(req)) {
@@ -43,9 +43,10 @@ export class AuthController extends BaseController {
     }
 
     protected async login(req: Request, res: Response) {
-        const encryptionHashReq = req.body ? req.body[Constants.EncryptionHashKey] : '';
+        const encryptionHashReq = req.body[Constants.EncryptionHashKey] ?? '';
         try {
-            if (encryptionHashReq == this.localStorage.getItem(Constants.EncryptionHashKey) ?? '') {
+            let a = encryptionHashReq == (this.localStorage.getItem(Constants.EncryptionHashKey) ?? '')
+            if (encryptionHashReq == (this.localStorage.getItem(Constants.EncryptionHashKey) ?? '')) {
                 this.sendResponse(res, this.repository.returnHeadersModel());
             } else {
                 this.sendErrorResponse(res, 401);

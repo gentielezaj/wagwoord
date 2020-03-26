@@ -10,13 +10,10 @@ class Constants {
             val SERVER_URL = "ww_server_url"
             val SERVER_HEADERS = "ww_headers"
             val ENCRYPTION_KEY = "ww_encryption_key"
+            val ENCRYPTION_HASH = "ww_encryption_hash"
         }
     }
-    public class ServerKeys {
-        companion object {
-            val ENCRYPTION_HASH = "encryptionHash"
-        }
-    }
+
     class PermissionResponse(val value:Int) {
         companion object {
             val INTERNET = 1

@@ -1,7 +1,6 @@
 package me.gentielezaj.wagwoord.services.repositories
 
 import android.content.Context
-import me.gentielezaj.sqldroid.save
 import me.gentielezaj.wagwoord.common.LogData
 import me.gentielezaj.wagwoord.database.Database
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity

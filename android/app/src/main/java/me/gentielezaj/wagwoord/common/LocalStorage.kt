@@ -1,10 +1,8 @@
 package me.gentielezaj.wagwoord.common
 
 import android.content.Context
-import android.content.Intent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import me.gentielezaj.wagwoord.activities.configuration.SetupActivity
 import kotlin.reflect.KClass
 
 class LocalStorage {
@@ -31,15 +29,15 @@ class LocalStorage {
             else return  stringValue as? T
         }
 
-        inline fun <reified T> set(context: Context, key: String, value: T): Boolean {
+        fun set(context: Context, key: String, value: Any?): Boolean {
+            if(value == null) return true;
 
-            var stringValue: String? = null
-            when(T::class) {
-                Int::class -> stringValue = value.toString();
-                Boolean::class -> stringValue = value.toString();
-                Float::class -> stringValue = value.toString();
-                String::class -> stringValue = value.toString();
-                else -> stringValue = JSON.stringify(value)
+            var stringValue = when(value) {
+                is Int -> value.toString();
+                is Boolean -> value.toString();
+                is Float -> value.toString();
+                is String -> value.toString();
+                else -> JSON.stringify(value)
             }
 
             val sharedPref = context.getSharedPreferences(Constants.LocalStorageKeys.SHARED_PREFERENCES, Context.MODE_PRIVATE) ?: return false

@@ -53,7 +53,7 @@
             android:background="@drawable/button_shape_default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:spinning_bar_color="@color/colorDark"
+            app:spinning_bar_color="@color/colorAccentLight"
             app:spinning_bar_padding="2dp"
             app:spinning_bar_width="5dp"
             android:text="@string/login" />
@@ -69,11 +69,14 @@
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/login_skip"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Skip"
         android:padding="25dp"
+        android:lines="1"
         android:textSize="25sp"
+        android:textColor="@color/colorAccentLighter"
         android:onClick="skip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>

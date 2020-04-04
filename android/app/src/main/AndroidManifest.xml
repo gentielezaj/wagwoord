@@ -13,10 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.auth.LoginActivity"></activity>
         <activity
-            android:name=".activities.configuration.SetupActivity"
-            android:label="Start up" />
+            android:name=".activities.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+        <activity android:name=".activities.auth.LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.CoreFragment
 import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
@@ -31,9 +32,24 @@ class TotpListFragment : CoreFragment(R.layout.fragment_totp_list) {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: CoreRecyclerViewAdapter<Totp>
     private lateinit var viewManager: RecyclerView.LayoutManager
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    private val dataSet: Array<Totp> = arrayOf(
+    private val dataSet: MutableList<Totp> = mutableListOf(
+        Totp().apply {
+            username = "userName"
+            issuer = "issuer"
+        }
     )
+
+    init {
+        for(i in 1..40) {
+            dataSet.add(Totp().apply {
+                username = "userName$i"
+                issuer = "issuer$i"
+            })
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,13 +57,17 @@ class TotpListFragment : CoreFragment(R.layout.fragment_totp_list) {
     ): View? {
         var view = super.onCreateView(inflater, container, savedInstanceState)
 
-
         viewAdapter = CoreRecyclerViewAdapter<Totp>(
             dataSet,
             R.layout.fragment_totp_list_item,
             { myViewHolder: MyViewHolder, i: Int -> onBindViewHolder(myViewHolder, i) })
 
-        viewManager = LinearLayoutManager(context)
+        viewManager = LinearLayoutManager(context);
+        swipeRefreshLayout = view!!.findViewById(R.id.swipeRefreshLayoutTotp)
+        swipeRefreshLayout.setOnRefreshListener {
+            //refresh()
+            swipeRefreshLayout.isRefreshing = false;
+        };
 
         recyclerView = view!!.findViewById<RecyclerView>(R.id.my_recycler_view)
         recyclerView.apply {

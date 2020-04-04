@@ -9,20 +9,20 @@ import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     RecyclerView.Adapter<MyViewHolder>() {
 
-    private lateinit var dataSet: Array<TModel>
+    private lateinit var dataSet: List<TModel>
     private var listItemFragmentId: Int = 0
     private lateinit var onBindViewHolderFun:(holder: MyViewHolder, position: Int) -> TModel?
-    private var viewValueMap: Array<ViewValueMap<*>>? = null
+    private var viewValueMap: List<ViewValueMap<*>>? = null
 
-    constructor(dataSet: Array<TModel>, listItemFragmentId: Int, onBindViewHolderFun:(holder: MyViewHolder, position: Int) -> TModel?) : this(dataSet, listItemFragmentId) {
+    constructor(dataSet: List<TModel>, listItemFragmentId: Int, onBindViewHolderFun:(holder: MyViewHolder, position: Int) -> TModel?) : this(dataSet, listItemFragmentId) {
         this.onBindViewHolderFun = onBindViewHolderFun
     }
 
-    constructor(dataSet: Array<TModel>, listItemFragmentId: Int, viewValueMap: Array<ViewValueMap<*>>): this(dataSet, listItemFragmentId) {
+    constructor(dataSet: List<TModel>, listItemFragmentId: Int, viewValueMap: List<ViewValueMap<*>>): this(dataSet, listItemFragmentId) {
         this.viewValueMap = viewValueMap
     }
 
-    private  constructor(dataSet: Array<TModel>, listItemFragmentId: Int) : this() {
+    private  constructor(dataSet: List<TModel>, listItemFragmentId: Int) : this() {
         this.dataSet = dataSet
         this.listItemFragmentId = listItemFragmentId
     }

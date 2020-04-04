@@ -3,19 +3,16 @@ package me.gentielezaj.wagwoord.activities.auth
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import me.gentielezaj.wagwoord.MainActivity
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.activities.CoreActivity
@@ -24,6 +21,7 @@ import me.gentielezaj.wagwoord.services.AuthService
 import me.gentielezaj.wagwoord.services.BackgroundService
 import me.gentielezaj.wagwoord.services.bindView
 import me.gentielezaj.wagwoord.services.inject
+import me.gentielezaj.wagwoord.ui.ResizeAnimation
 
 class LoginActivity : CoreActivity() {
     private val backgroundService by inject<BackgroundService>()
@@ -32,6 +30,7 @@ class LoginActivity : CoreActivity() {
     private val encryptionKey by bindView<EditText>(R.id.setup_encryption_key)
     private val btnLogin by bindView<CircularProgressButton>(R.id.btn_login);
     private val errorMessageTextView by bindView<TextView>(R.id.login_error_message);
+    private val btnSkip by bindView<TextView>(R.id.login_skip)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,38 @@ class LoginActivity : CoreActivity() {
         startActivity(Intent(this, MainActivity::class.java))
     }
 
+    fun hideSkipButton() {
+        var animation = ResizeAnimation(btnSkip, 0)
+        animation.duration = 300
+        animation.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(arg0: Animation) {}
+            override fun onAnimationRepeat(arg0: Animation) {}
+            override fun onAnimationEnd(arg0: Animation) {
+                btnSkip.layoutParams.width = 0
+            }
+        })
+        btnSkip.startAnimation(animation)
+    }
+    fun showSkipButton() {
+        var animation = ResizeAnimation(btnSkip, 350)
+        animation.duration = 300
+        animation.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(arg0: Animation) {}
+            override fun onAnimationRepeat(arg0: Animation) {}
+            override fun onAnimationEnd(arg0: Animation) {
+                btnSkip.layoutParams.width = 350
+            }
+        })
+        btnSkip.startAnimation(animation)
+    }
+
+    fun setHepText(text: String, color: Int? = null) {
+        errorMessageTextView.text = text
+        errorMessageTextView.setTextColor(getColor(color ?: R.color.colorAccentLight))
+    }
+
     fun login(view: View) {
+        hideSkipButton();
         errorMessageTextView.text = String.empty;
         btnLogin.startAnimation()
         if (!url.text.toString().isNullOrEmpty()) {
@@ -55,6 +85,7 @@ class LoginActivity : CoreActivity() {
     }
 
     fun sendRequest() {
+        setHepText(getString(R.string.connecting_to_server))
         launch {
             try {
                 var authenticate = authService.login(url.text.toString(), encryptionKey.text.toString())
@@ -62,11 +93,12 @@ class LoginActivity : CoreActivity() {
                     val color = ContextCompat.getColor(this, R.color.success)
                     btnLogin.doneLoadingAnimation(color, AppUtil.vectorToBitmap(this, R.drawable.ic_check))
                     Toast.makeText(applicationContext, getString(R.string.welcome), Toast.LENGTH_SHORT).show()
+                    setHepText(getString(R.string.sync_data))
                     backgroundService.updateAll()
                     Toast.makeText(applicationContext, getString(R.string.data_updated), Toast.LENGTH_SHORT).show()
                     skip()
                 } else {
-                    errorMessageTextView.text = getString(R.string.login_failed)
+                    setHepText(getString(R.string.login_failed), R.color.error)
                     btnLogin.revertAnimation()
                     Toast.makeText(applicationContext, getString(R.string.login_failed), Toast.LENGTH_SHORT).show()
                 }
@@ -74,6 +106,8 @@ class LoginActivity : CoreActivity() {
                 errorMessageTextView.text = getString(R.string.login_failed)
                 LogData(e, "Startup")
                 throw e;
+            } finally {
+                showSkipButton()
             }
         }
     }

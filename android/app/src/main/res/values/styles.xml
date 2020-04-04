@@ -6,18 +6,21 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="isLightTheme">false</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-
-    <!-- Base application theme. -->
-    <!-- Base application theme. -->
     <style name="AppThemeLight" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/colorMainDark</item>
-        <item name="colorPrimaryDark">@color/colorMainLightDark</item>
-        <item name="colorAccent">@color/colorInfo</item>
-        <item name="android:navigationBarColor">@color/colorMainLightDark</item>
-        <item name="isLightTheme">false</item>
-        <item name="android:background">@color/colorMainDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="isLightTheme">true</item>
+    </style>
+
+    <style name="BottomNavigation">
+        <item name="itemIconTint">@color/active_inactive_colors</item>
+        <item name="itemTextColor">@color/active_transparent_colors</item>
     </style>
 
 </resources>

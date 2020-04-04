@@ -1,26 +1,34 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="isLightTheme">false</item>
         <item name="android:windowBackground">@color/colorBackground</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:forceDarkAllowed">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="isLightTheme">false</item>
+        <item name="android:divider">@color/colorPrimaryDark</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:textColor">@color/colorAccentLighter</item>
+        <item name="android:textColorPrimary">@color/colorAccentLighter</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarDividerColor">@color/colorPrimaryDark</item>
+        <item name="android:backgroundSplit">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="AppThemeLight" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="isLightTheme">true</item>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/BaseAppTheme">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="isLightTheme">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
     <style name="BottomNavigation">
         <item name="itemIconTint">@color/active_inactive_colors</item>
         <item name="itemTextColor">@color/active_transparent_colors</item>
     </style>
-
 </resources>

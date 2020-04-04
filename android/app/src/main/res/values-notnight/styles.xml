@@ -1,0 +1,11 @@
+<resources>
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/BaseAppTheme">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="isLightTheme">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+</resources>

@@ -12,21 +12,22 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tall_toolbar_height"
+        app:titleTextColor="@color/colorAccentLighter"
         android:fitsSystemWindows="true"
         app:layout_constraintBottom_toTopOf="@+id/frame"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:titleTextColor="@color/colorAccentLighter"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
             <androidx.appcompat.widget.Toolbar
-
                 android:id="@+id/toolbar"
+                app:titleTextColor="@color/colorAccentLighter"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin" />
@@ -59,6 +60,7 @@
         android:background="@color/colorBackground"
         style="@style/BottomNavigation"
         app:labelVisibilityMode="unlabeled"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

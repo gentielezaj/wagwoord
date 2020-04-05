@@ -6,9 +6,8 @@ fun LogData(vararg text: String) {
     CoreLogData("log-data", text)
 }
 
-
-fun LogData(text: String) {
-    CoreLogData("log-data", arrayOf(text))
+fun LogData(text: Any) {
+    CoreLogData("log-data", arrayOf(text.toString()))
 }
 
 fun LogData(e: Exception, vararg text: String) {

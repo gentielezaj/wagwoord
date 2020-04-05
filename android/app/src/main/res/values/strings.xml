@@ -10,6 +10,18 @@
     <string name="server_url">Server url</string>
     <string name="data_updated">Data updated</string>
 
+
+    <string name="settings">Settings</string>
+
+    <!-- region login activity-->
+    <string name="connecting_to_server">Connecting to server</string>
+    <string name="sync_data">Synchronizing data</string>
+    <!-- endregion error messages -->
+
+    <!-- region search activity-->
+    <string name="search">Search</string>
+    <!-- endregion search -->
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">Sign in</string>
@@ -22,9 +34,6 @@
     <string name="invalid_password">Password must be >5 characters</string>
 
     <!-- region login activity-->
-    <string name="connecting_to_server">Connecting to server</string>
-    <string name="sync_data">Synchronizing data</string>
-    <!-- endregion login activity-->
 
     <!-- region error messages -->
     <string name="login_failed">"Login failed"</string>

@@ -14,6 +14,7 @@
         android:layout_height="@dimen/tall_toolbar_height"
         app:titleTextColor="@color/colorAccentLighter"
         android:fitsSystemWindows="true"
+        app:theme="@style/AppTheme.Toolbar"
         app:layout_constraintBottom_toTopOf="@+id/frame"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,7 +23,8 @@
             android:layout_height="match_parent"
             app:titleTextColor="@color/colorAccentLighter"
             android:fitsSystemWindows="true"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:expandedTitleMarginBottom="100dp"
             app:toolbarId="@+id/toolbar">
 
             <androidx.appcompat.widget.Toolbar

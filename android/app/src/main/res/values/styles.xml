@@ -31,4 +31,9 @@
         <item name="itemIconTint">@color/active_inactive_colors</item>
         <item name="itemTextColor">@color/active_transparent_colors</item>
     </style>
+
+    <style name="AppTheme.Toolbar" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/colorAccentLight</item>
+        <item name="iconSize">24dp</item>
+    </style>
 </resources>

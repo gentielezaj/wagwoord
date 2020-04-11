@@ -10,7 +10,9 @@ export class SettingsController extends CoreRepositoryController<SettingsEntity,
     }
 
     jsonToModel(model: any): SettingsEntity|undefined {
-        return SettingsEntity.create(model);
+        let entity = SettingsEntity.create(model);
+        if (entity.properties?.length == 0) return undefined;
+        return entity;
     }
 
     public async getById(req: Request, res: Response): Promise<void> {

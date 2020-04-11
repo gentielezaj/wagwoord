@@ -19,13 +19,38 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:titleTextColor="@color/colorAccentLighter"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:expandedTitleMarginBottom="100dp"
+            app:expandedTitleGravity="center"
             app:toolbarId="@+id/toolbar">
+
+
+            <LinearLayout
+                android:id="@+id/collapsing_toolbar_actions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom|end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="13dp"
+                    android:onClick="openSearch"
+                    app:srcCompat="@drawable/ic_search" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="13dp"
+                    android:onClick="openSettings"
+                    app:srcCompat="@drawable/ic_settings" />
+            </LinearLayout>
+
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"

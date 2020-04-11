@@ -1,14 +1,20 @@
 package me.gentielezaj.wagwoord.fragments.totp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import me.gentielezaj.wagwoord.MainActivity
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.CoreFragment
 import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
@@ -34,28 +40,14 @@ class TotpListFragment : CoreFragment(R.layout.fragment_totp_list) {
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    private val dataSet: MutableList<Totp> = mutableListOf(
-        Totp().apply {
-            username = "userName"
-            issuer = "issuer"
-        }
-    )
-
-    init {
-        for(i in 1..40) {
-            dataSet.add(Totp().apply {
-                username = "userName$i"
-                issuer = "issuer$i"
-            })
-        }
-
-    }
+    private val viewModel: TotpViewModel by activityViewModels()
+    private var dataSet: List<Totp> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = super.onCreateView(inflater, container, savedInstanceState)
+        var view = super.onCreateView(inflater, container, savedInstanceState)!!
 
         viewAdapter = CoreRecyclerViewAdapter<Totp>(
             dataSet,
@@ -63,13 +55,13 @@ class TotpListFragment : CoreFragment(R.layout.fragment_totp_list) {
             { myViewHolder: MyViewHolder, i: Int -> onBindViewHolder(myViewHolder, i) })
 
         viewManager = LinearLayoutManager(context);
-        swipeRefreshLayout = view!!.findViewById(R.id.swipeRefreshLayoutTotp)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutTotp)
         swipeRefreshLayout.setOnRefreshListener {
             //refresh()
             swipeRefreshLayout.isRefreshing = false;
         };
 
-        recyclerView = view!!.findViewById<RecyclerView>(R.id.my_recycler_view)
+        recyclerView = view.findViewById<RecyclerView>(R.id.my_recycler_view)
         recyclerView.apply {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
@@ -80,10 +72,18 @@ class TotpListFragment : CoreFragment(R.layout.fragment_totp_list) {
 
             // specify an viewAdapter (see also next example)
             adapter = viewAdapter
-
         }
 
+        viewModel.getData().observe(this as LifecycleOwner, Observer {data ->
+            updateData(data)
+        })
+
         return view;
+    }
+
+    private fun updateData(data: List<Totp>) {
+        dataSet = data
+        viewAdapter.updateData(dataSet)
     }
 
     fun onBindViewHolder(holder: MyViewHolder, position: Int): Totp? {
@@ -97,7 +97,7 @@ class TotpListFragment : CoreFragment(R.layout.fragment_totp_list) {
         holder.findViewById<TextView>(R.id.totp_list_item_issuer).text = item.issuer
         holder.findViewById<TextView>(R.id.totp_list_item_username).text = item.username
 
-        return null;
+        return item;
     }
 
     companion object {

@@ -13,9 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.demo.DemoActivity"></activity>
         <activity
             android:name=".activities.settings.SettingsActivity"
-            android:label="@string/settings"></activity>
+            android:label="@string/settings" />
         <activity android:name=".activities.auth.LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

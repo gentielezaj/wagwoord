@@ -1,6 +1,7 @@
 package me.gentielezaj.wagwoord.fragments.demo
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.activities.demo.DemoActivity
 import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.fragments.CoreFragment
 
@@ -32,13 +34,17 @@ class DemoFragment : CoreFragment(R.layout.fragment_demo) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
+        val view = super.onCreateView(inflater, container, savedInstanceState)!!
 
-        val button = view!!.findViewById<Button>(R.id.demo_clear_storage)
+        val button = view.findViewById<Button>(R.id.demo_clear_storage)
+
+        view.findViewById<Button>(R.id.demo_open_activity).setOnClickListener { v: View ->
+            startActivity(Intent(requireContext(), DemoActivity::class.java))
+        }
 
         button.setOnClickListener { v: View? ->
             run {
-                var sp = context!!.getSharedPreferences(
+                var sp = requireContext().getSharedPreferences(
                     Constants.LocalStorageKeys.SHARED_PREFERENCES,
                     Context.MODE_PRIVATE
                 );

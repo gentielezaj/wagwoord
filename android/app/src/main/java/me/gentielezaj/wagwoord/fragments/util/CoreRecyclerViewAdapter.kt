@@ -23,15 +23,14 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     }
 
     private  constructor(dataSet: List<TModel>, listItemFragmentId: Int) : this() {
-        this.dataSet = dataSet
+        this.dataSet = dataSet.toMutableList()
         this.listItemFragmentId = listItemFragmentId
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        var layoutInflater = LayoutInflater.from(parent.getContext());
-        var listItem = layoutInflater.inflate(listItemFragmentId, parent, false)
-        var viewHolder = MyViewHolder(listItem)
-        return  viewHolder;
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val listItem = layoutInflater.inflate(listItemFragmentId, parent, false)
+        return MyViewHolder(listItem)
     }
 
     override fun getItemCount(): Int {
@@ -44,6 +43,11 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
         } else {
             onBindViewHolderFun(holder, position)
         }
+    }
+
+    fun updateData(data: List<TModel>) {
+        dataSet = data
+        notifyDataSetChanged()
     }
 
 }

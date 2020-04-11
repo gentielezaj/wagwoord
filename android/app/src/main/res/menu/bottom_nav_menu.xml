@@ -4,11 +4,13 @@
     <item
         android:id="@+id/navigation_totp"
         android:icon="@drawable/ic__time"
-        android:title="@string/totp" />
+        android:title="@string/totp"
+        android:label="@string/totp" />
     <item
         android:id="@+id/navigation_password"
         android:icon="@drawable/ic_key"
-        android:title="@string/passwords" />
+        android:title="@string/passwords"
+        android:label="@string/passwords" />
 
     <item
         android:id="@+id/navigation_creditcard"

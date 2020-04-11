@@ -6,24 +6,25 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import me.gentielezaj.wagwoord.activities.CoreActivity
 import me.gentielezaj.wagwoord.activities.auth.LoginActivity
+import me.gentielezaj.wagwoord.activities.settings.SettingsActivity
 import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.common.LocalStorage
 import me.gentielezaj.wagwoord.common.LogData
@@ -35,6 +36,9 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
 
     private val toolbar by bindView<Toolbar>(R.id.toolbar)
     private val appBar by bindView<AppBarLayout>(R.id.app_bar)
+    private val collapsingToolbarLayout by bindView<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
+    private val collapsingToolbarActions by bindView<LinearLayout>(R.id.collapsing_toolbar_actions)
+    private val navView: BottomNavigationView by bindView(R.id.nav_view)
     private lateinit var searchView: SearchView
     private lateinit var searchMenuItem: MenuItem
     private var isAppBarExpended = true
@@ -49,6 +53,7 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
         // endregion toolbar
 
         // region navigation
+        val navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_totp,
@@ -59,11 +64,15 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
             )
         )
 
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        setupActionBarWithNavController(navController, appBarConfiguration)
         // endregion navigation
+    }
+
+    fun changeTitle() : Boolean {
+        collapsingToolbarLayout.title = navView.menu.findItem(navView.selectedItemId).title
+        appBar.setExpanded(true, true)
+        return  true
     }
 
     private fun checkIfAppIsSetup() {
@@ -73,6 +82,31 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
     }
 
     override fun onFragmentInteraction(uri: Uri) {}
+
+    // region toolbar
+
+
+    private fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+        LogData("height: ${appBarLayout.height}, bootom: ${appBarLayout.bottom}, offset: $verticalOffset, toolbar: ${toolbar.height}")
+        if((toolbar.height * 2) > (appBarLayout.height - appBarLayout.bottom)) {
+            collapsingToolbarActions.alpha = 1f
+            findViewById<View>(R.id.action_search).alpha = 0f
+            findViewById<View>(R.id.action_settings).alpha = 0f
+        } else {
+            var procet = (toolbar.height * 2f) / (appBarLayout.bottom * 2)
+            LogData("procent: $procet")
+            collapsingToolbarActions.alpha = 1 - procet
+            findViewById<View>(R.id.action_search).alpha = procet
+            findViewById<View>(R.id.action_settings).alpha = procet
+        }
+        isAppBarExpended = if (appBarLayout.height - appBarLayout.bottom == 0) {
+            closeSearchAndKeyBoard()
+            true
+        } else {
+            false
+        }
+    }
+    // endregion toolbar
 
     // region menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -109,12 +143,7 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
         }
 
         appBar.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            isAppBarExpended = if (appBarLayout.height - appBarLayout.bottom == 0) {
-                closeSearchAndKeyBoard()
-                true
-            } else {
-                false
-            }
+            onOffsetChanged(appBarLayout, verticalOffset)
         })
 
         return super.onCreateOptionsMenu(menu)
@@ -131,7 +160,6 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
         if (!searchView.isIconified && !isAppBarExpended) {
             searchView.onActionViewCollapsed();
             searchMenuItem.collapseActionView()
-
             closeKeyboard()
         }
     }
@@ -143,5 +171,16 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
             super.onBackPressed();
         }
     }
+
+    // region open settings
+    fun openSettings(item: MenuItem) = openSettings()
+    fun openSettings(view: View) = openSettings()
+    fun openSearch(view: View) {
+        appBar.setExpanded(false, true)
+        searchMenuItem.expandActionView()
+    }
+
+    private fun openSettings() = startActivity(Intent(this, SettingsActivity::class.java))
+    // endregion open settings
     // endregion menu
 }

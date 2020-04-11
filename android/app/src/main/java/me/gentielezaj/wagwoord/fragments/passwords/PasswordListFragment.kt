@@ -1,6 +1,8 @@
 package me.gentielezaj.wagwoord.fragments.passwords
 
 import android.os.Bundle
+import android.view.View
+import me.gentielezaj.wagwoord.MainActivity
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.CoreFragment
 // TODO: Rename parameter arguments, choose names that match

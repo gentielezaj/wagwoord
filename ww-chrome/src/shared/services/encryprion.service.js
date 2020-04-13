@@ -1,9 +1,13 @@
 import * as CryptoJS from 'crypto-js';
-import UtilService from './util.service';
+import ChromeService from './chrome.service';
 
 export default class EncryptionService {
+
     constructor() {
-        this.utilService = new UtilService();
+        this.encryptionKeyStorageKey = "encryptionKey";
+        this.encryptionStorageKey = "encryption";
+        this.encryptionLocalyStorageKey = "encryptionLocal";
+        this.chromeService = new ChromeService(this.encryptionStorageKey);
     }
 
     // #region encryption / decryption
@@ -49,21 +53,55 @@ export default class EncryptionService {
     // #endregion encryption / decryption
 
     async get(property) {
-        const model = { encryptionKey: await this.utilService.getEcryptionKey(), encryptLocal: false };
+        const model = await this.chromeService.get(this.encryptionStorageKey) || {};
+        if (!model.encryptLocal) {
+            model.encryptLocal = false;
+        }
 
         return model && property ? model[property] : model;
     }
 
+    async getKey() {
+        return await this.get();
+    }
+
+    async getHash(key) {
+        key = key || await this.getKey();
+        return CryptoJS.MD5(key);
+    }
+
+    async encryptLocal() {
+        return await this.get(this.encryptionLocalyStorageKey);
+    }
+
     async save(model) {
-        
+        if (typeof model != 'object') {
+            let oldModel = await this.get();
+            if (model == undefined || model == null || model.isNaN()) {
+                oldModel = {
+                    encryptLocal: oldModel.encryptLocal
+                };
+            } else if (typeof model == 'string') {
+                oldModel.encryptionKey = model;
+            } else if (typeof model == 'boolean') {
+                oldModel.encryptLocal = model;
+            } else {
+                throw new Error("invalide object");
+            }
+
+            model = oldModel;
+        }
+
+        return await this.coreSave(model);
     }
 
     async coreSave(model) {
-        
+        model.encryptLocal = model.encryptLocal || false;
+        this.chromeService.set(model);
     }
 
     isValid(model) {
         if (!model || typeof model != 'object') return false;
-        return model.hasOwnProperty('encryptionKey') && model.hasOwnProperty('encryptLocalty');
+        return model.hasOwnProperty('encryptionKey') && model.hasOwnProperty('encryptLocal');
     }
 }

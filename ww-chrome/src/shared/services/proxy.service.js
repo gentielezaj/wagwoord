@@ -1,4 +1,6 @@
 import ChromeService from './chrome.service';
+import EncryptionService from './encryprion.service';
+import authenticator from "otplib/authenticator";
 
 export class ProxySettingsService {
     constructor() {
@@ -66,11 +68,6 @@ export class ProxySettingsService {
             throw error;
         }
     }
-
-    isValid(model) {
-        if (!model || typeof model != 'object') return false;
-        return model.hasOwnProperty('encryptionKey') && model.hasOwnProperty('encryptLocalty');
-    }
     // #endregion crud
 }
 
@@ -78,6 +75,7 @@ export class ProxyService {
     constructor(controller) {
         this.settings = new ProxySettingsService();
         this.controller = controller;
+        this.encryptionService = new EncryptionService();
     }
 
     // #region settings
@@ -90,7 +88,9 @@ export class ProxyService {
     }
 
     async getSettings(key) {
-        return await this.settings.get(key);
+        let data = await this.settings.get(key);
+        data.hash = this.encryptionService.getHash();
+        return data;
     }
 
     async getDomain() {
@@ -112,6 +112,10 @@ export class ProxyService {
     post(data, params, action, controller, domain, headers) {
         return this.request('POST', data, params, action, controller, domain, headers);
     }
+
+    postRequest(action, data, params, controller, domain, headers) {
+        return this.post(data, params, action, controller, domain, headers);
+    }
     // #endregion requests
 
     // #region delete request
@@ -130,7 +134,7 @@ export class ProxyService {
 
     async isSet() {
         let hasValue = await this.settings.chrome.get('server-status');
-        if (!hasValue) hasValue = await this.checkProxy();
+        if (hasValue == undefined || hasValue == null) hasValue = await this.checkProxy();
 
         if (!hasValue || hasValue == 'error') return false;
 
@@ -140,7 +144,7 @@ export class ProxyService {
 
     async checkProxy() {
         try {
-            const response = await this.baseRequest('GET', undefined, undefined, 'isValidConnection', 'util');
+            const response = await this.baseRequest('GET', undefined, undefined, 'isValidConnection', 'auth');
             const ok = response.hasOwnProperty('unsetProxy') ? false : response.status == 200;
             await this.settings.chrome.set((ok ? 'ok' : 'error'), 'server-status');
 
@@ -163,12 +167,12 @@ export class ProxyService {
     async baseRequest(method, data, params, action, controller, domain, headers) {
         const config = await this.getSettings();
         if (!config || (!config.domain && !domain)) return {
-            success: true,
+            success: false,
             unsetProxy: true
         };
 
         const url = getUrl(domain || config.domain, controller || this.controller, action, params);
-        headers = getHeaders(headers || config.headers);
+        headers = getHeaders(headers || config.headers, config.hash);
         const requestData = {
             headers: headers,
             method: method,
@@ -184,7 +188,7 @@ export class ProxyService {
     // #endregion core request
 }
 
-function getHeaders(headers) {
+function getHeaders(headers, hash) {
     if (!headers) return undefined;
     if (typeof headers === 'object') {
         headers.mode = 'cros';
@@ -199,6 +203,18 @@ function getHeaders(headers) {
 
     results.mode = 'cros';
 
+    if(hash) {
+        const time = new Date().getTime();
+        let auth = new authenticator.Authenticator();
+        auth.options = {
+            digits: 6,
+            step: 120,
+            epoch: parseInt(time)
+        };
+        const code = auth.generate(hash);
+        results.encryptionHash = code + "-" + time;
+    }
+    
     return results;
 }
 

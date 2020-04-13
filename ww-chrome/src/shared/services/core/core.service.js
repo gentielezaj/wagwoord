@@ -6,6 +6,7 @@ import EncryptionService from '../encryprion.service';
 import DB from '../database/db.service';
 
 import { WWUtil } from '../../util/ww-util';
+import ChromeService from '../chrome.service';
 
 export class CoreService {
     constructor(entityName) {
@@ -13,6 +14,7 @@ export class CoreService {
         this.db = new DB(entityName);
         this.entityName = entityName;
         this.encryption = new EncryptionService();
+        this.chromeService = new ChromeService();
         this.util = WWUtil;
     }
 
@@ -50,10 +52,10 @@ export class CoreService {
         if (!item) return true;
         const deleted = await this.db.delete(item.id);
         if (deleted && item.serverId && !dontUpdateServer && !(await this.proxy.delete(item.serverId)).success) {
-            let unsyced = localStorage.getItem(this.deletedUnsyncStorageKey);
+            let unsyced = await this.chromeService.get(this.deletedUnsyncStorageKey);
             unsyced = unsyced ? unsyced.split(',') : [];
             unsyced.push(item.serverId);
-            localStorage.setItem(this.deletedUnsyncStorageKey, unsyced.join(','));
+            await this.chromeService.set(this.deletedUnsyncStorageKey, unsyced.join(','));
         }
 
         return deleted;
@@ -67,11 +69,11 @@ export class CoreService {
     };
 
     async _syncDeleted() {
-        let deleted = localStorage.getItem(this.deletedUnsyncStorageKey);
+        let deleted = await this.chromeService.get(this.deletedUnsyncStorageKey);
         if (!deleted || !deleted.length) return true;
         let result = await this.proxy.delete(deleted);
         if (result.success === true) {
-            localStorage.removeItem(this.deletedUnsyncStorageKey);
+            await this.chromeService.remove(this.deletedUnsyncStorageKey);
         }
         return result.success;
     };
@@ -210,12 +212,12 @@ export class CoreService {
         const server = await this._syncServer(forece ? 'all' : undefined);
         // eslint-disable-next-line no-unneeded-ternary
         const result = deleted && local && server ? true : false;
-        if (result) localStorage.setItem(this.lastModifiedStorageKey, new Date().getTime());
+        if (result) await this.chromeService.save(this.lastModifiedStorageKey, new Date().getTime());
     };
 
     async _syncFromServer(forece) {
         let item = (await this.db.store.orderBy('lastModified').reverse().first()) || {};
-        let localStorageLastModified = localStorage.getItem(this.lastModifiedStorageKey);
+        let localStorageLastModified = await this.chromeService.get(this.lastModifiedStorageKey);
         let lastModified = item.lastModified > localStorageLastModified ? item.lastModified : localStorageLastModified;
         if (localStorageLastModified == "-1" || forece) lastModified = 0;
         const data = await this.proxy.patch(lastModified || 0);

@@ -6,9 +6,7 @@ import AddressService from "./address.service";
 import {
     WWUtil
 } from '../util/ww-util';
-import {
-    ProxyService
-} from "./proxy.service";
+import { AuthService } from "./auth/auth.service";
 
 export default class BackgroundService {
     constructor() {
@@ -17,8 +15,41 @@ export default class BackgroundService {
         this.$codeGenerator = new CodeGeneratorService();
         this.$creditCards = new CreditCardService();
         this.$addressService = new AddressService();
-        this.$proxy = new ProxyService('util');
+        this.$authService = new AuthService();
+        this.services = {
+            "password": this.$password,
+            "blacklist": this.$blacklist,
+            "codeGenerator": this.$codeGenerator,
+            "creditCards": this.$creditCards,
+            "address": this.$addressService,
+            "auth": this.$authService
+        };
         this.util = WWUtil;
+    }
+
+    get serviceList() {
+        let list = [];
+        for (const key in this.services) {
+            if (this.services.hasOwnProperty(key)) {
+                list.push(key);
+            }
+        }
+
+        return list;
+    }
+
+    async resolve(service, action, params) {
+        let fun = this.services[service][action];
+        let value;
+        if(params == undefined) {
+            value = await fun();
+        } else if(Array.isArray(params)) {
+            await fun.apply(null, params);
+        } else {
+            value = await fun(...params);
+        }
+
+        return value;
     }
 
     async getDataFroDomain(url, submitted) {
@@ -154,19 +185,18 @@ export default class BackgroundService {
     // #endregion save
 
     async checkServer() {
-        const response = await this.$proxy.checkProxy();
+        const response = await this.$authService.checkProxy();
         console.log('is connection set ok: ' + response);
         return response;
     }
 
     async sync() {
         if (await this.checkServer()) {
-            await this.$password.sync();
-            await this.$password.settings.sync();
-            await this.$blacklist.sync();
-            await this.$codeGenerator.sync();
-            await this.$addressService.sync();
-            await this.$creditCards.sync();
+            for (let i = 0; i < this.serviceList.length; i++) {
+                if(typeof this.services[this.serviceList[i]].sync == 'function') {
+                    await this.services[this.serviceList[i]].sync();
+                }
+            }
         } else {
             // TODO: notify not sett
         }

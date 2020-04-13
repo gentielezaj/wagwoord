@@ -55,9 +55,11 @@ function sendMessageToConentScript(tab, requestType, data) {
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-
-        if(request.service) {
-            
+        if (request.service) {
+            $backgound.resolve(request.service, request.action, request.params).then(data => {
+                sendResponse(data);
+            });
+            return true;
         }
 
         if (request.requestType == 'get') {

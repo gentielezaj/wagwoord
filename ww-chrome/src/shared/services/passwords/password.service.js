@@ -57,6 +57,11 @@ export default class PasswordService extends CoreService {
     // #endregion helpers
 
     // #region abstract
+    async sync(forece) {
+        await this.settings.sync(forece);
+        await super.sync(forece);
+    };
+
     async _preSave(item, canUpdate) {
         item.domain = this.util.getDomain(item.domain);
         item.name = this.util.getName(item.domain);

@@ -11,6 +11,10 @@ export class AuthService {
         this.encryptionService = new EncryptionService();
     }
 
+    async checkProxy() {
+        return await this.proxy.checkProxy();
+    }
+
     async login(domain, encryptionKey, encryptLocal) {
         try {
             await this.encryptionService.save({

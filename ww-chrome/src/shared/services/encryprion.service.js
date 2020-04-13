@@ -2,7 +2,6 @@ import * as CryptoJS from 'crypto-js';
 import ChromeService from './chrome.service';
 
 export default class EncryptionService {
-
     constructor() {
         this.encryptionKeyStorageKey = "encryptionKey";
         this.encryptionStorageKey = "encryption";

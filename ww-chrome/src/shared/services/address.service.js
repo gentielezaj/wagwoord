@@ -17,20 +17,7 @@ export default class AddressService extends CoreService {
         if (item.country) search.push(item.country);
         item.searchField = search.join('-');
 
-        let oldItem;
-        if (item.id) {
-            oldItem = await this.getItem(item.id);
-        } else if(item.serverId) {
-            oldItem = await this.getItem({
-                serverId: item.serverId
-            });
-        }
-
-        if(oldItem === undefined) {
-            oldItem = await this.getItem({
-                searchField: item.searchField
-            });
-        }
+        const oldItem = await this._getOldItem(item);
         
         if (oldItem && oldItem.serverId) {
             item.serverId = oldItem.serverId;

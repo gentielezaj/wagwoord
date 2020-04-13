@@ -39,22 +39,22 @@ export default class CodeGeneratorService extends CoreService {
 
     // #region abstract
     async _preSave(item, canUpdate) {
-        const oldPasseord = await this.getItem({
+        const oldItem = await this._getOldItem(item, {
             issuer: item.issuer,
             username: item.username
         });
 
-        if (!canUpdate && oldPasseord && oldPasseord.id != item.id) {
+        if (!canUpdate && oldItem && oldItem.id != item.id) {
             // eslint-disable-next-line no-throw-literal
             throw "item-exists";
         }
 
-        if (oldPasseord && oldPasseord.id) {
-            item.id = oldPasseord.id;
+        if (oldItem && oldItem.id) {
+            item.id = oldItem.id;
         }
 
-        if (oldPasseord && oldPasseord.serverId) {
-            item.serverId = oldPasseord.serverId;
+        if (oldItem && oldItem.serverId) {
+            item.serverId = oldItem.serverId;
         }
 
         item.searchField = `${item.issuer.toLowerCase()}-${item.username.toLowerCase()}`;

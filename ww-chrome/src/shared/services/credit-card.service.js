@@ -14,17 +14,13 @@ export default class CreditCardService extends CoreService {
             throw 'invalide credit card model';
         }
 
-        let oldItem = await this.getItem(item.id);
+        const oldItem = await this._getOldItem(item, {
+            cardNumber: item.cardNumber
+        });
 
-        if (!oldItem) {
-            oldItem = await this.getItem({
-                cardNumber: item.cardNumber
-            });
-
-            if (oldItem && !canUpdate) {
-                // eslint-disable-next-line no-throw-literal
-                throw "item-exists";
-            }
+        if (oldItem && !canUpdate) {
+            // eslint-disable-next-line no-throw-literal
+            throw "item-exists";
         }
 
         if (oldItem && oldItem.id) {
@@ -35,8 +31,8 @@ export default class CreditCardService extends CoreService {
             item.serverId = oldItem.serverId;
         }
 
-        if(item.nfc) item.nfc = true;
-        if(!item.nfc) item.nfc = false;
+        if (item.nfc) item.nfc = true;
+        if (!item.nfc) item.nfc = false;
 
         let searchCardType = item.cardType ? '-' + item.cardType.toLowerCase() : '';
         let searchBank = item.bank ? '-' + item.bank.toLowerCase() : '';

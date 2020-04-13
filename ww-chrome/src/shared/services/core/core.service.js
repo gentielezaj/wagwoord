@@ -86,6 +86,21 @@ export class CoreService {
         return await this._saveArray(model, onSaveItem, notlastModified, ignoreServer, true);
     }
 
+    async _getOldItem(item, uniqeQuery) {
+        let oldItem;
+        if(item.serverId) {
+            oldItem = await this.getItem({
+                serverId: item.serverId
+            });
+        } else if(item.id) {
+            oldItem = await this.getItem(item.id);
+        } else if(uniqeQuery) {
+            oldItem = await this.getItem(uniqeQuery);
+        }
+
+        return oldItem;
+    }
+
     async _saveArray(model, onSaveItem, notlastModified, ignoreServer, canUpdate) {
         let isArrayModel = true;
         if (!Array.isArray(model)) {

@@ -55,6 +55,11 @@ function sendMessageToConentScript(tab, requestType, data) {
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
+
+        if(request.service) {
+            
+        }
+
         if (request.requestType == 'get') {
             const submitted = storage(sender.tab, 'submitted');
             $backgound.getDataFroDomain(sender.url, submitted).then((p) => {

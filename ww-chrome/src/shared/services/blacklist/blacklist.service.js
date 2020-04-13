@@ -1,12 +1,10 @@
 import {
     CoreService
 } from "../core/core.service";
-import PasswordService from '../passwords/password.service';
 
 export default class BlacklistService extends CoreService {
     constructor() {
         super('blacklist');
-        this.$password = new PasswordService();
     }
 
     async checkUrl(url) {
@@ -28,7 +26,7 @@ export default class BlacklistService extends CoreService {
             await this.delete(oldPasseord.id);
             return false;
         }
-        
+
         return await this.save({
             name: domain,
             password: true,
@@ -48,21 +46,21 @@ export default class BlacklistService extends CoreService {
         item.creditCard = item.creditCard ? true : false;
         item.codeGenerator = item.codeGenerator ? true : false;
 
-        const oldPasseord = await this.getItem({
+        const oldItem = await this._getOldItem(item, {
             name: item.name
         });
 
-        if(!canUpdate && oldPasseord && oldPasseord.id != item.id) {
+        if (!canUpdate && oldItem && oldItem.id != item.id) {
             // eslint-disable-next-line no-throw-literal
             throw "item-exists";
         }
 
-        if (oldPasseord && oldPasseord.id) {
-            item.id = oldPasseord.id;
+        if (oldItem && oldItem.id) {
+            item.id = oldItem.id;
         }
 
-        if (oldPasseord && oldPasseord.serverId) {
-            item.serverId = oldPasseord.serverId;
+        if (oldItem && oldItem.serverId) {
+            item.serverId = oldItem.serverId;
         }
 
         item.searchField = item.name.toLowerCase();

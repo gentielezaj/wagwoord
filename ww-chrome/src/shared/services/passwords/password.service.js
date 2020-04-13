@@ -61,26 +61,26 @@ export default class PasswordService extends CoreService {
         item.domain = this.util.getDomain(item.domain);
         item.name = this.util.getName(item.domain);
 
-        const oldPasseord = await this.getItem({
+        const oldItem = await this._getOldItem(item, {
             domain: item.domain,
             username: item.username
         });
-
-        if(!canUpdate && oldPasseord && oldPasseord.id != item.id) {
+        
+        if (!canUpdate && oldItem && oldItem.id != item.id) {
             // eslint-disable-next-line no-throw-literal
             throw "item-exists";
         }
 
-        if (oldPasseord && oldPasseord.id) {
-            item.id = oldPasseord.id;
+        if (oldItem && oldItem.id) {
+            item.id = oldItem.id;
         }
 
-        if (oldPasseord && oldPasseord.serverId) {
-            item.serverId = oldPasseord.serverId;
+        if (oldItem && oldItem.serverId) {
+            item.serverId = oldItem.serverId;
         }
 
-        if (oldPasseord && oldPasseord.count && oldPasseord.count > item.count) {
-            item.count = oldPasseord.count;
+        if (oldItem && oldItem.count && oldItem.count > item.count) {
+            item.count = oldItem.count;
         } else {
             item.count = item.count || 0;
         }
@@ -107,7 +107,7 @@ export default class PasswordService extends CoreService {
         };
 
         const ep = await this.encryption.tryEncrypt(result.password);
-        if(ep) {
+        if (ep) {
             result.encrypted = ep.encrypted;
             result.password = ep.value;
         }
@@ -168,11 +168,11 @@ export default class PasswordService extends CoreService {
             if (!passwords || !Array.isArray(passwords) || !passwords.length) {
                 return false;
             }
-    
+
             if (typeof passwords[0] == 'string') {
                 passwords = this.getCSVPasswords(passwords);
             }
-            
+
             passwords.forEach(password => {
                 password.synced = true;
             });
@@ -216,7 +216,7 @@ export default class PasswordService extends CoreService {
                 delete passwords[i].id;
                 delete passwords[i].searchField;
                 delete passwords[i].serverId;
-                if(passwords[i].encrypted) passwords[i].password = await this.encryption.decrypt(passwords[i].password);                
+                if (passwords[i].encrypted) passwords[i].password = await this.encryption.decrypt(passwords[i].password);
                 delete passwords[i].encrypted;
             }
 

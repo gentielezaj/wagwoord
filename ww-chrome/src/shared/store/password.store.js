@@ -1,5 +1,4 @@
 import PasswordSettingsService from "../services/passwords/password-settings.service";
-import PasswordService from "../services/passwords/password.service";
 import coreStore from './core.store';
 
 const store = {
@@ -23,7 +22,7 @@ const store = {
         generate: async (context, value) => {
             try {
                 value = value || {};
-                return await context.state.service.generate(value.length, value.regex);
+                return await context.state.service.request('generate', [value.length, value.regex]);
             } catch (error) {
                 throw error;
             }
@@ -31,7 +30,7 @@ const store = {
         file: async (context, file) => {
             if (!file) return undefined;
             try {
-                return await context.state.service.readPasswordsFromFile(file);
+                return await context.state.service.request('readPasswordsFromFile', [file]);
             } catch (error) {
                 throw error;
             }
@@ -40,7 +39,7 @@ const store = {
             if (!model || !model.data) return undefined;
             context.commit('syncing', true);
             try {
-                const val = await context.state.service.import(model.data, model.onSave);
+                const val = await context.state.service.request('import', [model.data, model.onSave]);
                 return val;
             } catch (error) {
                 throw error;
@@ -50,7 +49,7 @@ const store = {
         },
         export: async(context, filters) => {
             try {
-                return await context.state.service.export(filters);
+                return await context.state.service.request('export', [filters]);
             } catch (error) {
                 throw error;
             }
@@ -63,4 +62,4 @@ const store = {
     }
 };
 
-export default coreStore(PasswordService, store);
+export default coreStore('password', store);

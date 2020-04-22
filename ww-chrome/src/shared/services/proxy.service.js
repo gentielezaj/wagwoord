@@ -1,16 +1,23 @@
 import ChromeService from './chrome.service';
 import EncryptionService from './encryprion.service';
-import authenticator from "otplib/authenticator";
+import {
+    hotp
+} from "otplib";
 
 export class ProxySettingsService {
     constructor() {
         this.chrome = new ChromeService('proxy');
+        this.encryptionService = new EncryptionService();
     }
 
     async get(property) {
-        let model = await this.chrome.get();
-        if (model && model.headers) model.headers = JSON.parse(model.headers);
+        let model = (await this.chrome.get()) || {};
+        model.hash = await this.encryptionService.getHash();
         return model && property ? model[property] : model;
+    }
+
+    getDomain() {
+        return this.get('domain');
     }
 
     // #region crud
@@ -28,6 +35,12 @@ export class ProxySettingsService {
             ...header
         };
 
+        return await this.save(model);
+    }
+
+    async removeDomain() {
+        let model = (await this.chrome.get()) || {};
+        model.domain = undefined;
         return await this.save(model);
     }
 
@@ -53,13 +66,10 @@ export class ProxySettingsService {
             model.domain = undefined;
         }
 
-        if (typeof model.headers == 'object') {
-            model.headers = JSON.stringify(model.headers);
-        }
-
-        if (model.headers && model.headers.trim() === '') {
-            model.headers = undefined;
-        }
+        model = {
+            headers: model.headers,
+            domain: model.domain
+        };
 
         try {
             await this.chrome.set(model);
@@ -78,26 +88,7 @@ export class ProxyService {
         this.encryptionService = new EncryptionService();
     }
 
-    // #region settings
-    async setHeaders(headers) {
-        return this.settings.setHeaders(headers);
-    }
-
-    async save(model) {
-        return this.settings.save(model);
-    }
-
-    async getSettings(key) {
-        let data = await this.settings.get(key);
-        data.hash = this.encryptionService.getHash();
-        return data;
-    }
-
-    async getDomain() {
-        return await this.getSettings('domain');
-    }
-    // #endregion settings
-
+    // #region request methodes
     // #region get requests
     get(params, action, controller, domain, headers) {
         try {
@@ -131,28 +122,59 @@ export class ProxyService {
     patch(params, action, controller, domain, headers) {
         return this.request('PATCH', undefined, params, action, controller, domain, headers);
     }
+    // #endregion request methodes
+
+    // #region check server state
+
+    async credentialsFor(encryptionKey) {
+        try {
+            const newEncryptionHash = await this.encryptionService.getHash(encryptionKey);
+            const oldEncryptionHash = await this.encryptionService.getHash();
+            const response = await this.request('Post', {
+                newEncryptionHash,
+                oldEncryptionHash
+            }, undefined, '', 'auth');
+
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return 'unAuthorised';
+        }
+    }
 
     async isSet() {
-        let hasValue = await this.settings.chrome.get('server-status');
-        if (hasValue == undefined || hasValue == null) hasValue = await this.checkProxy();
-
-        if (!hasValue || hasValue == 'error') return false;
-
-        const config = await this.settings.get();
-        return !config || !config.domain ? undefined : config;
+        let hasValue = await this.getProxyStatus();
+        return hasValue == 'ok';
     }
 
     async checkProxy() {
         try {
-            const response = await this.baseRequest('GET', undefined, undefined, 'isValidConnection', 'auth');
-            const ok = response.hasOwnProperty('unsetProxy') ? false : response.status == 200;
-            await this.settings.chrome.set((ok ? 'ok' : 'error'), 'server-status');
-
-            return ok;
+            const serverStatus = await this.getProxyStatus(true);
+            return serverStatus == 'ok';
         } catch (error) {
             throw error;
         }
     }
+
+    async getProxyStatus(force) {
+        let serverStatus = await this.settings.chrome.get('server-status');
+        try {
+            if (!force) return serverStatus;
+            const config = await this.settings.get();
+            const domain = config?.domain;
+            if (!domain) serverStatus = 'off';
+            else {
+                const response = await this.request('GET', undefined, undefined, 'isValidConnection', 'auth');
+                serverStatus = response.success ? 'ok' : 'error';
+            }
+        } catch (error) {
+            serverStatus = 'error';
+        }
+
+        await this.settings.chrome.set(serverStatus, 'server-status');
+        return serverStatus;
+    }
+    // #endregion check server state
 
     // #region core request
     async request(method, data, params, action, controller, domain, headers) {
@@ -165,7 +187,7 @@ export class ProxyService {
     }
 
     async baseRequest(method, data, params, action, controller, domain, headers) {
-        const config = await this.getSettings();
+        const config = await this.settings.get();
         if (!config || (!config.domain && !domain)) return {
             success: false,
             unsetProxy: true
@@ -189,33 +211,30 @@ export class ProxyService {
 }
 
 function getHeaders(headers, hash) {
-    if (!headers) return undefined;
-    if (typeof headers === 'object') {
-        headers.mode = 'cros';
-        return headers;
-    }
-    let results = {};
-    let s = headers.split('\n');
-    s.forEach(h => {
-        const hsplit = h.split(':');
-        results[hsplit[0].trim()] = hsplit[1].trim();
-    });
+    if (!headers) headers = {};
+    headers.mode = 'cros';
 
-    results.mode = 'cros';
+    if (hash) {
+        try {
+            const time = new Date().getTime();
+            const code = hotp.generate(hash, time);
 
-    if(hash) {
-        const time = new Date().getTime();
-        let auth = new authenticator.Authenticator();
-        auth.options = {
-            digits: 6,
-            step: 120,
-            epoch: parseInt(time)
-        };
-        const code = auth.generate(hash);
-        results.encryptionHash = code + "-" + time;
+            console.log('hash: ' + hash);
+
+            console.log('isvalid: ' + hotp.check(code, hash, time));
+            console.log('isvalid: ' + hotp.verify({
+                token: hash,
+                secret: code
+            }));
+            headers.hash = code + "-" + time;
+        } catch (error) {
+            console.error(error);
+        }
     }
-    
-    return results;
+
+    headers["Content-Type"] = "application/json";
+
+    return headers;
 }
 
 function getUrl(domain, controller, action, params) {

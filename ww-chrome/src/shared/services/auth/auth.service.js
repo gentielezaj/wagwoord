@@ -11,31 +11,58 @@ export class AuthService {
         this.encryptionService = new EncryptionService();
     }
 
-    async checkProxy() {
-        return await this.proxy.checkProxy();
+    getProxyStatus(force) {
+        return this.proxy.getProxyStatus(force);
     }
 
-    async login(domain, encryptionKey, encryptLocal) {
-        try {
-            await this.encryptionService.save({
-                encryptionKey: encryptionKey,
-                encryptLocal: encryptLocal
-            });
+    checkProxy() {
+        return this.proxy.checkProxy();
+    }
 
+    async loginData() {
+        let data = await this.encryptionService.get();
+        data.domain = await this.proxy.settings.getDomain();
+        return data;
+    }
+
+    async credentialsFor(encryptionKey) {
+        if(await this.proxy.getProxyStatus(false) == 'off') return 'login';
+        return await this.proxy.credentialsFor(encryptionKey);
+    }
+
+    async login(domain, encryptionKey, encryptLocal, request) {
+        try {
             if (domain) {
-                const hash = await this.encryptionService.getHash();
-                const response = await this.proxy.postRequest('login', {
+                const hash = await this.encryptionService.getHash(encryptionKey);
+                let headers = await this.proxy.settings.get('headers');
+                headers = {
+                    ...headers,
+                    "Content-Type": "application/json"
+                };
+
+                const response = await this.proxy.postRequest(request, {
                     encryptionHash: hash
-                }, undefined, undefined, domain);
+                }, undefined, undefined, domain, headers);
 
                 if(!response.success) return false;
-
-                await this.proxy.save({
-                    domain,
-                    headers: response.data
+                
+                await this.encryptionService.save({
+                    encryptionKey: encryptionKey,
+                    encryptLocal: encryptLocal
                 });
 
-                return await this.proxy.checkProxy();
+                await this.proxy.settings.save({
+                    domain,
+                    headers: response.data.headers
+                });
+
+                return await this.checkProxy();
+            } else {
+                await this.proxy.settings.removeDomain();
+                await this.encryptionService.save({
+                    encryptionKey: encryptionKey,
+                    encryptLocal: encryptLocal
+                });
             }
             
             return true;

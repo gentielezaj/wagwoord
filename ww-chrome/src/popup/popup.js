@@ -8,9 +8,7 @@ import constants from '../shared/util/ww-constants';
 import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
 import chromeStore from '../shared/store/chrome.store';
-import encryptionStore from '../shared/store/encryption.store';
 import dialogStore from '../shared/store/dialog.store';
-import utilStore from '../shared/store/util.store';
 import codeGenerator from '../shared/store/code-generator.store';
 import notificationStore from '../shared/store/notification.store';
 
@@ -22,10 +20,8 @@ const store = new Vuex.Store({
     password: passwordStore,
     blacklist: blacklistStore,
     chrome: chromeStore,
-    encryption: encryptionStore,
     codegenerator: codeGenerator,
     dialog: dialogStore,
-    util: utilStore,
     notification: notificationStore
   }
 });

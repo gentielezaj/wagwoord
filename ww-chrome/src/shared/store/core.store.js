@@ -1,10 +1,12 @@
+import { ServiceProvider } from './service-provider';
+
 export default function(service, store) {
     store = store || {};
     return {
         namespaced: true,
         state: {
             ...store.state,
-            service: new service(),
+            service: typeof service == 'string' ? new ServiceProvider(service) : new service(),
             syncing: false
         },
         getters: {
@@ -63,7 +65,7 @@ export default function(service, store) {
         mutations: {
             ...store.mutations,
             service: (state) => {
-                state.service = new service();
+                state.service = typeof service == 'string' ? new ServiceProvider(service) : new service();
             },
             syncing: (state, value) => {
                 state.syncing = value;

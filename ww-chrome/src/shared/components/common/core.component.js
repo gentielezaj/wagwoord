@@ -240,10 +240,12 @@ export function formCoreComponentMixin(store, formId) {
                 }
             },
             checkFormVaidity(event) {
-                if (!document.getElementById(this.formId).checkValidity()) {
-                    if (event) event.preventDefault();
-                    this.notifyError("Invalide form");
-                    return false;
+                if(document.getElementById(this.formId)?.checkValidity) {
+                    if (!document.getElementById(this.formId).checkValidity()) {
+                        if (event) event.preventDefault();
+                        this.notifyError("Invalide form");
+                        return false;
+                    }
                 }
                 return true;
             },

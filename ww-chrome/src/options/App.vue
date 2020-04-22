@@ -115,7 +115,6 @@ export default {
   created() {
     console.log(this.$store);
     console.log(this.$constants);
-    this.$store.commit('encryption/checkServer');
     this.$store.commit("address/setCountries");
     this.$store.commit("address/getLocationInfo");
     if (localStorage.getItem("nav-collapsed") == "true") {

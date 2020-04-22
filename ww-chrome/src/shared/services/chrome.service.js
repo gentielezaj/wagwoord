@@ -7,6 +7,14 @@ export default class ChromeService {
         this.util = WWUtil;
     }
 
+    get manifest() {
+        return chrome.runtime.getManifest();
+    }
+
+    get version() {
+        return this.manifest.version;    
+    }
+
     async get(key) {
         let result = await chromeStorage('get', key || this.key);
         if(typeof result[key || this.key] == 'string' && !result[key || this.key].startsWith('{')) return result[key || this.key];
@@ -25,6 +33,14 @@ export default class ChromeService {
     async remove(key) {
         return await chromeStorage('remove', key || this.key);
     };
+
+    async clear() {
+        return new Promise(resolve => {
+            chrome.storage.local.clear(result => {
+                resolve(true);
+            });
+        });
+    }
 
     async selectedTab() {
         return new Promise((resolve) => {

@@ -2,11 +2,12 @@ import { Router, Response, Request } from "express";
 import { AppLogger } from "../utils/appLogger";
 import { LocalStorage } from "node-localstorage";
 import { Constants } from "../utils/constants";
-import { authenticator } from 'otplib';
+import { hotp } from 'otplib';
+import * as crypto from "crypto";
 
 export abstract class BaseController {
 
-    protected localStorage: LocalStorage;
+    protected readonly localStorage: LocalStorage;
 
     constructor() {
         this.localStorage = new LocalStorage(Constants.LocalStorageFolder);
@@ -35,7 +36,11 @@ export abstract class BaseController {
     }
 
     protected checkWagwoordId(req: Request): boolean {
-        return req.header('wagwoordId') == process.env.WAGWOORD_ID;
+        return this.compareWagwoordId(req.header('wagwoordId'));
+    }
+
+    protected compareWagwoordId(wagwordId: string): boolean {
+        return wagwordId == process.env.WAGWOORD_ID
     }
 
     protected checkEncryption(req: Request, res: Response, next: any): void {
@@ -51,22 +56,25 @@ export abstract class BaseController {
     }
 
     protected isEncryptionEqual(req: Request): boolean {
-        const encryptonHash = this.localStorage.getItem(Constants.EncryptionHashKey);
-        if (!encryptonHash) return true;
+        try {
+            const encryptonHash = this.localStorage.getItem(Constants.EncryptionHashKey);
+            if (!encryptonHash) return true;
 
-        const otp = req.header('otp')
-        if (!otp) return false;
+            const otp = req.header('hash')
+            if (!otp) return false;
 
-        const code = otp.split('-')[0];
-        const epoch = otp.split('-')[1];
-
-        authenticator.options = {
-            digits: 6,
-            step: 120,
-            epoch: parseInt(epoch)
+            const code = otp.split('-')[0];
+            const epoch = otp.split('-')[1];
+            const key = hotp.check(code, encryptonHash, parseInt(epoch));
+            console.log(key);
+            return key;
+        } catch (e) {
+            console.log(e);
         }
+    }
 
-        return !encryptonHash || authenticator.check(encryptonHash, code);
+    protected compareEncryptionHash(hash: string): boolean {
+        return hash == this.localStorage.getItem(Constants.EncryptionHashKey);
     }
 
     // endregion

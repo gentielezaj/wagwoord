@@ -18,29 +18,30 @@ import '../shared/driectives/span-label.directive';
 
 // #region stores
 import notificationStore from '../shared/store/notification.store';
-import encryptionStore from '../shared/store/encryption.store';
 import proxyStore from '../shared/store/proxy.store';
 import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
-import utilStore from '../shared/store/util.store';
 import codegeneratorStore from '../shared/store/code-generator.store';
 import creditcardStore from '../shared/store/credit-card.store';
 import addressStore from '../shared/store/address.store';
 import dialogStore from '../shared/store/dialog.store';
 
+import authStore from '../shared/store/auth.store.js';
+import chromeStore from '../shared/store/chrome.store';
+
 Vue.use(Vuex);
 const store = new Vuex.Store({
   modules: {
     notification: notificationStore,
-    encryption: encryptionStore,
     proxy: proxyStore,
     password: passwordStore,
-    util: utilStore,
     blacklist: blacklistStore,
     codegenerator: codegeneratorStore,
     creditcard: creditcardStore,
     address: addressStore,
-    dialog: dialogStore
+    dialog: dialogStore,
+    auth: authStore,
+    chrome: chromeStore
   }
 });
 // #endregion stores

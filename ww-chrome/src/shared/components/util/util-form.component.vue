@@ -1,5 +1,5 @@
 <template>
-  <form id="util-form">
+  <form v-form id="util-form">
     <div class="form-item">
       <label for="util-form-domain">Server url</label>
       <div class="input-container">
@@ -46,9 +46,21 @@
         ></textarea>
       </div>
     </div>
-    <div class="dialog-actions">
+    <div class="form-item cbx">
+      <input
+        type="checkbox"
+        v-model="model.encryptLocal"
+        name="encryptLocal"
+        class="cbx hidden"
+        id="encryptLocalInput"
+      />
+      <span class="lbl" @click="model.encryptLocal = !model.encryptLocal"></span>
+      <label for="encryptLocalInput" class>Encrypt local (TODO: this)</label>
+      <span v-show="saving == 'encryptLocal'" class="loader"></span>
+    </div>
+    <div class="dialog-actions right">
       <input @click="save()" type="button" class="success dialog-action" value="Save" />
-      <input @click="cancel(false)" type="button" class="error dialog-action" value="Cancel" />
+      <input @click="close(false)" type="button" class="error dialog-action" value="Cancel" />
     </div>
   </form>
 </template>
@@ -58,17 +70,15 @@ import { formCoreComponentMixin } from "../common/core.component";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
-  mixins: [formCoreComponentMixin("util")],
+  mixins: [formCoreComponentMixin("auth")],
   computed: {
-    ...mapGetters("util", ["checkProxy, wizardData"]),
     baseModel() {
-      return {};
+      return {
+        encryptLocal: false
+      };
     }
   },
   methods: {
-    ...mapActions("util", {
-      storeSave: "save"
-    }),
     close() {
       this.$store.commit("dialog/close");
     },
@@ -79,7 +89,8 @@ export default {
         this.model = this.model || {};
         this.model.domain = this.model.domain || undefined;
         this.model.encryptionKey = this.model.encryptionKey || undefined;
-        let result = await this.storeSave(this.model);
+        this.model.encryptLocal = this.model.encryptLocal || false;
+        let result = await this.$store.dispatch("auth/login", this.model);
         if (result) {
           this.notifySuccess("saved data");
           this.reset();
@@ -95,7 +106,10 @@ export default {
     }
   },
   async created() {
-    this.model = (await this.$store.getters["util/wizardData"]) || {};
+    this.model = (await this.$store.getters["auth/loginData"]) || {
+      encryptLocal: false
+    };
+    console.log(this.model);
   }
 };
 </script>

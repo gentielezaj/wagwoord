@@ -6,7 +6,10 @@ import AddressService from "./address.service";
 import {
     WWUtil
 } from '../util/ww-util';
-import { AuthService } from "./auth/auth.service";
+import {
+    AuthService
+} from "./auth/auth.service";
+import AppService from "./app.service";
 
 export default class BackgroundService {
     constructor() {
@@ -16,13 +19,15 @@ export default class BackgroundService {
         this.$creditCards = new CreditCardService();
         this.$addressService = new AddressService();
         this.$authService = new AuthService();
+        this.$app = new AppService();
         this.services = {
             "password": this.$password,
             "blacklist": this.$blacklist,
             "codeGenerator": this.$codeGenerator,
             "creditCards": this.$creditCards,
             "address": this.$addressService,
-            "auth": this.$authService
+            "auth": this.$authService,
+            "app": this.$app
         };
         this.util = WWUtil;
     }
@@ -39,17 +44,74 @@ export default class BackgroundService {
     }
 
     async resolve(service, action, params) {
-        let fun = this.services[service][action];
-        let value;
-        if(params == undefined) {
-            value = await fun();
-        } else if(Array.isArray(params)) {
-            await fun.apply(null, params);
-        } else {
-            value = await fun(...params);
+        try {
+            let value;
+            if (service == 'background') {
+                if (params == undefined) {
+                    value = await this[action]();
+                } else if (Array.isArray(params)) {
+                    await this[action].apply(null, params);
+                } else {
+                    value = await this[action](...params);
+                }
+            } else if (service == 'auth' && action == 'login') {
+                value = await this.login(...params);
+            } else {
+                if (params == undefined) {
+                    value = await this.services[service][action]();
+                } else if (Array.isArray(params)) {
+                    value = await this.services[service][action].apply(this.services[service], params);
+                } else {
+                    value = await this.services[service][action](...params);
+                }
+            }
+
+            return {
+                data: value,
+                success: true
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                error: error,
+                success: false
+            };
+        }
+    }
+
+    async login(data) {
+        try {
+            if (data.domain) {
+                let credetialsFor = await this.$authService.credentialsFor(data.encryptionKey);
+                if (credetialsFor != 'change' && credetialsFor != 'login') return false;
+
+                if (credetialsFor == 'change') {
+                    for (let i = 0; i < this.serviceList.length; i++) {
+                        if (typeof this.services[this.serviceList[i]]._syncFromServer == 'function') {
+                            await this.services[this.serviceList[i]]._syncFromServer();
+                        }
+                    }
+                }
+
+                const serverStatus = await this.$authService.login(data.domain, data.encryptionKey, data.encryptLocal, credetialsFor);
+                await this.checkServer(false);
+                if (!serverStatus) return false;
+
+                for (let i = 0; i < this.serviceList.length; i++) {
+                    if (typeof this.services[this.serviceList[i]]._syncServer == 'function') {
+                        await this.services[this.serviceList[i]]._syncServer();
+                    }
+                }
+            } else {
+                const value = await this.$authService.login(data.domain, data.encryptionKey, data.encryptLocal);
+                await this.checkServer(true);
+                return value;
+            }
+        } catch (error) {
+            throw error;
         }
 
-        return value;
+        return true;
     }
 
     async getDataFroDomain(url, submitted) {
@@ -184,21 +246,25 @@ export default class BackgroundService {
     }
     // #endregion save
 
-    async checkServer() {
-        const response = await this.$authService.checkProxy();
-        console.log('is connection set ok: ' + response);
-        return response;
+    async checkServer(force = true) {
+        const response = await this.$authService.getProxyStatus(force);
+        if (response == 'error') chrome.browserAction.setIcon({
+            path: "assets/logo/logo_128_square_waring.png"
+        });
+        else chrome.browserAction.setIcon({
+            path: "assets/logo/logo_128_square.png"
+        });
+
+        return response == 'ok';
     }
 
     async sync() {
         if (await this.checkServer()) {
             for (let i = 0; i < this.serviceList.length; i++) {
-                if(typeof this.services[this.serviceList[i]].sync == 'function') {
+                if (typeof this.services[this.serviceList[i]].sync == 'function') {
                     await this.services[this.serviceList[i]].sync();
                 }
             }
-        } else {
-            // TODO: notify not sett
         }
     }
 }

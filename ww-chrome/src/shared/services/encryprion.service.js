@@ -61,12 +61,12 @@ export default class EncryptionService {
     }
 
     async getKey() {
-        return await this.get();
+        return this.get(this.encryptionKeyStorageKey);
     }
 
     async getHash(key) {
         key = key || await this.getKey();
-        return CryptoJS.MD5(key);
+        return key ? CryptoJS.MD5(key).toString() : '';
     }
 
     async encryptLocal() {

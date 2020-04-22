@@ -27,11 +27,35 @@ export class AuthController extends BaseController {
             this.login(req, res).then().catch(e => this.sendErrorResponse(res, 500));
         });
 
+
+        router.post('/', (req: Request, res: Response) => {
+            this.resolve(req, res).then().catch(e => this.sendErrorResponse(res, 500));
+        });
+
+
+        router.get('/', (req: Request, res: Response) => {
+            this.isValidConnection(req, res).then().catch(e => this.sendErrorResponse(res, 500));
+        });
         router.get('/isValidConnection', (req: Request, res: Response) => {
             this.isValidConnection(req, res).then().catch(e => this.sendErrorResponse(res, 500));
         });
 
         return router;
+    }
+
+    protected async resolve(req: Request, res: Response) {
+        let status = 'unAuthorised';
+        try {
+            if (this.compareEncryptionHash(req.body.oldEncryptionHash) && this.checkWagwoordId(req)) {
+                status = 'change';
+            } else if (this.compareEncryptionHash(req.body.newEncryptionHash)) {
+                status = 'login'
+            }
+        } catch (e) {
+
+        }
+        
+        this.sendResponse(res, status, 200);
     }
 
     protected async isValidConnection(req: Request, res: Response) {
@@ -45,7 +69,7 @@ export class AuthController extends BaseController {
     protected async login(req: Request, res: Response) {
         const encryptionHashReq = req.body[Constants.EncryptionHashKey] ?? '';
         try {
-            let a = encryptionHashReq == (this.localStorage.getItem(Constants.EncryptionHashKey) ?? '')
+            let a = this.localStorage.getItem(Constants.EncryptionHashKey);
             if (encryptionHashReq == (this.localStorage.getItem(Constants.EncryptionHashKey) ?? '')) {
                 this.sendResponse(res, this.repository.returnHeadersModel());
             } else {
@@ -59,7 +83,7 @@ export class AuthController extends BaseController {
     protected async change(req: Request, res: Response) {
         const encryptionHashReq = req.body ? req.body[Constants.EncryptionHashKey] : '';
         try {
-            if (req.header('wagwoordId') == process.env.WAGWOORD_ID && req.header(Constants.EncryptionHashKey) == this.localStorage.getItem(Constants.EncryptionHashKey)) {
+            if (this.checkWagwoordId(req) && this.isEncryptionEqual(req)) {
                 let encryptionHash = await this.repository.SaveEncryptionHash(encryptionHashReq);
                 this.sendResponse(res, this.repository.returnHeadersModel());
             } else {

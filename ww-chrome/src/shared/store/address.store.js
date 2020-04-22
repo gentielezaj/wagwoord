@@ -1,5 +1,4 @@
 import core from './core.store.js';
-import service from '../services/address.service';
 
 const store = {
     state: {
@@ -78,4 +77,4 @@ const store = {
     }
 };
 
-export default core(service, store);
+export default core('address', store);

@@ -3,6 +3,9 @@
     <section-header v-bind:options="header"></section-header>
     <main>
       test
+      <br>
+      <button @click="clearData">Clear all chrome data</button>
+      <button @click="clearData">Clear database</button>
     </main>
   </div>
 </template>
@@ -26,7 +29,10 @@ export default {
     };
   },
   methods: {
-    
+    async clearData() {
+      await this.$store.dispatch('chrome/clear');
+      console.log('cleared');
+    }
   }
 };
 </script>

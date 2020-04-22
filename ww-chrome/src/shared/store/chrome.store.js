@@ -23,9 +23,18 @@ export default {
             };
         }
     },
+    actions: {
+        clear: async context => {
+            await context.state.chrome.clear();
+            return true;
+        }
+    },
     mutations: {
         open: (state, value) => {
             state.chrome.open(value);
+        },
+        refresh: state => {
+            state.chrome = new ChromeService();
         }
     }
 };

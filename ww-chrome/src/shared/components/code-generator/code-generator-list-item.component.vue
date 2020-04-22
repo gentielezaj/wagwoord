@@ -41,6 +41,7 @@
 import { listItemCoreComponentMixin } from "../common/core.component";
 import form from "./code-generator-form.component";
 import authenticator from "otplib/authenticator";
+import crypto from "crypto";
 
 export default {
   name: "code-generator-list-item",
@@ -81,10 +82,12 @@ export default {
       );
     }
   },
-  created() {
-    const defaults = this.$store.getters[this.storeName + "/assingeDefaults"](
+  async created() {
+    const defaults = await this.$store.getters[this.storeName + "/assingeDefaults"](
       this.item
     );
+
+    defaults.crypto = crypto;
 
     this.authenticator.options = defaults;
     this.checkCodeInterval = setInterval(() => {

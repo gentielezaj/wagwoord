@@ -41,11 +41,11 @@ const store = {
             context.commit('syncing', true);
             try {
                 const val = await context.state.service.import(model.data, model.onSave);
-                context.commit('syncing', false);
                 return val;
             } catch (error) {
-                context.commit('syncing', false);
                 throw error;
+            } finally {
+                context.commit('syncing', false);
             }
         },
         export: async(context, filters) => {

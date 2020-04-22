@@ -19,8 +19,10 @@
   }
 }
 */
- 
- [class^="icon-"]:before, [class*=" icon-"]:before {
+.wagwoord-app [class$="-icon"]:after, 
+.wagwoord-app [class*="-icon "]:after,
+.wagwoord-app [class^="icon-"]:before, 
+.wagwoord-app [class*=" icon-"]:before {
   font-family: "fontello";
   font-style: normal;
   font-weight: normal;
@@ -55,70 +57,138 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
  
-.icon-list-ok:before { content: '\e800'; } /* '' */
-.icon-ok:before { content: '\e801'; } /* '' */
-.icon-list:before { content: '\e802'; } /* '' */
-.icon-blacklist:before { content: '\e803'; } /* '' */
-.icon-down:before { content: '\e804'; } /* '' */
-.icon-remove:before { content: '\e805'; } /* '' */
-.icon-demo:before { content: '\e806'; } /* '' */
-.icon-test:before { content: '\e807'; } /* '' */
-.icon-search:before { content: '\e808'; } /* '' */
-.icon-key-1:before { content: '\e809'; } /* '' */
-.icon-delete:before { content: '\e80a'; } /* '' */
-.icon-pencil:before { content: '\e80b'; } /* '' */
-.icon-combination_lock:before { content: '\e80c'; } /* '' */
-.icon-card:before { content: '\e80d'; } /* '' */
-.icon-spin3:before { content: '\e80e'; } /* '' */
-.icon-bank:before { content: '\e80f'; } /* '' */
-.icon-blacklist-2:before { content: '\e810'; } /* '' */
-.icon-settings:before { content: '\e811'; } /* '' */
-.icon-fort-1:before { content: '\e812'; } /* '' */
-.icon-database:before { content: '\e813'; } /* '' */
-.icon-network:before { content: '\e814'; } /* '' */
-.icon-author-sign:before { content: '\e815'; } /* '' */
-.icon-file:before { content: '\e816'; } /* '' */
-.icon-sync-2:before { content: '\e817'; } /* '' */
-.icon-015-time:before { content: '\e818'; } /* '' */
-.icon-theme:before { content: '\e819'; } /* '' */
-.icon-right:before { content: '\e81b'; } /* '' */
-.icon-sync-arrows:before { content: '\e81c'; } /* '' */
-.icon-up:before { content: '\e81d'; } /* '' */
-.icon-logo:before { content: '\e81e'; } /* '' */
-.icon-sync-1:before { content: '\e81f'; } /* '' */
-.icon-copy-1:before { content: '\e825'; } /* '' */
-.icon-sync-warent:before { content: '\e826'; } /* '' */
-.icon-sync-disable:before { content: '\e827'; } /* '' */
-.icon-left:before { content: '\e828'; } /* '' */
-.icon-login:before { content: '\e829'; } /* '' */
-.icon-logout:before { content: '\e82a'; } /* '' */
-.icon-menu:before { content: '\e82b'; } /* '' */
-.icon-qrcode:before { content: '\e82c'; } /* '' */
-.icon-feather:before { content: '\e82d'; } /* '' */
-.icon-cancel-alt:before { content: '\e82e'; } /* '' */
-.icon-cancel-alt-filled:before { content: '\e82f'; } /* '' */
-.icon-settings-1:before { content: '\e830'; } /* '' */
-.icon-spin2:before { content: '\e831'; } /* '' */
-.icon-code:before { content: '\e832'; } /* '' */
-.icon-info:before { content: '\e833'; } /* '' */
-.icon-spin4:before { content: '\e834'; } /* '' */
-.icon-eye:before { content: '\e836'; } /* '' */
-.icon-spin-1:before { content: '\e838'; } /* '' */
-.icon-spin-2:before { content: '\e839'; } /* '' */
-.icon-logo_old:before { content: '\e83a'; } /* '' */
-.icon-key:before { content: '\e83b'; } /* '' */
-.icon-safe:before { content: '\e83f'; } /* '' */
-.icon-warehouse:before { content: '\e840'; } /* '' */
-.icon-blacklist-1:before { content: '\e841'; } /* '' */
-.icon-open-link:before { content: '\f08e'; } /* '' */
-.icon-exchange:before { content: '\f0ec'; } /* '' */
-.icon-attention:before { content: '\f12a'; } /* '' */
-.icon-cc-visa:before { content: '\f1f0'; } /* '' */
-.icon-cc-mastercard:before { content: '\f1f1'; } /* '' */
-.icon-cc-discover:before { content: '\f1f2'; } /* '' */
-.icon-cc-amex:before { content: '\f1f3'; } /* '' */
-.icon-cc-paypal:before { content: '\f1f4'; } /* '' */
-.icon-user-secret:before { content: '\f21b'; } /* '' */
-.icon-copy:before { content: '\f24d'; } /* '' */
-.icon-fort:before { content: '\f286'; } /* '' */
-.icon-eye-close:before { content: '\f2a8'; } /* '' */
+.wagwoord-app .icon-list-ok:before { content: '\e800'; } /* '' */
+.wagwoord-app .icon-ok:before { content: '\e801'; } /* '' */
+.wagwoord-app .icon-list:before { content: '\e802'; } /* '' */
+.wagwoord-app .icon-blacklist:before { content: '\e803'; } /* '' */
+.wagwoord-app .icon-down:before { content: '\e804'; } /* '' */
+.wagwoord-app .icon-remove:before { content: '\e805'; } /* '' */
+.wagwoord-app .icon-demo:before { content: '\e806'; } /* '' */
+.wagwoord-app .icon-test:before { content: '\e807'; } /* '' */
+.wagwoord-app .icon-search:before { content: '\e808'; } /* '' */
+.wagwoord-app .icon-key-1:before { content: '\e809'; } /* '' */
+.wagwoord-app .icon-delete:before { content: '\e80a'; } /* '' */
+.wagwoord-app .icon-pencil:before { content: '\e80b'; } /* '' */
+.wagwoord-app .icon-combination_lock:before { content: '\e80c'; } /* '' */
+.wagwoord-app .icon-card:before { content: '\e80d'; } /* '' */
+.wagwoord-app .icon-spin3:before { content: '\e80e'; } /* '' */
+.wagwoord-app .icon-bank:before { content: '\e80f'; } /* '' */
+.wagwoord-app .icon-blacklist-2:before { content: '\e810'; } /* '' */
+.wagwoord-app .icon-settings:before { content: '\e811'; } /* '' */
+.wagwoord-app .icon-fort-1:before { content: '\e812'; } /* '' */
+.wagwoord-app .icon-database:before { content: '\e813'; } /* '' */
+.wagwoord-app .icon-network:before { content: '\e814'; } /* '' */
+.wagwoord-app .icon-author-sign:before { content: '\e815'; } /* '' */
+.wagwoord-app .icon-file:before { content: '\e816'; } /* '' */
+.wagwoord-app .icon-sync-2:before { content: '\e817'; } /* '' */
+.wagwoord-app .icon-015-time:before { content: '\e818'; } /* '' */
+.wagwoord-app .icon-theme:before { content: '\e819'; } /* '' */
+.wagwoord-app .icon-right:before { content: '\e81b'; } /* '' */
+.wagwoord-app .icon-sync-arrows:before { content: '\e81c'; } /* '' */
+.wagwoord-app .icon-up:before { content: '\e81d'; } /* '' */
+.wagwoord-app .icon-logo:before { content: '\e81e'; } /* '' */
+.wagwoord-app .icon-sync-1:before { content: '\e81f'; } /* '' */
+.wagwoord-app .icon-copy-1:before { content: '\e825'; } /* '' */
+.wagwoord-app .icon-sync-warent:before { content: '\e826'; } /* '' */
+.wagwoord-app .icon-sync-disable:before { content: '\e827'; } /* '' */
+.wagwoord-app .icon-left:before { content: '\e828'; } /* '' */
+.wagwoord-app .icon-login:before { content: '\e829'; } /* '' */
+.wagwoord-app .icon-logout:before { content: '\e82a'; } /* '' */
+.wagwoord-app .icon-menu:before { content: '\e82b'; } /* '' */
+.wagwoord-app .icon-qrcode:before { content: '\e82c'; } /* '' */
+.wagwoord-app .icon-feather:before { content: '\e82d'; } /* '' */
+.wagwoord-app .icon-cancel-alt:before { content: '\e82e'; } /* '' */
+.wagwoord-app .icon-cancel-alt-filled:before { content: '\e82f'; } /* '' */
+.wagwoord-app .icon-settings-1:before { content: '\e830'; } /* '' */
+.wagwoord-app .icon-spin2:before { content: '\e831'; } /* '' */
+.wagwoord-app .icon-code:before { content: '\e832'; } /* '' */
+.wagwoord-app .icon-info:before { content: '\e833'; } /* '' */
+.wagwoord-app .icon-spin4:before { content: '\e834'; } /* '' */
+.wagwoord-app .icon-eye:before { content: '\e836'; } /* '' */
+.wagwoord-app .icon-spin-1:before { content: '\e838'; } /* '' */
+.wagwoord-app .icon-spin-2:before { content: '\e839'; } /* '' */
+.wagwoord-app .icon-logo_old:before { content: '\e83a'; } /* '' */
+.wagwoord-app .icon-key:before { content: '\e83b'; } /* '' */
+.wagwoord-app .icon-safe:before { content: '\e83f'; } /* '' */
+.wagwoord-app .icon-warehouse:before { content: '\e840'; } /* '' */
+.wagwoord-app .icon-blacklist-1:before { content: '\e841'; } /* '' */
+.wagwoord-app .icon-open-link:before { content: '\f08e'; } /* '' */
+.wagwoord-app .icon-exchange:before { content: '\f0ec'; } /* '' */
+.wagwoord-app .icon-attention:before { content: '\f12a'; } /* '' */
+.wagwoord-app .icon-cc-visa:before { content: '\f1f0'; } /* '' */
+.wagwoord-app .icon-cc-mastercard:before { content: '\f1f1'; } /* '' */
+.wagwoord-app .icon-cc-discover:before { content: '\f1f2'; } /* '' */
+.wagwoord-app .icon-cc-amex:before { content: '\f1f3'; } /* '' */
+.wagwoord-app .icon-cc-paypal:before { content: '\f1f4'; } /* '' */
+.wagwoord-app .icon-user-secret:before { content: '\f21b'; } /* '' */
+.wagwoord-app .icon-copy:before { content: '\f24d'; } /* '' */
+.wagwoord-app .icon-fort:before { content: '\f286'; } /* '' */
+.wagwoord-app .icon-eye-close:before { content: '\f2a8'; } /* '' */
+
+.wagwoord-app .list-ok-icon:after { content: '\e800'; } /* '' */
+.wagwoord-app .ok-icon:after { content: '\e801'; } /* '' */
+.wagwoord-app .list-icon:after { content: '\e802'; } /* '' */
+.wagwoord-app .blacklist-icon:after { content: '\e803'; } /* '' */
+.wagwoord-app .down-icon:after { content: '\e804'; } /* '' */
+.wagwoord-app .remove-icon:after { content: '\e805'; } /* '' */
+.wagwoord-app .demo-icon:after { content: '\e806'; } /* '' */
+.wagwoord-app .test-icon:after { content: '\e807'; } /* '' */
+.wagwoord-app .search-icon:after { content: '\e808'; } /* '' */
+.wagwoord-app .key-1-icon:after { content: '\e809'; } /* '' */
+.wagwoord-app .delete-icon:after { content: '\e80a'; } /* '' */
+.wagwoord-app .pencil-icon:after { content: '\e80b'; } /* '' */
+.wagwoord-app .combination_lock-icon:after { content: '\e80c'; } /* '' */
+.wagwoord-app .card-icon:after { content: '\e80d'; } /* '' */
+.wagwoord-app .spin3-icon:after { content: '\e80e'; } /* '' */
+.wagwoord-app .bank-icon:after { content: '\e80f'; } /* '' */
+.wagwoord-app .blacklist-2-icon:after { content: '\e810'; } /* '' */
+.wagwoord-app .settings-icon:after { content: '\e811'; } /* '' */
+.wagwoord-app .fort-1-icon:after { content: '\e812'; } /* '' */
+.wagwoord-app .database-icon:after { content: '\e813'; } /* '' */
+.wagwoord-app .network-icon:after { content: '\e814'; } /* '' */
+.wagwoord-app .author-sign-icon:after { content: '\e815'; } /* '' */
+.wagwoord-app .file-icon:after { content: '\e816'; } /* '' */
+.wagwoord-app .sync-2-icon:after { content: '\e817'; } /* '' */
+.wagwoord-app .time-icon:after { content: '\e818'; } /* '' */
+.wagwoord-app .theme-icon:after { content: '\e819'; } /* '' */
+.wagwoord-app .right-icon:after { content: '\e81b'; } /* '' */
+.wagwoord-app .sync-arrows-icon:after { content: '\e81c'; } /* '' */
+.wagwoord-app .up-icon:after { content: '\e81d'; } /* '' */
+.wagwoord-app .logo-icon:after { content: '\e81e'; } /* '' */
+.wagwoord-app .sync-1-icon:after { content: '\e81f'; } /* '' */
+.wagwoord-app .copy-1-icon:after { content: '\e825'; } /* '' */
+.wagwoord-app .sync-warent-icon:after { content: '\e826'; } /* '' */
+.wagwoord-app .sync-disable-icon:after { content: '\e827'; } /* '' */
+.wagwoord-app .left-icon:after { content: '\e828'; } /* '' */
+.wagwoord-app .login-icon:after { content: '\e829'; } /* '' */
+.wagwoord-app .logout-icon:after { content: '\e82a'; } /* '' */
+.wagwoord-app .menu-icon:after { content: '\e82b'; } /* '' */
+.wagwoord-app .qrcode-icon:after { content: '\e82c'; } /* '' */
+.wagwoord-app .feather-icon:after { content: '\e82d'; } /* '' */
+.wagwoord-app .cancel-alt-icon:after { content: '\e82e'; } /* '' */
+.wagwoord-app .cancel-alt-filled-icon:after { content: '\e82f'; } /* '' */
+.wagwoord-app .settings-1-icon:after { content: '\e830'; } /* '' */
+.wagwoord-app .spin2-icon:after { content: '\e831'; } /* '' */
+.wagwoord-app .code-icon:after { content: '\e832'; } /* '' */
+.wagwoord-app .info-icon:after { content: '\e833'; } /* '' */
+.wagwoord-app .spin4-icon:after { content: '\e834'; } /* '' */
+.wagwoord-app .eye-icon:after { content: '\e836'; } /* '' */
+.wagwoord-app .spin-1-icon:after { content: '\e838'; } /* '' */
+.wagwoord-app .spin-2-icon:after { content: '\e839'; } /* '' */
+.wagwoord-app .logo_old-icon:after { content: '\e83a'; } /* '' */
+.wagwoord-app .key-icon:after { content: '\e83b'; } /* '' */
+.wagwoord-app .safe-icon:after { content: '\e83f'; } /* '' */
+.wagwoord-app .warehouse-icon:after { content: '\e840'; } /* '' */
+.wagwoord-app .blacklist-1-icon:after { content: '\e841'; } /* '' */
+.wagwoord-app .open-link-icon:after { content: '\f08e'; } /* '' */
+.wagwoord-app .exchange-icon:after { content: '\f0ec'; } /* '' */
+.wagwoord-app .attention-icon:after { content: '\f12a'; } /* '' */
+.wagwoord-app .cc-visa-icon:after { content: '\f1f0'; } /* '' */
+.wagwoord-app .cc-mastercard-icon:after { content: '\f1f1'; } /* '' */
+.wagwoord-app .cc-discover-icon:after { content: '\f1f2'; } /* '' */
+.wagwoord-app .cc-amex-icon:after { content: '\f1f3'; } /* '' */
+.wagwoord-app .cc-paypal-icon:after { content: '\f1f4'; } /* '' */
+.wagwoord-app .user-secret-icon:after { content: '\f21b'; } /* '' */
+.wagwoord-app .copy-icon:after { content: '\f24d'; } /* '' */
+.wagwoord-app .fort-icon:after { content: '\f286'; } /* '' */
+.wagwoord-app .eye-close-icon:after { content: '\f2a8'; } /* '' */

@@ -220,7 +220,7 @@ export default {
   },
   async created() {
     await this.onCreate();
-    this.model = this.$store.getters[this.storeName + "/assingeDefaults"](
+    this.model = await this.$store.getters[this.storeName + "/assingeDefaults"](
       this.model,
       true
     );

@@ -1,11 +1,11 @@
 import ChromeService from '../services/chrome.service';
-import BlacklistService from '../services/blacklist/blacklist.service';
+import { ServiceProvider } from './service-provider';
 
 export default {
     namespaced: true,
     state: {
         chrome: new ChromeService(),
-        blacklist: new BlacklistService()
+        service: new ServiceProvider()
     },
     getters: {
         selectedTab: async store => {
@@ -16,7 +16,7 @@ export default {
         activeTabData: async store => {
             let tab = await store.chrome.selectedTab();
             tab.wwurl = store.chrome.util.getName(tab.url, true);
-            let blacklist = await store.blacklist.checkUrl(tab.url);
+            let blacklist = await store.service.request('checkUrl', [tab.url], 'blacklist');
             return {
                 tab,
                 blacklist

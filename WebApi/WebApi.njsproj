@@ -74,7 +74,6 @@
     <Folder Include="src\database\models" />
     <Folder Include="src\database\querys" />
     <Folder Include="src\database\repositories" />
-    <Folder Include="src\testdata" />
     <Folder Include="src\utils" />
     <Folder Include="src\utils\prototypes\" />
     <Folder Include="src\views" />

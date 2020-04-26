@@ -67,7 +67,6 @@
 
 <script>
 import { formCoreComponentMixin } from "../common/core.component";
-import { mapActions, mapGetters } from "vuex";
 
 export default {
   mixins: [formCoreComponentMixin("auth")],
@@ -108,6 +107,11 @@ export default {
   async created() {
     this.model = (await this.$store.getters["auth/loginData"]) || {
       encryptLocal: false
+    };
+    this.model = {
+      domain: this.model.domain,
+      encryptionKey: this.model.encryptionKey,
+      encryptLocal: this.model.encryptLocal
     };
     console.log(this.model);
   }

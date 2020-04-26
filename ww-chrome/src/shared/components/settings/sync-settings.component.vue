@@ -55,7 +55,7 @@ import { coreComponentMixin } from "../common/core.component";
 
 export default {
   name: "sync-settings",
-  mixins: [coreComponentMixin('proxy')],
+  mixins: [coreComponentMixin('app')],
   data() {
     return {
       model: {},
@@ -70,26 +70,13 @@ export default {
   },
   methods: {
     async save() {
-      if (!this.domainInput || !this.domainInput.validity.valid) return;
-      this.loader = true;
-      try {
-        this.model.headers = this.headers ? JSON.parse(this.headers) : undefined;
-        if (await this.$store.dispatch("proxy/save", this.model)) {
-          this.notifySuccess("Sync data saved!");
-        } else {
-          this.notifyError("Sync data faild to save!");
-        }
-        this.loader = false;
-      } catch (error) {
-        this.loader = false;
-        this.notifyError("Sync data faild to save!", error);
-      }
     }
   },
   async created() {
     this.loader = true;
-    this.model = (await this.$store.getters["proxy/model"]) || {};
+    this.model = (await this.$store.getters["auth/loginData"]) || {};
     this.headers = this.model && this.model.headers ? JSON.stringify(this.model.headers) : '';
+    this.headers += '\n' + 'encryptionHash: ' + this.model.hash;
     this.loader = false;
   }
 };

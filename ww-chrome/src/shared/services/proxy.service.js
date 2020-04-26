@@ -218,14 +218,6 @@ function getHeaders(headers, hash) {
         try {
             const time = new Date().getTime();
             const code = hotp.generate(hash, time);
-
-            console.log('hash: ' + hash);
-
-            console.log('isvalid: ' + hotp.check(code, hash, time));
-            console.log('isvalid: ' + hotp.verify({
-                token: hash,
-                secret: code
-            }));
             headers.hash = code + "-" + time;
         } catch (error) {
             console.error(error);

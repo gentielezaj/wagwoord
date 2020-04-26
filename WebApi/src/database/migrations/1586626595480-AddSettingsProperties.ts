@@ -3,7 +3,8 @@ import {MigrationInterface, QueryRunner, TableColumn} from "typeorm";
 export class AddSettingsProperties1586626595480 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.dropColumn("Settings", "value")
+        await queryRunner.query("delete from 'Settings'");
+        await queryRunner.dropColumn("Settings", "value");
 
         await queryRunner.query(
             `CREATE TABLE "SettingsProperty" 

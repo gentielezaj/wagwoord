@@ -21,8 +21,12 @@ export class AuthService {
 
     async loginData() {
         let data = await this.encryptionService.get();
-        data.domain = await this.proxy.settings.getDomain();
-        return data;
+        let domain = await this.proxy.settings.get();
+
+        return {
+            ...data,
+            ...domain
+        };
     }
 
     async credentialsFor(encryptionKey) {

@@ -88,8 +88,11 @@ export default {
       this.$store.commit("dialog/open", data);
     },
     async sync() {
-      alert("TODO: create sync settings");
+        await this.$store.app.dispatch('syncSettings');
     }
+  },
+  mounted() {
+    if(this.$route.query.open) this.openWizard({}, this.dialogOptions);
   }
 };
 </script>

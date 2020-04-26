@@ -56,7 +56,7 @@ function sendMessageToConentScript(tab, requestType, data) {
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.service) {
-            $backgound.resolve(request.service, request.action, request.params).then(data => {
+            $backgound.resolve(request.service.toLowerCase(), request.action, request.params).then(data => {
                 sendResponse(data);
             });
             return true;
@@ -132,6 +132,9 @@ async function sync() {
     await $backgound.sync();
     setTimeout(() => sync(), 60000);
 }
-
-sync().then();
 // #endregion sync
+
+// #region onStart
+$backgound.onCreated().then();
+sync().then();
+// #endregion onStart

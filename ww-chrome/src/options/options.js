@@ -18,7 +18,7 @@ import '../shared/driectives/span-label.directive';
 
 // #region stores
 import notificationStore from '../shared/store/notification.store';
-import proxyStore from '../shared/store/proxy.store';
+import appStore from '../shared/store/app.store';
 import passwordStore from '../shared/store/password.store';
 import blacklistStore from '../shared/store/blacklist.store';
 import codegeneratorStore from '../shared/store/code-generator.store';
@@ -33,7 +33,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   modules: {
     notification: notificationStore,
-    proxy: proxyStore,
+    app: appStore,
     password: passwordStore,
     blacklist: blacklistStore,
     codegenerator: codegeneratorStore,

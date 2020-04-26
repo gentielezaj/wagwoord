@@ -21,11 +21,11 @@ export default class BackgroundService {
         this.$authService = new AuthService();
         this.$app = new AppService();
         this.services = {
-            "passwordSettings": this.$password.settings,
+            "passwordsettings": this.$password.settings,
             "password": this.$password,
             "blacklist": this.$blacklist,
-            "codeGenerator": this.$codeGenerator,
-            "creditCards": this.$creditCards,
+            "codegenerator": this.$codeGenerator,
+            "creditcards": this.$creditCards,
             "address": this.$addressService,
             "auth": this.$authService,
             "app": this.$app
@@ -37,6 +37,17 @@ export default class BackgroundService {
         let list = [];
         for (const key in this.services) {
             if (this.services.hasOwnProperty(key)) {
+                list.push(key);
+            }
+        }
+
+        return list;
+    }
+
+    get settingsServiceList() {
+        let list = [];
+        for (const key in this.services) {
+            if (this.services.hasOwnProperty(key) && key.endsWith('settings')) {
                 list.push(key);
             }
         }
@@ -92,16 +103,21 @@ export default class BackgroundService {
                             await this.services[this.serviceList[i]]._syncFromServer();
                         }
                     }
-                }
+                    const serverStatus = await this.$authService.login(data.domain, data.encryptionKey, data.encryptLocal, credetialsFor);
 
-                const serverStatus = await this.$authService.login(data.domain, data.encryptionKey, data.encryptLocal, credetialsFor);
-                await this.checkServer(false);
-                if (!serverStatus) return false;
-
-                for (let i = 0; i < this.serviceList.length; i++) {
-                    if (typeof this.services[this.serviceList[i]]._syncServer == 'function') {
-                        await this.services[this.serviceList[i]]._syncServer();
+                    await this.checkServer(false);
+                    if (!serverStatus) return false;
+    
+                    for (let i = 0; i < this.serviceList.length; i++) {
+                        if (typeof this.services[this.serviceList[i]]._syncServer == 'function') {
+                            await this.services[this.serviceList[i]]._syncServer('all');
+                        }
                     }
+                } else {
+                    const serverStatus = await this.$authService.login(data.domain, data.encryptionKey, data.encryptLocal, credetialsFor);
+                    if (!serverStatus) return false;
+                    await this.sync();
+                    return true;
                 }
             } else {
                 const value = await this.$authService.login(data.domain, data.encryptionKey, data.encryptLocal);
@@ -259,13 +275,28 @@ export default class BackgroundService {
         return response == 'ok';
     }
 
-    async sync() {
+    async sync(list = 'serviceList') {
+        list = this[list];
         if (await this.checkServer()) {
-            for (let i = 0; i < this.serviceList.length; i++) {
-                if (typeof this.services[this.serviceList[i]].sync == 'function') {
-                    await this.services[this.serviceList[i]].sync();
+            for (let i = 0; i < list.length; i++) {
+                if (typeof this.services[list[i]].sync == 'function') {
+                    await this.services[list[i]].sync();
                 }
             }
+        }
+    }
+
+    async syncSettings() {
+        return this.sync('settingsServiceList');
+    }
+
+    async onCreated() {
+        console.log('version: ' + this.$app.varsion);
+        const isFirstStart = await this.$app.data('isFirstStart');
+        if(!isFirstStart || isFirstStart == 'false') {
+            await this.$app.chrome.clear();
+            await this.$app.chrome.open('options/options.html#/settings?open=login');
+            await this.$app.setData({ isFirstStart: true });
         }
     }
 }

@@ -13,5 +13,13 @@ export default {
             context.commit('syncing', false);
             return result;
         }
+    },
+    mutations: {
+        syncing: (state, value) => {
+            state.syncing = value;
+        },
+        refresh: state => {
+            state.service = new ServiceProvider('app');
+        }
     }
 };

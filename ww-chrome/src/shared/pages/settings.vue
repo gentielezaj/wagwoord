@@ -88,7 +88,7 @@ export default {
       this.$store.commit("dialog/open", data);
     },
     async sync() {
-        await this.$store.app.dispatch('syncSettings');
+        await this.$store.dispatch('app/syncSettings');
     }
   },
   mounted() {

@@ -18,7 +18,7 @@ export default class CreditCardService extends CoreService {
             cardNumber: item.cardNumber
         });
 
-        if (oldItem && !canUpdate) {
+        if (!canUpdate && oldItem && oldItem.id != item.id) {
             // eslint-disable-next-line no-throw-literal
             throw "item-exists";
         }

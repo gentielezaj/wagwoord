@@ -7,10 +7,11 @@
         {
             "type": "chrome",
             "request": "attach",
-            "name": "Attach to Chrome",
+            "name": "Attach to options",
             "port": 9222,
             "webRoot": "${workspaceFolder}/dist",
             "skipFiles": ["node_modules/*"],
+            "urlFilter": "extension://naakmbbcejdagailolkgjdojfcgkocno/options/*",
             "sourceMapPathOverrides": {
                 "webpack:///*": "${workspaceFolder}/src/*"
             }

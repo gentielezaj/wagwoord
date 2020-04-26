@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn, ManyToOne } from "typeorm";
 import { BaseEntity } from "./baseEntity";
-import { type } from "os";
 import { Settings } from "http2";
 
 @Entity({ name: 'Settings' })
@@ -50,6 +49,9 @@ export class SettingsPropertyEntity {
     @Column({nullable: false, type:"int"})
     public settingsId: number;
 
+    @Column({ nullable: false, type: "text" })
+    public type: string;
+
     @ManyToOne(type => SettingsEntity, property => property.properties)
     public settings: Settings
 
@@ -60,7 +62,8 @@ export class SettingsPropertyEntity {
         let result = new SettingsPropertyEntity();
         result.id = obj.id;
         result.property = obj.property;
-        result.value = obj.value.toString();
+        result.value = obj.value;
+        result.type = obj.type || typeof obj.value;
         return result;
     }
 }

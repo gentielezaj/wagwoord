@@ -235,7 +235,7 @@ function getFormInput(inputs, regex) {
 }
 
 function testTag(input, regex, sciptType) {
-    if (input.id && regex.test(input.id.toLowerCase())) return true;
+    if (input.id && input.id == 'string' && regex.test(input.id.toLowerCase())) return true;
     else if (input.name && typeof input.name == 'string' && regex.test(input.name.toLowerCase())) return true;
     else if (input.autocapitalize && typeof input.autocapitalize == 'string' && regex.test(input.autocapitalize.toLowerCase())) return true;
     else if (input.autocomplete && typeof input.autocomplete == 'string' && regex.test(input.autocomplete.toLowerCase())) return true;

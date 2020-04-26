@@ -157,12 +157,11 @@ export default class PasswordService extends CoreService {
 
     // #region import passwords
     async readPasswordsFromFile(file, onSave) {
-        const fileText = await this.util.getTextFromFile(file);
         let data;
         if (file.type == 'application/json') {
-            data = JSON.parse(fileText).passwords.filter(d => d.name);
+            data = JSON.parse(file.text).passwords.filter(d => d.name);
         } else {
-            data = fileText.split('\n').filter(d => /(.)+,(.)+,(.)+,(.)+/.test(d));
+            data = file.text.split('\n').filter(d => /(.)+,(.)+,(.)+,(.)+/.test(d));
         }
 
         return data;

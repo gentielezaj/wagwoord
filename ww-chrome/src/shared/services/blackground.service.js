@@ -21,6 +21,7 @@ export default class BackgroundService {
         this.$authService = new AuthService();
         this.$app = new AppService();
         this.services = {
+            "passwordSettings": this.$password.settings,
             "password": this.$password,
             "blacklist": this.$blacklist,
             "codeGenerator": this.$codeGenerator,

@@ -83,6 +83,7 @@
     <TypeScriptCompile Include="src\controllers\coreController.ts" />
     <TypeScriptCompile Include="src\database\migrations\1585071763549-AddAuthTable.ts" />
     <TypeScriptCompile Include="src\database\migrations\1586626595480-AddSettingsProperties.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1587751592847-AddCoumnTypeToSettingsProperties.ts" />
     <TypeScriptCompile Include="src\database\models\authEntity.ts" />
     <TypeScriptCompile Include="src\utils\constants.ts" />
     <TypeScriptCompile Include="src\utils\prototypes\string-prototype.ts" />

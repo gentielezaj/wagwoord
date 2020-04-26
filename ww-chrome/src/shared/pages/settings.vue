@@ -22,14 +22,6 @@
             <password-settings-component></password-settings-component>
           </div>
         </article>
-        <article v-searchable v-collapse="'.content'">
-          <header>
-            <h2>Encryption</h2>
-          </header>
-          <div id="settings-enctyption-container" search-data="encryption" class="content">
-            <encryption-component></encryption-component>
-          </div>
-        </article>
       </div>
       <div class="column m">
         <ul class="settings-navigation right">
@@ -42,9 +34,6 @@
           <li>
             <a @click="scrollTo('settings-password-container')">Passwords</a>
           </li>
-          <li>
-            <a @click="scrollTo('settings-enctyption-container')">Encryption</a>
-          </li>
         </ul>
       </div>
     </main>
@@ -53,7 +42,6 @@
 
 <script>
 import sctionHeader from "../components/common/section-header";
-import encryptionComponent from "../components/encryption/encryption.component";
 import syncSettingComponent from "../components/settings/sync-settings.component";
 import passwordSettingsComponent from "../components/password/password-settings.component";
 import formwizard from "../components/util/util-form.component";
@@ -62,7 +50,6 @@ export default {
   name: "settings-page",
   components: {
     "section-header": sctionHeader,
-    "encryption-component": encryptionComponent,
     "sync-settings-component": syncSettingComponent,
     "password-settings-component": passwordSettingsComponent
   },

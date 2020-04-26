@@ -1,18 +1,19 @@
 import PasswordSettingsService from "../services/passwords/password-settings.service";
 import coreStore from './core.store';
+import { ServiceProvider } from './service-provider';
 
 const store = {
     namespaced: true,
     state: {
-        settings: new PasswordSettingsService()
+        settings: new ServiceProvider('passwordSettings')
     },
     getters: {
-        settings: async state => await state.settings.getOrDefults()
+        settings: async state => await state.settings.request('getOrDefults')
     },
     actions: {
         settings: async (context, value) => {
             try {
-                const results = await context.state.settings.save(value);
+                const results = await context.state.settings.request('save', [value]);
                 context.commit('settings');
                 return results;
             } catch (error) {
@@ -30,8 +31,14 @@ const store = {
         file: async (context, file) => {
             if (!file) return undefined;
             try {
-                return await context.state.service.request('readPasswordsFromFile', [file]);
+                const fileText = await context.state.util.getTextFromFile(file);
+                return await context.state.service.request('readPasswordsFromFile', [{
+                    name: file.name,
+                    text: fileText,
+                    type: file.type
+                }]);
             } catch (error) {
+                console.error(error);
                 throw error;
             }
         },

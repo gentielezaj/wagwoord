@@ -1,4 +1,6 @@
-import { CoreService } from "./core.service";
+import {
+    CoreService
+} from "./core.service";
 
 export default class SettingsCoreService extends CoreService {
     constructor(setting) {
@@ -24,32 +26,65 @@ export default class SettingsCoreService extends CoreService {
 
     // #region converters
     async _convertServerToLocalEntity(item) {
-        if(!item) return undefined;
-        if(item.encrypted) {
-            let dval = await this.encryption.decrypt(item.value);
-            item.encrypted = false;
-            item.value = dval;
-        }
+        if (!item) return undefined;
 
-        let model = JSON.parse(item.value);
+        let model = {};
         model.serverId = this.util.copy(item.id);
         model.name = item.name;
         model.encrypted = item.encrypted;
         model.lastModified = item.lastModified;
+        if (item.properties) {
+            for (let i = 0; i < item.properties.length; i++) {
+                const element = item.properties[i];
+                model[element.property] = this.convertToType(element, (item.encrypted ? await this.encryption.decrypt(element.value) : element.value));
+            }
+        }
+
         model.synced = true;
+        model.encrypted = false;
         return model;
     }
 
-    async _convertLocalToServerEntity (item) {
-        let value = JSON.stringify(item);
-        let encryptedValue = await this.encryption.tryEncrypt(value);
-        return {
-            id: item.serverId,
-            name: item.name,
-            lastModified: item.lastModified,
-            encrypted: encryptedValue.encrypted,
-            value: encryptedValue.value
-        };
+    convertToType(property, value) {
+        switch (property.type) {
+            case 'number': return Number(value);
+            case 'boolean': return (value == 'ture');
+            default: return value;
+        }
+    }
+
+    async _saveServerItemLocaly(item, onSaveItem) {
+        if(item.name == this.settingsName) super._saveServerItemLocaly(item, onSaveItem);
+    };
+
+    async _convertLocalToServerEntity(item) {
+        try {
+            let model = {
+                properties: []
+            };
+    
+            for (const key in item) {
+                if (item.hasOwnProperty(key)) {
+                    if(key == 'id') model.serverId = item.id;
+                    else if(['name', 'lastModified', 'encrypted', 'id', 'serverId', 'synced'].some(s => s == key)) model[key] = item[key];
+                    else {
+                        const type = typeof item[key];
+                        const encryptedValue = await this.encryption.tryEncrypt(item[key]);
+                        model.encrypted = encryptedValue.encrypted;
+                        model.properties.push({
+                            property: key,
+                            value: encryptedValue.value,
+                            type
+                        });
+                    }
+                }
+            }
+    
+            return model;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     };
     // #endregion converters
 }

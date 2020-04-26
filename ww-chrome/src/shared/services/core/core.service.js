@@ -212,7 +212,7 @@ export class CoreService {
         const server = await this._syncServer(forece ? 'all' : undefined);
         // eslint-disable-next-line no-unneeded-ternary
         const result = deleted && local && server ? true : false;
-        if (result) await this.chromeService.save(this.lastModifiedStorageKey, new Date().getTime());
+        if (result) await this.chromeService.set(this.lastModifiedStorageKey, new Date().getTime());
     };
 
     async _syncFromServer(forece) {

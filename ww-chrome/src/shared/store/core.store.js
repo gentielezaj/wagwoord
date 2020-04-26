@@ -1,4 +1,5 @@
 import { ServiceProvider } from './service-provider';
+import { WWUtil } from '../util/ww-util';
 
 export default function(service, store) {
     store = store || {};
@@ -7,7 +8,8 @@ export default function(service, store) {
         state: {
             ...store.state,
             service: typeof service == 'string' ? new ServiceProvider(service) : new service(),
-            syncing: false
+            syncing: false,
+            util: WWUtil
         },
         getters: {
             ...store.getters,

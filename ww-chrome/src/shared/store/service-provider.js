@@ -1,6 +1,9 @@
+import { WWUtil } from "../util/ww-util";
+
 export class ServiceProvider {
     constructor(service) {
         this.service = service;
+        this.util = WWUtil;
     }
 
     // #region get

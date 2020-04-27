@@ -107,7 +107,7 @@ export default class BackgroundService {
 
                     await this.checkServer(false);
                     if (!serverStatus) return false;
-    
+
                     for (let i = 0; i < this.serviceList.length; i++) {
                         if (typeof this.services[this.serviceList[i]]._syncServer == 'function') {
                             await this.services[this.serviceList[i]]._syncServer('all');
@@ -265,10 +265,13 @@ export default class BackgroundService {
 
     async checkServer(force = true) {
         const response = await this.$authService.getProxyStatus(force);
-        if (response == 'error') chrome.browserAction.setIcon({
-            path: "assets/logo/logo_128_square_waring.png"
-        });
-        else chrome.browserAction.setIcon({
+        if (response == 'error') {
+            chrome.browserAction.setIcon({
+                path: "assets/logo/logo_128_square_waring.png"
+            });
+            
+            await this.$app.chrome.open('options/options.html#/settings?open=login');
+        } else chrome.browserAction.setIcon({
             path: "assets/logo/logo_128_square.png"
         });
 
@@ -293,10 +296,12 @@ export default class BackgroundService {
     async onCreated() {
         console.log('version: ' + this.$app.varsion);
         const isFirstStart = await this.$app.data('isFirstStart');
-        if(!isFirstStart || isFirstStart == 'false') {
+        if (!isFirstStart || isFirstStart == 'false') {
             await this.$app.chrome.clear();
             await this.$app.chrome.open('options/options.html#/settings?open=login');
-            await this.$app.setData({ isFirstStart: true });
+            await this.$app.setData({
+                isFirstStart: true
+            });
         }
     }
 }

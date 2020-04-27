@@ -49,7 +49,6 @@ export default class CreditCardService extends CoreService {
     }
 
     async _convertLocalToServerEntity(item) {
-        if (item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
         let result = {
             count: item.count,
             lastModified: item.lastModified,
@@ -73,7 +72,7 @@ export default class CreditCardService extends CoreService {
             const pin = await this.encryption.tryEncrypt(result.pin);
             if (ep && cvv && ep.encrypted && cvv.encrypted && pin && pin.encrypted) {
                 result.encrypted = ep.encrypted;
-                result.secret = ep.value;
+                result.cardNumber = ep.value;
                 result.cvv = cvv.value;
                 result.pin = pin.value;
             }
@@ -83,7 +82,6 @@ export default class CreditCardService extends CoreService {
     }
 
     async _convertServerToLocalEntity(item) {
-        if (item.hasOwnProperty('$$hashKey')) delete item.$$hashKey;
         let result = {
             count: item.count,
             lastModified: item.lastModified,
@@ -102,13 +100,13 @@ export default class CreditCardService extends CoreService {
             synced: true
         };
 
-        if (!result.encrypted) {
+        if (result.encrypted) {
             const ep = await this.encryption.tryDecrypt(result.cardNumber);
             const cvv = await this.encryption.tryDecrypt(result.cvv);
             const pin = await this.encryption.tryDecrypt(result.pin);
             if (ep && cvv && ep.decrypted && cvv.decrypted && pin && pin.decrypted) {
                 result.encrypted = !ep.decrypted;
-                result.secret = ep.value;
+                result.cardNumber = ep.value;
                 result.cvv = cvv.value;
                 result.pin = pin.value;
             }

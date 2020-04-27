@@ -89,6 +89,9 @@ export default {
             element.addEventListener('click', event => {
                 this.openDropdown(event, {
                     valueField: 'username',
+                    info: item => {
+                        return `<i>${item.domain}</i>`;
+                    },
                     data: this.$appData.passwords
                 });
             });

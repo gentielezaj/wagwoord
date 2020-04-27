@@ -12,6 +12,7 @@ import {
 import AppService from "./app.service";
 
 export default class BackgroundService {
+    // #region properties and constructor
     constructor() {
         this.$password = new PasswordService();
         this.$blacklist = new BlacklistService();
@@ -54,7 +55,9 @@ export default class BackgroundService {
 
         return list;
     }
+    // #endregion properties and constructor
 
+    // #region login and service resolver
     async resolve(service, action, params) {
         try {
             let value;
@@ -130,8 +133,29 @@ export default class BackgroundService {
 
         return true;
     }
+    // #endregion login and service resolver
+
+    // #region content-script
+
+    getMaxkey(source, destination) {
+        if(!source || !destination) return 0;
+        let results = [0];
+        const length = source.length < destination.length ? source.length : destination.length;
+        let current = 0;
+        for (let i = 0; i < length; i++) {
+            if(source[i] == destination[i]) current++;
+            else {
+                current = 0;
+            }
+            
+            results.push(Number(current));
+        }
+
+        return Math.max(...results);
+    }
 
     async getDataFroDomain(url, submitted) {
+        var longUrl = this.util.getName(url);
         url = this.util.getName(url, true);
         const passwords = await this.$password.get({
             searchText: `${url}-`,
@@ -140,6 +164,16 @@ export default class BackgroundService {
                 desc: true
             }
         });
+
+        if(passwords?.length) passwords.sort((x, y) => {
+            if(x.domain == y.domain) return 0;
+            const xIndex = x.domain.indexOf(longUrl);
+            const yIndex = y.domain.indexOf(longUrl);
+            if(xIndex > yIndex) return -1;
+            if(xIndex < yIndex) return 1;
+            return 0;
+        });
+
         const blacklist = await this.$blacklist.getItem({
             name: url
         });
@@ -241,6 +275,7 @@ export default class BackgroundService {
         result.hasAction = (result.password && result.password.action) || (result.creditcard && result.creditcard.action) || (result.address && result.address.action);
         return result;
     }
+    // #endregion content-script
 
     // #region save
     async save(model) {
@@ -263,6 +298,7 @@ export default class BackgroundService {
     }
     // #endregion save
 
+    // #region background tasks
     async checkServer(force = true) {
         const response = await this.$authService.getProxyStatus(force);
         if (response == 'error') {
@@ -304,4 +340,5 @@ export default class BackgroundService {
             });
         }
     }
+    // #endregion background tasks
 }

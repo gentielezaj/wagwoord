@@ -197,24 +197,21 @@ export function getLoginForms(domain) {
 function checkLoginForm(form, inputTypes) {
     if (form.getAttribute('wagwoord-form-id')) return;
     const passwordElements = checkInputFileds(form, 'password');
-    const isNotLoginFrom = !testTag(form, /.*(log[ -_]?in|sign[ -_]?in).*/g);
-    if ((!passwordElements || passwordElements.length != 1) && isNotLoginFrom) {
+    // const isNotLoginFrom = !testTag(form, /.*(log[ -_]?in|sign[ -_]?in).*/g);
+    const passwordElement = getFormInput(passwordElements, /.*(password).*/g);
+    
+    let usernameElement = checkInputFileds(form, inputTypes);
+    if (!usernameElement.length && !passwordElement) {
         return;
     }
-    const passwordElement = getFormInput(passwordElements, /.*(password).*/g);
-    if (passwordElement) {
-        let usernameElement = checkInputFileds(form, inputTypes);
-        if (usernameElement && usernameElement.length > 1 && isNotLoginFrom) {
-            return;
-        }
-        usernameElement = getFormInput(usernameElement, /.*(name|email|mail|id).*/g);
-        return {
-            formElement: form,
-            passwordElement: passwordElement,
-            usernameElement: usernameElement || false,
-            type: "password"
-        };
-    }
+    usernameElement = getFormInput(usernameElement, /.*(name|email|mail|id).*/g);
+    
+    return {
+        formElement: form,
+        passwordElement: passwordElement,
+        usernameElement: usernameElement || false,
+        type: "password"
+    };
 }
 
 // #endregion login form

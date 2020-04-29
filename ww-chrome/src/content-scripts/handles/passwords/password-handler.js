@@ -1,8 +1,13 @@
-
 export default {
     computed: {
         passwordForms() {
             return this.forms.filter(f => f.type == 'password');
+        },
+        costumForms() {
+            return [{
+                domain: 'https://accounts.google.com'
+
+            }];
         }
     },
     methods: {
@@ -28,7 +33,7 @@ export default {
                     this.onPasswordFormSumbit(event);
                 });
 
-                this.setPasswordFormValue(f);
+                this.setPasswordFormValue(f, undefined, undefined, true);
             });
         },
         openPasswordDialog(password) {
@@ -136,9 +141,25 @@ export default {
                 }
             });
         },
-        setPasswordFormValue(form, passwordItem, element) {
+        getDefaultPassword() {
+            let item = this.$appData.passwords[0];
+            let idElement;
+            switch (location.origin) {
+                case 'https://accounts.google.com':
+                    idElement = document.getElementById('profileIdentifier');
+                    if (idElement && idElement.innerText) item = this.$appData.passwords.find(p => p.username == idElement.innerText);
+                    break;
+                case 'https://login.live.com/':
+                    idElement = document.getElementById('displayName');
+                    if (idElement && idElement.innerText) item = this.$appData.passwords.find(p => p.username == idElement.innerText);
+                    break;
+            }
+
+            return item;
+        },
+        setPasswordFormValue(form, passwordItem, element, isAuto) {
             if (!passwordItem && this.$appData.passwords.length) {
-                passwordItem = this.$appData.passwords[0];
+                passwordItem = this.getDefaultPassword();
             }
 
             if (!passwordItem || !form) return;

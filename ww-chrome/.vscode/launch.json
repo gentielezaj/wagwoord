@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "chrome",
             "request": "attach",
@@ -12,6 +13,17 @@
             "webRoot": "${workspaceFolder}/dist",
             "skipFiles": ["node_modules/*"],
             "urlFilter": "extension://naakmbbcejdagailolkgjdojfcgkocno/options/*",
+            "sourceMapPathOverrides": {
+                "webpack:///*": "${workspaceFolder}/src/*"
+            }
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "content-script",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}/dist",
+            "skipFiles": ["node_modules/*"],
             "sourceMapPathOverrides": {
                 "webpack:///*": "${workspaceFolder}/src/*"
             }

@@ -66,7 +66,6 @@ export abstract class BaseController {
             const code = otp.split('-')[0];
             const epoch = otp.split('-')[1];
             const key = hotp.check(code, encryptonHash, parseInt(epoch));
-            console.log(key);
             return key;
         } catch (e) {
             console.log(e);

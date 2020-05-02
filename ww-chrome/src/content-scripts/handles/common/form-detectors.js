@@ -232,11 +232,11 @@ function checkLoginForm(form, inputTypes) {
     
     let counst = 0;
     usernameElement.forEach(ie => {
-        if(isNotLoginFrom && getFormInput(usernameElement, /.*(id).*/g)) counst++;
-        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(name).*/g)) counst++;
-        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(mail).*/g)) counst++;
-        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(first|given|frst)[ _-]?(name).*/g)) counst++;
-        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(number|nr|no).*/g)) counst++;
+        if(isNotLoginFrom && getFormInput(ie, /.*(id).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(ie, /.*(name).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(ie, /.*(mail).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(ie, /.*(first|given|frst)[ _-]?(name).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(ie, /.*(number|nr|no).*/g)) counst++;
     });
     if(counst > 1) return;
     usernameElement = getFormInput(usernameElement, /.*(name|email|mail|id).*/g);
@@ -268,7 +268,8 @@ function getFormInput(inputs, regex) {
 }
 
 function testTag(input, regex, sciptType) {
-    if (input.id && input.id == 'string' && regex.test((input.id.toLowerCase()))) return true;
+    if(input.type == 'hidden' || input.getAttribute('hidden')) return false;
+    else if (input.id && input.id == 'string' && regex.test((input.id.toLowerCase()))) return true;
     else if (input.name && typeof input.name == 'string' && regex.test((input.name.toLowerCase()))) return true;
     else if (input.autocapitalize && typeof input.autocapitalize == 'string' && regex.test((input.autocapitalize.toLowerCase()))) return true;
     else if (input.autocomplete && typeof input.autocomplete == 'string' && regex.test((input.autocomplete.toLowerCase()))) return true;

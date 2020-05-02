@@ -4,7 +4,6 @@ import { ObjectType, SelectQueryBuilder, QueryBuilder } from "typeorm";
 import { IBaseRepository, BaseRepository } from "../database/repositories/baseRepository";
 import { AppLogger } from "../utils/appLogger";
 import { BaseController } from "./baseController";
-import { Constants } from "../utils/constants";
 
 export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepository extends IBaseRepository<TEntity>> extends BaseController {
     protected entity: ObjectType<TEntity>;

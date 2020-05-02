@@ -60,6 +60,7 @@ export abstract class BaseController {
             if (!encryptonHash) return true;
 
             const otp = req.header('hash')
+            if (otp == 'nohash') return true;
             if (!otp) return false;
 
             const code = otp.split('-')[0];

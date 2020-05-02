@@ -19,7 +19,22 @@ export default {
 
             this.passwordForms.forEach(f => {
                 let form = f.formElement;
-                if (f.formElement.getAttribute('wagwoord-form-id')) return;
+                if (f.formElement.getAttribute('wagwoord-form-id')) {
+                    if (form.getAttribute('wagwoord-form-type') != 'password') return;
+
+                    if (f.passwordElement && !f.passwordElement.getAttribute('wagwood-input-type')) {
+                        this.setOnClickOpenPopUp(f.passwordElement, 'password');
+                        this.setPasswordFormValue(f, undefined, undefined, true);
+                    }
+
+                    if (f.usernameElement && !f.usernameElement.getAttribute('wagwood-input-type')) {
+                        this.setOnClickOpenPopUp(f.usernameElement, 'username');
+                        this.setPasswordFormValue(f, undefined, undefined, true);
+                    }
+
+                    return;
+                }
+
                 const formId = this.$util.uuidv4();
                 form.setAttribute('wagwoord-form-id', formId);
                 f.id = formId;
@@ -149,7 +164,7 @@ export default {
                     idElement = document.getElementById('profileIdentifier');
                     if (idElement && idElement.innerText) item = this.$appData.passwords.find(p => p.username == idElement.innerText);
                     break;
-                case 'https://login.live.com/':
+                case 'https://login.live.com':
                     idElement = document.getElementById('displayName');
                     if (idElement && idElement.innerText) item = this.$appData.passwords.find(p => p.username == idElement.innerText);
                     break;

@@ -172,19 +172,25 @@ export default {
                         value = item.firstName + ' ' + (!form.lastNameElement ? item.lastName : '');
                     }
                     if(property == 'passwordElement' || property == 'newPasswordElement') {
-                        value = '';
+                        if(!item.password) {
+                            item.password = this.$util.generatePassword(undefined, form[property].getAttribute('pattern'), this.$appData.settings.password);
+                        }
+                        value = item.password;
                     }
                     if(property == 'emailElement') {
                         value = item.username;
                     }
                     if(birthDate && property == 'birthDateDayElement') {
                         value = birthDate.getDate();
+                        forceChange = true;
                     }
                     if(birthDate && property == 'birthDateMonthElement') {
-                        value = birthDate.getMonth();
+                        value = birthDate.getMonth() + 1;
+                        forceChange = true;
                     }
                     if(birthDate && property == 'birthDateYearElement') {
                         value = birthDate.getFullYear();
+                        forceChange = true;
                     }
 
                     this.setValueToElement(form[property], value, !(forceChange || element.getAttribute('wagwood-input-type') == property.replace('Element', '')));

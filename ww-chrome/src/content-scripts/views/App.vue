@@ -96,7 +96,6 @@ export default {
       this.closeDialog();
     },
     goToSettings(url) {
-      // TODO: resolve tab not open corectly on windows open
       url = "options/options.html#/" + (url || "");
       url = chrome.runtime.getURL(url);
       window.open(url, "_blank").focus();
@@ -180,6 +179,14 @@ export default {
       element.dispatchEvent(new Event("blur", { bubbles: true }));
     },
     async onCreate() {
+      getForms().forEach(nf => {
+        const index = this.forms.indexOf(this.forms.find(f => f.formId == nf.wagwoodId));
+        if(index > -1) {
+          this.forms[index] = { ...this.forms[index], nf };
+        } else {
+          this.forms.push(nf);
+        }
+      });
       this.forms = [...this.forms, ...getForms()];
       if(!this.$appData.blacklist || !this.$appData.blacklist.password)
         this.passwordFormsInit(this.$appData.submittedResponse);

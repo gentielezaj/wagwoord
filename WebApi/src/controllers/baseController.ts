@@ -3,7 +3,6 @@ import { AppLogger } from "../utils/appLogger";
 import { LocalStorage } from "node-localstorage";
 import { Constants } from "../utils/constants";
 import { hotp } from 'otplib';
-import * as crypto from "crypto";
 
 export abstract class BaseController {
 

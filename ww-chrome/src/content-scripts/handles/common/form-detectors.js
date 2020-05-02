@@ -2,28 +2,45 @@ export function getForms(domain) {
     return getDefaultForm();
 }
 
-function getDefaultForm(formSettings) {
+function getDefaultForm(formSettings, forms) {
     let results = [];
     const formElement = document.getElementsByTagName('form');
     const inputTypes = formSettings && formSettings.usernameInputType ? formSettings.usernameInputType : ['username', 'email', 'text'];
 
     for (let index = 0; index < formElement.length; index++) {
-        if (formElement[index].getAttribute('wagwoord-form-id')) continue;
-        const pform = checkLoginForm(formElement[index], inputTypes);
-        if (pform) {
-            results.push(pform);
-            continue;
+        const type = getFormType(formElement[index]);
+        if (type == 'password') {
+            results.push(checkLoginForm(formElement[index], inputTypes));
+        } else if(type == 'address') {
+            if (formElement[index].getAttribute('wagwoord-form-id')) continue;
+            results.push(checkAddressForm(formElement[index]));
+        } else if(type == 'creditcard') {
+            if (formElement[index].getAttribute('wagwoord-form-id')) continue;
+            results.push(checkCreditCardForm(formElement[index], inputTypes));
+        } else {
+            const pform = checkLoginForm(formElement[index], inputTypes);
+            if (pform) {
+                results.push(pform);
+                continue;
+            }
+            if (formElement[index].getAttribute('wagwoord-form-id')) continue;
+            const ccForm = checkCreditCardForm(formElement[index], inputTypes);
+            if (ccForm) {
+                results.push(ccForm);
+                continue;
+            }
+            const addressForm = checkAddressForm(formElement[index]);
+            if (addressForm) results.push(addressForm);
         }
-        const ccForm = checkCreditCardForm(formElement[index], inputTypes);
-        if (ccForm) {
-            results.push(ccForm);
-            continue;
-        }
-        const addressForm = checkAddressForm(formElement[index]);
-        if(addressForm) results.push(addressForm);
     }
 
     return results;
+}
+
+// TODO: detect form
+function getFormType(form) {
+    if (form.getAttribute('wagwoord-form-type')) return form.getAttribute('wagwoord-form-type');
+    return 'unknown';
 }
 // #region address form
 
@@ -51,16 +68,16 @@ function checkAddressForm(form) {
             regex: /.*(full)?[ _-]?(name).*/g
         },
         {
-            name: 'birthDateDay',
-            regex: /.*(birth)[ _-]?(day|date).*/g
-        },
-        {
             name: 'birthDateMonth',
-            regex: /.*(birth)[ _-]?(month).*/g
+            regex: /.*(birth)[ _-]?(day)[ _-]?(month).*/g
         },
         {
             name: 'birthDateYear',
-            regex: /.*(birth)[ _-]?(year).*/g
+            regex: /.*(birth)[ _-]?(day)[ _-]?(year).*/g
+        },
+        {
+            name: 'birthDateDay',
+            regex: /.*(birth)[ _-]?(day)[ _-]?(day).*/g
         },
         {
             name: 'birthDate',
@@ -127,14 +144,14 @@ function checkAddressForm(form) {
             regex: /.*(confirm)[ _-]?(password).*/g
         }
     ];
-    let hasFields = false;
+    let hasFields = 0;
     for (let i = 0; i < form.elements.length; i++) {
         const element = form.elements[i];
         for (let j = 0; j < fields.length; j++) {
             const field = fields[j];
             if (testTag(element, field.regex, field.skipType)) {
-                if(result[field.name + 'Element']) continue;
-                hasFields = true;
+                if (result[field.name + 'Element']) continue;
+                hasFields++;
                 element.setAttribute('wagwood-input-type', field.name);
                 switch (field.name) {
                     case 'name':
@@ -150,7 +167,7 @@ function checkAddressForm(form) {
             }
         }
     }
-    if (hasFields) {
+    if (hasFields > 2) {
         return result;
     }
 }
@@ -195,19 +212,28 @@ export function getLoginForms(domain) {
 }
 
 function checkLoginForm(form, inputTypes) {
-    if (form.getAttribute('wagwoord-form-id')) return;
+    if (form.getAttribute('wagwoord-form-id') && form.getAttribute('wagwoord-form-type' != 'password')) {
+        return;
+    }
+
     const passwordElements = checkInputFileds(form, 'password');
-    // const isNotLoginFrom = !testTag(form, /.*(log[ -_]?in|sign[ -_]?in).*/g);
+    const isNotLoginFrom = !testTag(form, /.*(log[ -_]?in|sign[ -_]?in).*/g);
+    if(isNotLoginFrom && (testTag(form, /.*(credit|card|([ -_]+cc)).*/g) || testTag(form, /.*(sign[ -_]?up|reg).*/g))) {
+        return;
+    }
+
+    if (passwordElements.length != 1 && isNotLoginFrom) return;
+
     const passwordElement = getFormInput(passwordElements, /.*(password).*/g);
-    
     let usernameElement = checkInputFileds(form, inputTypes);
     if (!usernameElement.length && !passwordElement) {
         return;
     }
     usernameElement = getFormInput(usernameElement, /.*(name|email|mail|id).*/g);
-    
+
     return {
         formElement: form,
+        formId: form.getAttribute('wagwoord-form-id'),
         passwordElement: passwordElement,
         usernameElement: usernameElement || false,
         type: "password"

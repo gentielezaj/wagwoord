@@ -49,6 +49,7 @@ export class WWUtil {
         return true;
     }
 
+    // #region domain naims
     static getName(domain, min) {
         domain = WWUtil.getDomain(domain, !(/^http(s)?:[/]{2}localhost/.test(domain)));
         domain = domain.replace(/http(s)?:\/\//, '');
@@ -73,6 +74,7 @@ export class WWUtil {
             throw error;
         }
     }
+    // #endregion domain naims
 
     static uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -93,6 +95,54 @@ export class WWUtil {
         });
     }
 
+    // #region password generate
+    static generatePassword(length, regex, passwordSettings) {
+        if(!passwordSettings) return '';
+        length = length || passwordSettings.passwordLength;
+        let string = "abcdefghijklmnopqrstuvwxyz";
+        let numeric = '0123456789';
+        let punctuation = passwordSettings.passworIncludeSymbolCharacters ? `(?=.*[${passwordSettings.passwordSymbolCharacters}])` : '';
+        let password = "";
+        let character = "";
+        regex = regex || `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)${punctuation}.{1,}$`;
+        regex = new RegExp(regex);
+        while (password.length < length * 10) {
+            let entity1 = Math.ceil(string.length * Math.random() * Math.random());
+            let hold = string.charAt(entity1);
+            hold = (password.length % 2 == 0) ? (hold.toUpperCase()) : (hold);
+            character += hold;
+            character += numeric.charAt(Math.ceil(numeric.length * Math.random() * Math.random()));
+            if (punctuation.length) {
+                character += punctuation.charAt(Math.ceil(punctuation.length * Math.random() * Math.random()));
+            } else {
+                let char = string.charAt(Math.ceil(string.length * Math.random() * Math.random()));
+                character += (password.length % 2 == 0) ? char.toLowerCase() : char.toUpperCase();
+            }
+            password = character;
+        }
+
+        password = randomise(password);
+
+        for (let index = length; index < password.length - length; index++) {
+            let element = password.substr(index, length);
+            if (regex.test(element)) return element;
+            if (index + length >= password.length) {
+                password = randomise(password);
+                index = length;
+            }
+        }
+
+        return password;
+
+        function randomise(password) {
+            return password.split('').sort(function () {
+                return 0.5 - Math.random();
+            }).join('');
+        }
+    }
+    // #endregion password generate
+
+    // #region credit card
     static getCreditcardType(cardNumber) {
         if (!cardNumber && !cardNumber.length) return undefined;
 
@@ -169,4 +219,5 @@ export class WWUtil {
                 return undefined;
         }
     }
+    // #endregion credit card
 }

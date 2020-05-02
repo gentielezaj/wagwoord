@@ -57,7 +57,7 @@ function checkAddressForm(form) {
     };
     const fields = [{
             name: 'firstName',
-            regex: /.*(first|given)[ _-]?(name).*/g
+            regex: /.*(first|given|frst)[ _-]?(name).*/g
         },
         {
             name: 'lastName',
@@ -229,6 +229,16 @@ function checkLoginForm(form, inputTypes) {
     if (!usernameElement.length && !passwordElement) {
         return;
     }
+    
+    let counst = 0;
+    usernameElement.forEach(ie => {
+        if(isNotLoginFrom && getFormInput(usernameElement, /.*(id).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(name).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(mail).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(first|given|frst)[ _-]?(name).*/g)) counst++;
+        else if(isNotLoginFrom && getFormInput(usernameElement, /.*(number|nr|no).*/g)) counst++;
+    });
+    if(counst > 1) return;
     usernameElement = getFormInput(usernameElement, /.*(name|email|mail|id).*/g);
 
     return {

@@ -193,6 +193,15 @@ export default class BackgroundService {
         if (!model) return undefined;
         if (typeof model === 'string') model = JSON.parse(model);
         let result = {};
+        const addressModel = model.address.model ? model.address.model : model.address;
+        if(!model.password && addressModel && addressModel.username && addressModel.password && addressModel.domain) {
+            model.password = {
+                username: addressModel.username,
+                password: addressModel.password,
+                domain: addressModel.domain
+            };
+        }
+
         if (model.password) {
             result.password = {};
             const passwordModel = model.password.model ? model.password.model : model.password;
@@ -232,7 +241,6 @@ export default class BackgroundService {
         }
         if (model.address) {
             result.address = {};
-            const addressModel = model.address.model ? model.address.model : model.address;
             result.address.model = addressModel;
 
             if (addressModel.name) {

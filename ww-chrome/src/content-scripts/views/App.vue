@@ -1,27 +1,29 @@
 <template>
   <div id="wagwoord-content-script-container" class="wagwoord-app">
-    <dialog v-if="dialogData" id="wagwoord-notification-dialog" open>
-      <p v-if="dialogData.title" class="title">{{dialogData.title}}:</p>
-      <p v-if="dialogData.message">
-        <b>
-          <i>{{dialogData.message}}</i>
-        </b>
-      </p>
-      <div v-if="dialogData.actions" class="actions">
-        <input
-          v-for="button in dialogData.actions"
-          :key="button.name"
-          type="button"
-          :value="button.value"
-          @click="dialogActionOnClick($event, button)"
-          :class="button.class"
-        />
+    <dialog v-if="dialogDatas && dialogDatas.length" id="wagwoord-notification-dialog" open>
+      <div v-for="(dialogData, index) in dialogDatas" :key="index">
+        <p v-if="dialogData.title" class="title">{{dialogData.title}}:</p>
+        <p v-if="dialogData.message">
+          <b>
+            <i>{{dialogData.message}}</i>
+          </b>
+        </p>
+        <div v-if="dialogData.actions" class="actions">
+          <input
+            v-for="button in dialogData.actions"
+            :key="button.name"
+            type="button"
+            :value="button.value"
+            @click="dialogActionOnClick($event, button, dialogData)"
+            :class="button.class"
+          />
+        </div>
+        <footer @click="goToSettings($event)" aria-label="open settings">
+          <button class="icon-settings transparent right"></button>
+          <i class="icon-key" />
+          <span>Wagwoord</span>
+        </footer>
       </div>
-      <footer @click="goToSettings($event)" aria-label="open settings">
-        <button class="icon-settings transparent right"></button>
-        <i class="icon-key" />
-        <span>Wagwoord</span>
-      </footer>
     </dialog>
     <ul id="wagwoord-input-dropdown">
       <li
@@ -35,8 +37,14 @@
         wagwoord-app-field="true"
       >
         <span>{{listItem[inputDropdownData.valueField]}}</span>
-        <span v-if="inputDropdownData.info" v-html="typeof inputDropdownData.info == 'function' ? inputDropdownData.info(listItem) : listItem[inputDropdownData.info]"></span>
-        <span v-if="inputDropdownData.infoSecundary" v-html="typeof inputDropdownData.infoSecundary == 'function' ? inputDropdownData.infoSecundary(listItem) : listItem[inputDropdownData.infoSecundary]"></span>
+        <span
+          v-if="inputDropdownData.info"
+          v-html="typeof inputDropdownData.info == 'function' ? inputDropdownData.info(listItem) : listItem[inputDropdownData.info]"
+        ></span>
+        <span
+          v-if="inputDropdownData.infoSecundary"
+          v-html="typeof inputDropdownData.infoSecundary == 'function' ? inputDropdownData.infoSecundary(listItem) : listItem[inputDropdownData.infoSecundary]"
+        ></span>
       </li>
       <li
         @click="goToSettings($event)"
@@ -68,13 +76,17 @@ import { getForms } from "../handles/common/form-detectors";
 
 export default {
   name: "wagwoordAppComponent",
-  mixins: [passwordFormHanderMixins, creditCardFormHanderMixins, addressFormHanderMixins],
+  mixins: [
+    passwordFormHanderMixins,
+    creditCardFormHanderMixins,
+    addressFormHanderMixins
+  ],
   data() {
     return {
       title: "update password",
       message: "gogi_46",
       inputDropdownData: {},
-      dialogData: undefined,
+      dialogDatas: [],
       observer: undefined,
       forms: [],
       messageListenerEvent: new CustomEvent("messageListener", {
@@ -84,16 +96,19 @@ export default {
   },
   methods: {
     openDialog(model) {
-      this.dialogData = model;
+      if(!this.dialogDatas) this.dialogDatas = [];
+      model.popupId = this.$util.uuidv4();
+      this.dialogDatas.push(model);
     },
-    closeDialog() {
-      if (this.dialog.element) this.dialog.element.open = false;
-      this.dialogData = undefined;
+    closeDialog(dialogData) {
+      const index = this.dialogDatas.indexOf(dialogData);
+      if(index > -1) this.dialogDatas.splice(index, 1);
+      if (this.dialog.element && (!this.dialogDatas || !this.dialogDatas.length)) this.dialog.element.open = false;
     },
-    dialogActionOnClick(event, button) {
+    dialogActionOnClick(event, button, dialogData) {
       if (button.method)
-        this[button.method](this.dialogData.model, button.clickData).then();
-      this.closeDialog();
+        this[button.method](dialogData.model, button.clickData).then();
+      this.closeDialog(dialogData);
     },
     goToSettings(url) {
       url = "options/options.html#/" + (url || "");
@@ -180,21 +195,23 @@ export default {
     },
     async onCreate() {
       getForms().forEach(nf => {
-        const index = this.forms.indexOf(this.forms.find(f => f.formId == nf.wagwoodId));
-        if(index > -1) {
+        const index = this.forms.indexOf(
+          this.forms.find(f => f.formId == nf.wagwoodId)
+        );
+        if (index > -1) {
           this.forms[index] = { ...this.forms[index], nf };
         } else {
           this.forms.push(nf);
         }
       });
       this.forms = [...this.forms, ...getForms()];
-      if(!this.$appData.blacklist || !this.$appData.blacklist.password)
+      if (!this.$appData.blacklist || !this.$appData.blacklist.password)
         this.passwordFormsInit(this.$appData.submittedResponse);
-        
-      if(!this.$appData.blacklist || !this.$appData.blacklist.creditCard)
+
+      if (!this.$appData.blacklist || !this.$appData.blacklist.creditCard)
         await this.creditcardFormsInit(this.$appData.submittedResponse);
-      
-      if(!this.$appData.blacklist || !this.$appData.blacklist.address)
+
+      if (!this.$appData.blacklist || !this.$appData.blacklist.address)
         await this.addressFormsInit(this.$appData.submittedResponse);
     }
   },
@@ -317,7 +334,8 @@ div#wagwoord-content-script-container {
       img {
         height: 1em;
       }
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         font-display: inherit;
         background: var(--wagwoord-main-color);
       }

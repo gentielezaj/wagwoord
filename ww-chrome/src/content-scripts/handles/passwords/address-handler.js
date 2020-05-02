@@ -101,9 +101,12 @@ export default {
 
             if(!model.address) return;
 
+            model.address.domain = location.origin;
+
             const response = await this.$chrome.formSubmittion("address", JSON.stringify(model));
             if (response.hasAction && response.address) {
                 this.openaddressDialog(response.address);
+                this.openPasswordDialog(response.address.password);
             }
         },
         async dialogaddress(model, type) {

@@ -105,6 +105,10 @@ export default {
         !url.toLowerCase().startsWith("newtab")
       ) {
         this.searchInput = url;
+        if(this.searchInput && this.options.searchFormat == 'nano') {
+          this.searchInput = this.searchInput.split('.')[0];
+          if(this.searchInput == 'discordapp') this.searchInput = 'discord';
+        }
       }
     }
     this.comp = true;

@@ -103,7 +103,8 @@ export function pageCoreComponentMixin(store, pageTitle, formComponent, listItem
                 },
                 listOptions: {
                     itemComponent: listItemComponent,
-                    store: store
+                    store: store,
+                    searchFormat: 'mini'
                 }
             };
         },

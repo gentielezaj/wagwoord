@@ -25,6 +25,15 @@ export default {
       form,
       listItem
     )
-  ]
+  ],
+  data() {
+    return {
+      listOptions: {
+        itemComponent: listItem,
+        store: 'codegenerator',
+        searchFormat: 'nano'
+      }
+    };
+  }
 };
 </script>

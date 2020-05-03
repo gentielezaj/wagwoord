@@ -22,6 +22,7 @@
         <span v-show="loader" class="loader"></span>
         <datalist id="seturla">
           <option value="http://localhost:4040/api"></option>
+          <option value="https://wagwoord.herokuapp.com/api"></option>
         </datalist>
       </div>
     </div>

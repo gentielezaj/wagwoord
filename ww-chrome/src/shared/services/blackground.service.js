@@ -338,7 +338,6 @@ export default class BackgroundService {
     }
 
     async onCreated() {
-        console.log('version: ' + this.$app.varsion);
         const isFirstStart = await this.$app.data('isFirstStart');
         if (!isFirstStart || isFirstStart == 'false') {
             await this.$app.chrome.clear();

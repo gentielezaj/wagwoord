@@ -227,7 +227,7 @@ export class CoreService {
 
     async _syncServer(items, onSaveItem) {
         if (!items) {
-            var res = await this.proxy.patch();
+            var res = await this.proxy.head();
             if (!res.success) {
                 return false;
             }

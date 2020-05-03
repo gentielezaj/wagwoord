@@ -32,7 +32,7 @@ export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepo
             this.getById(req, res).then().catch(e => AppLogger.logError(this.controller + ' get/' + req.params.id, e));
         });
 
-        router.patch('/', (req: Request, res: Response) => {
+        router.head('/', (req: Request, res: Response) => {
             this.getLastModifiedValue(req, res).then().catch(e => AppLogger.logError(this.controller + '/getLastModifiedValue patch', e));
         });
 

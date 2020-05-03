@@ -122,6 +122,10 @@ export class ProxyService {
     patch(params, action, controller, domain, headers) {
         return this.request('PATCH', undefined, params, action, controller, domain, headers);
     }
+
+    head(params, action, controller, domain, headers) {
+        return this.request('HEAD', undefined, params, action, controller, domain, headers);
+    }
     // #endregion request methodes
 
     // #region check server state

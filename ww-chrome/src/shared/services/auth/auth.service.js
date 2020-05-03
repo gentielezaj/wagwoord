@@ -29,8 +29,10 @@ export class AuthService {
         };
     }
 
-    async credentialsFor(encryptionKey) {
-        if(await this.proxy.getProxyStatus(false) == 'off') return 'login';
+    async credentialsFor(encryptionKey, domain) {
+        const status = await this.proxy.getProxyStatus(false);
+        const oldDomain = await this.proxy.settings.getDomain();
+        if(status == 'off' || status == 'error' || domain != oldDomain) return 'login';
         return await this.proxy.credentialsFor(encryptionKey);
     }
 

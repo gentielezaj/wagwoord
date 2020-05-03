@@ -97,7 +97,7 @@ export default class BackgroundService {
     async login(data) {
         try {
             if (data.domain) {
-                let credetialsFor = await this.$authService.credentialsFor(data.encryptionKey);
+                let credetialsFor = await this.$authService.credentialsFor(data.encryptionKey, data.domain);
                 if (credetialsFor != 'change' && credetialsFor != 'login') return false;
 
                 if (credetialsFor == 'change') {

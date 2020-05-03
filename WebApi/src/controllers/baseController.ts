@@ -57,7 +57,6 @@ export abstract class BaseController {
     protected isEncryptionEqual(req: Request): boolean {
         try {
             const encryptonHash = this.localStorage.getItem(Constants.EncryptionHashKey);
-            console.log('encryptonHash: ' + encryptonHash);
             if (!encryptonHash) return true;
 
             const otp = req.header('hash')

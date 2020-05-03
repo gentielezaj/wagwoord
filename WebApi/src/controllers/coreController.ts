@@ -106,7 +106,10 @@ export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepo
 
     public async getLastModifiedValue(req: Request, res: Response) {
         try {
+            console.log('pathch here');
             var item = await this.repository.getItem({ order: { property: "lastModified", order: "DESC" } });
+
+            console.log('pathch here 1: ' + JSON.stringify(item));
             this.sendResponse(res, item ? item.lastModified : 0);
         } catch (error) {
             this.sendErrorResponse(res, 500, error);

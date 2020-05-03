@@ -11,4 +11,4 @@ String.prototype.equals = function (this: string, value: string, ignoreCaseSensi
     if (this == value) return true;
     if (this && value && ignoreCaseSensitive) return this.toLowerCase() == value.toLowerCase();
     return false
-};
+}; 

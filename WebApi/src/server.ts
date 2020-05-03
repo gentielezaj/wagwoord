@@ -15,19 +15,6 @@ if(process.env.NODE_ENV === undefined || process.env.NODE_ENV === 'dev') {
     require('dotenv').config();
 }
 
-//async function init() {
-
-//    await createConnection(getTypeOrmConfig());
-
-//    console.log('db set');
-
-//    app.listen(parseInt(PORT), (e) => {
-//        console.log('Express server listening on port ' + PORT);
-//    });
-//}
-
-//init().then(f => console.log('all set up')).catch(e => AppLogger.logError(e, 'at app start \n'));
-
 function getTypeOrmConfig(): SqliteConnectionOptions {
     return {
         "type": "sqlite",

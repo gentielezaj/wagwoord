@@ -32,12 +32,12 @@ export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepo
             this.getById(req, res).then().catch(e => AppLogger.logError(this.controller + ' get/' + req.params.id, e));
         });
 
-        router.patch('/:lastModified', (req: Request, res: Response) => {
-            this.getLastModified(req, res).then().catch(e => AppLogger.logError(this.controller + ' patch', e));
-        });
-
         router.patch('/', (req: Request, res: Response) => {
             this.getLastModifiedValue(req, res).then().catch(e => AppLogger.logError(this.controller + '/getLastModifiedValue patch', e));
+        });
+
+        router.patch('/:lastModified', (req: Request, res: Response) => {
+            this.getLastModified(req, res).then().catch(e => AppLogger.logError(this.controller + ' patch', e));
         });
 
         router.delete('/all', (req: Request, res: Response) => {

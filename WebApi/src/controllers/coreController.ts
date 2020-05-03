@@ -28,15 +28,15 @@ export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepo
             this.getAll(req, res).then().catch(e => AppLogger.logError(this.controller + ' get', e));
         });
 
+        router.get('/lastModified', (req: Request, res: Response) => {
+            this.getLastModifiedValue(req, res).then().catch(e => AppLogger.logError(this.controller + '/getLastModifiedValue head', e));
+        });
+
         router.get('/:id', (req: Request, res: Response) => {
             this.getById(req, res).then().catch(e => AppLogger.logError(this.controller + ' get/' + req.params.id, e));
         });
 
-        router.head('/', (req: Request, res: Response) => {
-            this.getLastModifiedValue(req, res).then().catch(e => AppLogger.logError(this.controller + '/getLastModifiedValue patch', e));
-        });
-
-        router.patch('/:lastModified', (req: Request, res: Response) => {
+        router.patch('/:lastModified?', (req: Request, res: Response) => {
             this.getLastModified(req, res).then().catch(e => AppLogger.logError(this.controller + ' patch', e));
         });
 
@@ -112,7 +112,7 @@ export abstract class CoreRepositoryController<TEntity extends BaseEntity, TRepo
             console.log('pathch here 1: ' + JSON.stringify(item));
             this.sendResponse(res, item ? item.lastModified : 0);
         } catch (error) {
-            this.sendErrorResponse(res, 500, error);
+            this.sendErrorResponse(res, 500, error, error.message);
         }
     }
 

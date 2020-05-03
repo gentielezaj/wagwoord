@@ -72,6 +72,8 @@ export class SettingsRepository extends BaseRepository<SettingsEntity> {
             result = await this.dbRepository.createQueryBuilder('item').where(queryParams.join(' AND '), id).getOne();
         }
 
+        if (!result) return undefined;
+
         let properties = await this.propertyRepository.find({settingsId: result.id})
         result.properties = properties;
         return result;
@@ -84,6 +86,7 @@ export class SettingsRepository extends BaseRepository<SettingsEntity> {
         let queryBuilder = this.createQueryBuilder(this.dbRepository.createQueryBuilder(), appQuery);
 
         let item = await queryBuilder.getOne();
+        if (!item) return undefined;
         let properties = await this.propertyRepository.find({ settingsId: item.id })
         item.properties = properties;
 

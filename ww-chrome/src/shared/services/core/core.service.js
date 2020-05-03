@@ -227,7 +227,7 @@ export class CoreService {
 
     async _syncServer(items, onSaveItem) {
         if (!items) {
-            var res = await this.proxy.head();
+            var res = await this.proxy.get(undefined, 'lastModified');
             if (!res.success) {
                 return false;
             }

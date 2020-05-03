@@ -74,7 +74,7 @@ export abstract class BaseController {
 
     protected compareEncryptionHash(hash: string): boolean {
         console.log(`compare hash: ${hash}, e: ${this.localStorage.getItem(Constants.EncryptionHashKey)}`)
-        return hash == this.localStorage.getItem(Constants.EncryptionHashKey);
+        return (hash || '') == (this.localStorage.getItem(Constants.EncryptionHashKey) || '');
     }
 
     // endregion

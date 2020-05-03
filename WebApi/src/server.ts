@@ -47,7 +47,6 @@ function getTypeOrmConfig(): SqliteConnectionOptions {
 
 createConnection(getTypeOrmConfig()).then(e => {
     console.log('db set');
-    
     new App().app.listen(parseInt(PORT), (e) => {
         console.log('Express server listening on port ' + PORT);
     });

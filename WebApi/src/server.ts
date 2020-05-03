@@ -37,7 +37,7 @@ function getTypeOrmConfig(): SqliteConnectionOptions {
         "cli": {
             "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR || 'dist/database/migrations'
         },
-        migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || process.env.TYPEORM_MIGRATIONS_RUN == undefined ? true : false,
+        migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || !process.env.TYPEORM_MIGRATIONS_RUN ? true : false,
         logging: ["error", "migration", "warn"],
         logger: "file"
     }
@@ -47,7 +47,7 @@ function getTypeOrmConfig(): SqliteConnectionOptions {
 
 createConnection(getTypeOrmConfig()).then(e => {
     console.log('db set');
-
+    
     new App().app.listen(parseInt(PORT), (e) => {
         console.log('Express server listening on port ' + PORT);
     });

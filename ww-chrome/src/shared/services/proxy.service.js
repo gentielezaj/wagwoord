@@ -186,6 +186,7 @@ export class ProxyService {
             let response = await this.baseRequest(method, data, params, action, controller, domain, headers);
             return response.hasOwnProperty('unsetProxy') ? response : await response.json();
         } catch (error) {
+            console.error(error);
             throw error;
         }
     }

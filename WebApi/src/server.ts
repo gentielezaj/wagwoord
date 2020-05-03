@@ -31,7 +31,7 @@ if(process.env.NODE_ENV === undefined || process.env.NODE_ENV === 'dev') {
 function getTypeOrmConfig(): SqliteConnectionOptions {
     return {
         "type": "sqlite",
-        "database": process.env.TYPEORM_DATABASE || 'wagwoord.sqlite',
+        "database": process.env.TYPEORM_DATABASE || 'appData/wagwoord.sqlite',
         "entities": [process.env.TYPEORM_ENTITIES || 'dist/database/models/*.js'],
         "migrations": [process.env.TYPEORM_MIGRATIONS || 'dist/database/migrations/*.js'],
         "cli": {

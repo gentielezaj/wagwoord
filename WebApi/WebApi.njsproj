@@ -26,10 +26,10 @@
     <Content Include=".env" />
     <Content Include=".eslintrc" />
     <Content Include="ormlogs.log" />
+    <Content Include="Procfile" />
     <Content Include="src\controllers\authController.ts" />
     <Content Include="src\database\repositories\authRepository.ts" />
     <Content Include="typeormcommand.txt" />
-    <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <None Include="tsconfig.json" />
     <None Include="src\app.ts" />

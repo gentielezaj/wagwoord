@@ -3,13 +3,13 @@
 /WebApi/testdata
 /WebApi/src/database..
 /WebApi/.vs
+/WebApi/appData
 */node_modules
 *.database
 *.db
 *.sql
 *.sqlite
 Chrome/libs/components
-WebApi/.env
 *.log
 ww-chrome/dist
 WebApi/dist

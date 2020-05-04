@@ -1,1 +1,0 @@
-web: npm run build --prefix WebApi && npm start --prefix WebApi

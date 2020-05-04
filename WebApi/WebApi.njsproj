@@ -25,6 +25,12 @@
     <Content Include=".env2" />
     <Content Include=".env" />
     <Content Include=".eslintrc" />
+    <Content Include="appData\encryptionHash">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="appData\wagwoord.sqlite">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="ormlogs.log" />
     <Content Include="Procfile" />
     <Content Include="src\controllers\authController.ts" />
@@ -67,6 +73,7 @@
     <None Include="src\database\repositories\settingsRepository.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="appData\" />
     <Folder Include="src" />
     <Folder Include="src\controllers" />
     <Folder Include="src\database" />

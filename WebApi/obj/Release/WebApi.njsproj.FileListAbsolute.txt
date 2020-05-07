@@ -1,0 +1,3 @@
+C:\Users\gogi_\source\repos\wagwoord\WebApi\obj\Release\WebApi.njsprojAssemblyReference.cache
+C:\Users\gogi_\source\repos\wagwoord\WebApi\obj\Release\WebApi.njsproj.CoreCompileInputs.cache
+C:\Users\gogi_\source\repos\wagwoord\WebApi\bin\Microsoft.NodejsTools.WebRole.dll

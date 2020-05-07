@@ -11,6 +11,7 @@ import { CodeGeneratorEntity } from "./database/models/codegeneratorEntity";
 import { PasswordEntity } from "./database/models/passwordEntity";
 import { AuthController } from "./controllers/authController";
 import { AuthRepository } from "./database/repositories/authRepository";
+import { InfoController } from "./controllers/intoController";
 
 export class App {
 
@@ -49,6 +50,7 @@ export class App {
         this.app.use('/api/address', new CoreController<AddressEntity>(AddressEntity, 'address').GetRouter());
         this.app.use('/api/creditcard', new CoreController<CreditCardModel>(CreditCardModel, 'creditcard').GetRouter());
         this.app.use('/api/auth', new AuthController().GetRouter());
+        this.app.use('/api/info', new InfoController().GetRouter());
 
         this.app.get('/', function (req, res) {
             res.sendFile('index.html', { root: __dirname + '/views' });

@@ -30,7 +30,6 @@ export class AuthRepository extends BaseRepository<AuthEntity> {
     }
 
     public async startup(encryptionHashHeader?: string): Promise<any> {
-        console.log('setting up');
         const encryptionHashModel = await this.getById(Constants.EncryptionHashKey);
         const encryptionHash = encryptionHashModel?.value;
         if (encryptionHash && encryptionHashHeader != encryptionHash) {

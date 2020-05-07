@@ -237,7 +237,7 @@ function getHeaders(headers, hash) {
 function getUrl(domain, controller, action, params) {
     let url = domain + (domain.endsWith('/') ? '' : '/');
     url += controller.replace(/\/*/, '') + '/';
-    url += action ? action.replace(/\/*/, '') + '/' : '';
+    url += action ? (action + '').replace(/\/*/, '') + '/' : '';
     if (params === undefined || params === null) return url;
 
     if (params !== 'object') return url + params;

@@ -107,7 +107,6 @@ export class BaseRepository<TEntity extends BaseEntity> implements IBaseReposito
         appQuery.skip = undefined;
         appQuery.take = undefined;
         let queryBuilder = this.createQueryBuilder(this.dbRepository.createQueryBuilder(), appQuery);
-        console.log('query builder: ' + JSON.stringify(queryBuilder));
         return await queryBuilder.getOne();
     }
 

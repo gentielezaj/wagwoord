@@ -23,6 +23,7 @@
         <datalist id="seturla">
           <option value="http://localhost:4040/api"></option>
           <option value="https://wagwoord.herokuapp.com/api"></option>
+          <option value="https://wagwoord-api.unubo.app/api"></option>
         </datalist>
       </div>
     </div>

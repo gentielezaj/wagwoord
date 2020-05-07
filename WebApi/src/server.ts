@@ -8,10 +8,9 @@ import { AppLogger } from "./utils/appLogger";
 import './utils/prototypes/string-prototype';
 // #endregion prototypes
 
-const PORT = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || '4040';
-const serverAddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || 'localhost';
+const PORT = process.env.PORT || '4040';
 
-if(process.env.NODE_ENV === undefined || process.env.NODE_ENV === 'dev') {
+if(process.env.NODE_ENV === 'dev') {
     require('dotenv').config();
 }
 

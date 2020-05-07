@@ -1,7 +1,11 @@
 import ChromeService from "./chrome.service";
+import {
+    ProxyService
+} from './proxy.service';
 
 export default class AppService {
     constructor() {
+        this.proxy = new ProxyService('info');
         this.chrome = new ChromeService('app');
         this.defaults = {
             isFirstStart: false
@@ -10,14 +14,14 @@ export default class AppService {
 
     async data(key) {
         let data = await this.chrome.get();
-        if(!data) data = this.defaults;
+        if (!data) data = this.defaults;
         else {
             data = {
                 ...this.defaults,
                 ...data
             };
         }
-        
+
         return key ? data[key] : data;
     }
 
@@ -27,7 +31,7 @@ export default class AppService {
             ...old,
             ...data
         };
-        
+
         await this.chrome.set(data);
 
         return true;
@@ -39,5 +43,10 @@ export default class AppService {
 
     get varsion() {
         return this.chrome.version;
+    }
+
+    async apiRequest(model) {
+        console.log(model);
+        return await this.proxy.request(model.method || 'GET', model.data, model.params, model.action, model.controller, model.domain, model.headers);
     }
 }

@@ -16,6 +16,10 @@ export abstract class BaseController {
     public GetRouter(skipCheck?: boolean, skipEncryption?: boolean): Router {
         let router = Router();
 
+        router.head('/', (req: Request, res: Response) => {
+            res.status(200).send('ok');
+        });
+
         if(!skipCheck) router.use((req: Request, res: Response, next: any) => this.checkAccess(req, res, next));
 
         if (!skipEncryption)
@@ -66,14 +70,32 @@ export abstract class BaseController {
             const code = otp.split('-')[0];
             const epoch = otp.split('-')[1];
             const key = hotp.check(code, encryptonHash, parseInt(epoch));
-            return key;
+            return key && !this.isEncryptionUsed(otp, epoch);
         } catch (e) {
             console.log(e);
         }
     }
 
+    protected isEncryptionUsed(key: string, ticks: string): boolean {
+        if (!ticks) return true;
+        const maxDeleye = process.env.MAX_DELEYE || 5000;
+        if (new Date().getTime() - parseInt(ticks) > maxDeleye) return true;
+
+        let keysJson = this.localStorage.getItem("pastKeys");
+        let keys = new Array<string>();
+        if (keysJson) keys = JSON.parse(keysJson).data;
+
+        if (keys.indexOf(key) > -1) return true;
+
+        if(keys.length >= 50) keys = keys.splice(0, 1);
+        keys.push(key);
+
+        this.localStorage.setItem("pastKeys", JSON.stringify({ data: keys }));
+
+        return false;
+    }
+
     protected compareEncryptionHash(hash: string): boolean {
-        console.log(`compare hash: ${hash}, e: ${this.localStorage.getItem(Constants.EncryptionHashKey)}`)
         return (hash || '') == (this.localStorage.getItem(Constants.EncryptionHashKey) || '');
     }
 

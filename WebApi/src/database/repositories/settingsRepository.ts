@@ -45,7 +45,7 @@ export class SettingsRepository extends BaseRepository<SettingsEntity> {
             this.setLocalId(result, model);
             return result;
         } catch (e) {
-            console.log(e);
+            console.error(e);
             throw e;
         }
     }

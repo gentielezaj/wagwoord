@@ -37,6 +37,9 @@
     <Content Include="src\database\repositories\authRepository.ts" />
     <Content Include="typeormcommand.txt" />
     <Content Include="package.json" />
+    <None Include="wagwoord - Web Deploy.pubxml" />
+    <None Include="wagwoord - ReadOnly - FTP.pubxml" />
+    <None Include="wagwoord - FTP.pubxml" />
     <None Include="tsconfig.json" />
     <None Include="src\app.ts" />
     <None Include="src\server.ts" />
@@ -87,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\controllers\coreController.ts" />
+    <TypeScriptCompile Include="src\controllers\intoController.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\database\migrations\1585071763549-AddAuthTable.ts" />
     <TypeScriptCompile Include="src\database\migrations\1586626595480-AddSettingsProperties.ts" />
     <TypeScriptCompile Include="src\database\migrations\1587751592847-AddCoumnTypeToSettingsProperties.ts" />

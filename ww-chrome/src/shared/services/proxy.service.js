@@ -90,9 +90,12 @@ export class ProxyService {
 
     // #region request methodes
     // #region get requests
-    get(params, action, controller, domain, headers) {
+    get(model) {
         try {
-            return this.request('GET', undefined, params, action, controller, domain, headers);
+            return this.request({
+                ...model,
+                method: 'GET'
+            });
         } catch (error) {
             throw error;
         }
@@ -100,31 +103,43 @@ export class ProxyService {
     // #endregion get requests
 
     // #region post requests
-    post(data, params, action, controller, domain, headers) {
-        return this.request('POST', data, params, action, controller, domain, headers);
+    post(model) {
+        return this.request({
+            method: 'POST',
+            ...model
+        });
     }
 
-    postRequest(action, data, params, controller, domain, headers) {
-        return this.post(data, params, action, controller, domain, headers);
-    }
     // #endregion requests
 
     // #region delete request
-    delete(params, action, controller, domain, headers) {
-        return this.request('DELETE', undefined, params, action, controller, domain, headers);
+    delete(model) {
+        return this.request({
+            method: 'DELETE',
+            ...model
+        });
     }
 
-    deleteAll(params, controller, domain, headers) {
-        return this.delete(params, 'all', controller, domain, headers);
+    deleteAll(model) {
+        return this.delete({
+            ...model,
+            action: 'all'
+        });
     }
     // #endregion delete request
 
-    patch(params, action, controller, domain, headers) {
-        return this.request('PATCH', undefined, params, action, controller, domain, headers);
+    patch(model) {
+        return this.request({
+            method: 'PATCH',
+            ...model
+        });
     }
 
-    head(params, action, controller, domain, headers) {
-        return this.request('HEAD', undefined, params, action, controller, domain, headers);
+    head(model) {
+        return this.request({
+            method: 'HEAD',
+            ...model
+        });
     }
     // #endregion request methodes
 
@@ -134,10 +149,13 @@ export class ProxyService {
         try {
             const newEncryptionHash = await this.encryptionService.getHash(encryptionKey);
             const oldEncryptionHash = await this.encryptionService.getHash();
-            const response = await this.request('Post', {
-                newEncryptionHash,
-                oldEncryptionHash
-            }, undefined, '', 'auth');
+            const response = await this.post({
+                data: {
+                    newEncryptionHash,
+                    oldEncryptionHash
+                },
+                controller: 'auth'
+            });
 
             return response.data;
         } catch (error) {
@@ -165,10 +183,13 @@ export class ProxyService {
         try {
             if (!force) return serverStatus;
             const config = await this.settings.get();
-            const domain = config?.domain;
+            const domain = config ? config.domain : undefined;
             if (!domain) serverStatus = 'off';
             else {
-                const response = await this.request('GET', undefined, undefined, 'isValidConnection', 'auth');
+                const response = await this.request({
+                    action: 'isValidConnection', 
+                    controller: 'auth'
+                });
                 serverStatus = response.success ? 'ok' : 'error';
             }
         } catch (error) {
@@ -181,9 +202,9 @@ export class ProxyService {
     // #endregion check server state
 
     // #region core request
-    async request(method, data, params, action, controller, domain, headers) {
+    async request(model) {
         try {
-            let response = await this.baseRequest(method, data, params, action, controller, domain, headers);
+            let response = await this.baseRequest(model.method || 'GET', model.data, model.params, model.action, model.controller, model.domain, model.headers);
             return response.hasOwnProperty('unsetProxy') ? response : await response.json();
         } catch (error) {
             console.error(error);

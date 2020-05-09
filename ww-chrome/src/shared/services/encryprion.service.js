@@ -64,9 +64,14 @@ export default class EncryptionService {
         return this.get(this.encryptionKeyStorageKey);
     }
 
-    async getHash(key) {
+    async getHash(key, type) {
         key = key || await this.getKey();
-        return key ? CryptoJS.MD5(key).toString() : '';
+        let hash = '';
+        if(key) {
+            hash = type ? CryptoJS[type](key).toString() : CryptoJS.SHA3(key).toString();
+        }
+
+        return hash;
     }
 
     async encryptLocal() {

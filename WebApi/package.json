@@ -1,6 +1,6 @@
 {
   "name": "wagwoord-webapi",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "wagwoord webapi -- this versin requirs ecryptionHash",
   "main": "index.js",
   "scripts": {

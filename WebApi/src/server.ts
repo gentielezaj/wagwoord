@@ -1,7 +1,8 @@
 import "reflect-metadata";
 import { App } from "./app";
-import { createConnection } from "typeorm";
+import { createConnection, ConnectionOptions } from "typeorm";
 import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions";
+import { PostgresConnectionCredentialsOptions } from "typeorm/driver/postgres/PostgresConnectionCredentialsOptions";
 import { AppLogger } from "./utils/appLogger";
 
 // #region prototypes
@@ -10,11 +11,29 @@ import './utils/prototypes/string-prototype';
 
 const PORT = process.env.PORT || '4040';
 
-if(process.env.NODE_ENV === 'dev') {
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'dev') {
     require('dotenv').config();
 }
 
-function getTypeOrmConfig(): SqliteConnectionOptions {
+function getTypeOrmConfig(): any {
+    switch (process.env.DB_TYPE) {
+        case 'pg': return pgConfig();
+        default: return getSqliteConfig();
+    }
+}
+
+function pgConfig(): PostgresConnectionCredentialsOptions {
+    return {
+        database: process.env.TYPEORM_DATABASE,
+        host: process.env.TYPEORM_HOST,
+        password: process.env.TYPEORM_PASSWORD,
+        port: parseInt(process.env.TYPEORM_PORT),
+        url: process.env.TYPEORM_URL,
+        username: process.env.TYPEORM_USERNAME
+    }
+}
+
+function getSqliteConfig(): SqliteConnectionOptions {
     return {
         "type": "sqlite",
         "database": process.env.TYPEORM_DATABASE || 'appData/wagwoord.sqlite',
@@ -36,4 +55,7 @@ createConnection(getTypeOrmConfig()).then(e => {
     new App().app.listen(parseInt(PORT), (e) => {
         console.log('Express server listening on port ' + PORT);
     });
+}).catch(e => {
+    console.log('db error:');
+    console.log(e);
 });

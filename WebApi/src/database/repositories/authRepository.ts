@@ -13,10 +13,12 @@ export class AuthRepository extends BaseRepository<AuthEntity> {
     public async SaveEncryptionHash(encryptionHash?: string): Promise<string | undefined> {
         if (encryptionHash && !encryptionHash?.isNullOrEmpty()) {
             const key = Constants.EncryptionHashKey;
-            const model = (await this.getById(key)) ?? AuthEntity.create({
+            let model = (await this.getById(key)) ?? AuthEntity.create({
                 key: Constants.EncryptionHashKey,
                 value: encryptionHash
             })
+
+            model.value = encryptionHash;
 
             await this.save(model);
         } else {

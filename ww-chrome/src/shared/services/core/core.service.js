@@ -5,7 +5,9 @@ import EncryptionService from '../encryprion.service';
 
 import DB from '../database/db.service';
 
-import { WWUtil } from '../../util/ww-util';
+import {
+    WWUtil
+} from '../../util/ww-util';
 import ChromeService from '../chrome.service';
 
 export class CoreService {
@@ -51,7 +53,9 @@ export class CoreService {
         const item = await this.getItem(id);
         if (!item) return true;
         const deleted = await this.db.delete(item.id);
-        if (deleted && item.serverId && !dontUpdateServer && !(await this.proxy.delete(item.serverId)).success) {
+        if (deleted && item.serverId && !dontUpdateServer && !(await this.proxy.delete({
+                params: item.serverId
+            })).success) {
             let unsyced = await this.chromeService.get(this.deletedUnsyncStorageKey);
             unsyced = unsyced ? unsyced.split(',') : [];
             unsyced.push(item.serverId);
@@ -71,7 +75,9 @@ export class CoreService {
     async _syncDeleted() {
         let deleted = await this.chromeService.get(this.deletedUnsyncStorageKey);
         if (!deleted || !deleted.length) return true;
-        let result = await this.proxy.delete(deleted);
+        let result = await this.proxy.delete({
+            params: deleted
+        });
         if (result.success === true) {
             await this.chromeService.remove(this.deletedUnsyncStorageKey);
         }
@@ -90,13 +96,13 @@ export class CoreService {
 
     async _getOldItem(item, uniqeQuery) {
         let oldItem;
-        if(item.serverId) {
+        if (item.serverId) {
             oldItem = await this.getItem({
                 serverId: item.serverId
             });
-        } else if(item.id) {
+        } else if (item.id) {
             oldItem = await this.getItem(item.id);
-        } else if(uniqeQuery) {
+        } else if (uniqeQuery) {
             oldItem = await this.getItem(uniqeQuery);
         }
 
@@ -128,7 +134,7 @@ export class CoreService {
             else results.push(await this._coreSave(model[i], onSaveItem, notlastModified, true, canUpdate));
         }
 
-        if(isArrayModel) return results;
+        if (isArrayModel) return results;
         return results && results.length ? results[0] : 0;
     }
 
@@ -199,7 +205,7 @@ export class CoreService {
     async _convertLocalToServerEntity(item) {
         item.localId = this.util.copy(item.id);
         item.id = this.util.copy(item.serverId);
-        if(item.hasOwnProperty('synced')) delete item.synced;
+        if (item.hasOwnProperty('synced')) delete item.synced;
 
         return item;
     };
@@ -220,14 +226,18 @@ export class CoreService {
         let localStorageLastModified = await this.chromeService.get(this.lastModifiedStorageKey);
         let lastModified = item.lastModified > localStorageLastModified ? item.lastModified : localStorageLastModified;
         if (localStorageLastModified == "-1" || forece) lastModified = 0;
-        const data = await this.proxy.patch(lastModified || 0);
+        const data = await this.proxy.patch({
+            params: lastModified || 0
+        });
         const result = await this._saveServerItemsLocaly(data);
         return result;
     };
 
     async _syncServer(items, onSaveItem) {
         if (!items) {
-            var res = await this.proxy.get(undefined, 'lastModified');
+            var res = await this.proxy.get({
+                action: 'lastModified'
+            });
             if (!res.success) {
                 return false;
             }
@@ -245,7 +255,9 @@ export class CoreService {
             items[i] = await this._convertLocalToServerEntity(items[i]);
         }
 
-        var result = await this.proxy.post(items);
+        var result = await this.proxy.post({
+            data: items
+        });
         if (result.success && !result.unsetProxy) {
             await this._saveServerItemsLocaly(result.unsetProxy ? items : result, onSaveItem);
         }

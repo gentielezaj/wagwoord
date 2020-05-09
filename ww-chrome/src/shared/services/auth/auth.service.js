@@ -32,7 +32,7 @@ export class AuthService {
     async credentialsFor(encryptionKey, domain) {
         const status = await this.proxy.getProxyStatus(false);
         const oldDomain = await this.proxy.settings.getDomain();
-        if(status == 'off' || status == 'error' || domain != oldDomain) return 'login';
+        if (status == 'off' || status == 'error' || domain != oldDomain) return 'login';
         return await this.proxy.credentialsFor(encryptionKey);
     }
 
@@ -46,12 +46,17 @@ export class AuthService {
                     "Content-Type": "application/json"
                 };
 
-                const response = await this.proxy.postRequest(request, {
-                    encryptionHash: hash
-                }, undefined, undefined, domain, headers);
+                const response = await this.proxy.post({
+                    action: request,
+                    data: {
+                        encryptionHash: hash
+                    },
+                    domain,
+                    headers
+                });
 
-                if(!response.success) return false;
-                
+                if (!response.success) return false;
+
                 await this.encryptionService.save({
                     encryptionKey: encryptionKey,
                     encryptLocal: encryptLocal
@@ -70,10 +75,28 @@ export class AuthService {
                     encryptLocal: encryptLocal
                 });
             }
-            
+
             return true;
         } catch (error) {
             throw error;
+        }
+    }
+
+    async checkHash() {
+        try {
+            if (await this.encryptionService.getKey()) {
+                const md5 = await this.encryptionService.getHash(undefined, 'MD5');
+                const sh = await this.encryptionService.getHash(undefined);
+
+                await this.proxy.patch({
+                    data: {
+                        old: md5,
+                        new: sh
+                    }
+                });
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 }

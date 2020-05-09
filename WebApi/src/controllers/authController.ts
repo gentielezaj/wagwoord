@@ -23,6 +23,10 @@ export class AuthController extends BaseController {
             }
         });
 
+        router.patch('/', (req: Request, res: Response) => {
+            this.changeEncryptionHash(req, res).then().catch(e => this.sendErrorResponse(res, 500));
+        });
+
         router.post('/login', (req: Request, res: Response) => {
             this.login(req, res).then().catch(e => this.sendErrorResponse(res, 500));
         });
@@ -41,6 +45,22 @@ export class AuthController extends BaseController {
         });
 
         return router;
+    }
+
+    protected async changeEncryptionHash(req: Request, res: Response) {
+        if (!this.checkWagwoordId(req)) {
+            this.sendResponse(res, false, 401);
+            return;
+        }
+
+        const current = (await this.repository.getById(Constants.EncryptionHashKey))?.value;
+
+        if (req.body.new == current) this.sendResponse(res, true);
+        else if (req.body.old != current) this.sendResponse(res, false);
+        else {
+            await this.repository.SaveEncryptionHash(req.body.new);
+            this.sendResponse(res, true);
+        }
     }
 
     protected async resolve(req: Request, res: Response) {
@@ -84,7 +104,7 @@ export class AuthController extends BaseController {
         const encryptionHashReq = req.body ? req.body[Constants.EncryptionHashKey] : '';
         try {
             if (this.checkWagwoordId(req) && this.isEncryptionEqual(req)) {
-                let encryptionHash = await this.repository.SaveEncryptionHash(encryptionHashReq);
+                await this.repository.SaveEncryptionHash(encryptionHashReq);
                 this.sendResponse(res, this.repository.returnHeadersModel());
             } else {
                 this.sendErrorResponse(res, 401);

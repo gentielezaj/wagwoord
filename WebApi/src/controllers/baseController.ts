@@ -63,8 +63,10 @@ export abstract class BaseController {
             const encryptonHash = this.localStorage.getItem(Constants.EncryptionHashKey);
             if (!encryptonHash) return true;
 
-            const otp = req.header('hash')
-            if (otp == 'nohash') return true;
+            const otp = req.header('hash');
+
+            if (process.env.ULTIMATE_HASH && req.header('ultimate-hash') == process.env.ULTIMATE_HASH) return true;
+
             if (!otp) return false;
 
             const code = otp.split('-')[0];

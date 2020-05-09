@@ -42,20 +42,23 @@ export class App {
     }
 
     private initControllers() {
-        this.authRepository.setup().then();
-        this.app.use('/api/password', new CoreController<PasswordEntity>(PasswordEntity, 'password').GetRouter());
-        this.app.use('/api/blacklist', new CoreController<BlacklistEntity>(BlacklistEntity, 'blacklist').GetRouter());
-        this.app.use('/api/settings', new SettingsController().GetRouter());
-        this.app.use('/api/codegenerator', new CoreController<CodeGeneratorEntity>(CodeGeneratorEntity, 'codegenerator').GetRouter());
-        this.app.use('/api/address', new CoreController<AddressEntity>(AddressEntity, 'address').GetRouter());
-        this.app.use('/api/creditcard', new CoreController<CreditCardModel>(CreditCardModel, 'creditcard').GetRouter());
-        this.app.use('/api/auth', new AuthController().GetRouter());
-        this.app.use('/api/info', new InfoController().GetRouter());
+        this.authRepository.setup().then(() => {
+            console.log('encryption set');
 
-        this.app.get('/', function (req, res) {
-            res.sendFile('index.html', { root: __dirname + '/views' });
+            this.app.use('/api/password', new CoreController<PasswordEntity>(PasswordEntity, 'password').GetRouter());
+            this.app.use('/api/blacklist', new CoreController<BlacklistEntity>(BlacklistEntity, 'blacklist').GetRouter());
+            this.app.use('/api/settings', new SettingsController().GetRouter());
+            this.app.use('/api/codegenerator', new CoreController<CodeGeneratorEntity>(CodeGeneratorEntity, 'codegenerator').GetRouter());
+            this.app.use('/api/address', new CoreController<AddressEntity>(AddressEntity, 'address').GetRouter());
+            this.app.use('/api/creditcard', new CoreController<CreditCardModel>(CreditCardModel, 'creditcard').GetRouter());
+            this.app.use('/api/auth', new AuthController().GetRouter());
+            this.app.use('/api/info', new InfoController().GetRouter());
+
+            this.app.get('/', function (req, res) {
+                res.sendFile('index.html', { root: __dirname + '/views' });
+            });
+
+            console.log('controllers registed')
         });
-
-        console.log('controllers registed')
     }
 }

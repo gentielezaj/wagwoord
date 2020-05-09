@@ -25,21 +25,12 @@
     <Content Include=".env2" />
     <Content Include=".env" />
     <Content Include=".eslintrc" />
-    <Content Include="appData\encryptionHash">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="appData\wagwoord.sqlite">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="ormlogs.log" />
     <Content Include="Procfile" />
     <Content Include="src\controllers\authController.ts" />
     <Content Include="src\database\repositories\authRepository.ts" />
     <Content Include="typeormcommand.txt" />
     <Content Include="package.json" />
-    <None Include="wagwoord - Web Deploy.pubxml" />
-    <None Include="wagwoord - ReadOnly - FTP.pubxml" />
-    <None Include="wagwoord - FTP.pubxml" />
     <None Include="tsconfig.json" />
     <None Include="src\app.ts" />
     <None Include="src\server.ts" />
@@ -76,7 +67,6 @@
     <None Include="src\database\repositories\settingsRepository.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="appData\" />
     <Folder Include="src" />
     <Folder Include="src\controllers" />
     <Folder Include="src\database" />

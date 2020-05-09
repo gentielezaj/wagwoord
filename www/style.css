@@ -52,6 +52,10 @@ main {
 
 
 @media only screen and (max-width: 699px) {
+    main {
+        display: block;
+        padding: 10px;
+    }
     body {
         background-color: var(--wagwoord-main-color);
         color: var(--wagwoord-color);

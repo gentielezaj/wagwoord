@@ -135,6 +135,8 @@ async function sync() {
 // #endregion sync
 
 // #region onStart
-$backgound.onCreated().then();
-sync().then();
+$backgound.onCreated().then(() => {
+    sync().then();
+});
+
 // #endregion onStart

@@ -41,12 +41,12 @@ export default class AppService {
         this.chrome.get();
     }
 
-    get varsion() {
+    get version() {
         return this.chrome.version;
     }
 
     async apiRequest(model) {
         console.log(model);
-        return await this.proxy.request(model.method || 'GET', model.data, model.params, model.action, model.controller, model.domain, model.headers);
+        return await this.proxy.request(model);
     }
 }

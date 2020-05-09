@@ -30,7 +30,7 @@ export class CreditCardModel extends BaseCountEntity {
     @Column({ nullable: true, type: 'varchar', length: 4 })
     public pin: string;
 
-    @Column({ nullable: false, type: 'int', default: true })
+    @Column({ nullable: false, type: 'bool', default: false })
     public nfc: boolean;
 
     public static create(obj: any, model: CreditCardModel): CreditCardModel {

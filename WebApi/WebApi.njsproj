@@ -7,7 +7,7 @@
     <ProjectGuid>{0a4d985b-1bcd-401c-9c96-0fa23aab7fd5}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <ProjectView>ProjectFiles</ProjectView>
-    <StartupFile>dist/server.js</StartupFile>
+    <StartupFile>./dist/server.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
@@ -22,12 +22,14 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Content Include=".env2" />
+    <Content Include=".env_pg" />
     <Content Include=".env" />
+    <Content Include=".env_sqlite" />
     <Content Include=".eslintrc" />
     <Content Include="ormlogs.log" />
     <Content Include="Procfile" />
     <Content Include="src\controllers\authController.ts" />
+    <Content Include="src\database\coreMigrationProperties.ts" />
     <Content Include="src\database\repositories\authRepository.ts" />
     <Content Include="typeormcommand.txt" />
     <Content Include="package.json" />
@@ -41,19 +43,6 @@
     <None Include="src\utils\converter.ts" />
     <None Include="src\utils\index.ts" />
     <Content Include="src\views\index.html" />
-    <None Include="src\database\migrations\1568749315876-CreatePasswordDataBase.ts" />
-    <None Include="src\database\migrations\1570054034480-AddDeletedToPasswords.ts" />
-    <None Include="src\database\migrations\1570887412274-CreateTableBlacklist.ts" />
-    <None Include="src\database\migrations\1572105037030-AddCountToPasswordTable.ts" />
-    <None Include="src\database\migrations\1572106005058-addSettingsTable.ts" />
-    <None Include="src\database\migrations\1572107633655-AddEncryptedColumnToSettings.ts" />
-    <None Include="src\database\migrations\1574877308169-CreateCodeGeneratorTable.ts" />
-    <None Include="src\database\migrations\1575390106307-AddCreditCardAndAddressTables.ts" />
-    <None Include="src\database\migrations\1575652421265-AddColumnsOnCreditCardTable.ts" />
-    <None Include="src\database\migrations\1575653106625-AddUniqueIndexToCardNumver.ts" />
-    <None Include="src\database\migrations\1575915427308-ReinsertAddressTable.ts" />
-    <None Include="src\database\migrations\1577008971490-UpdateCodeGeneratorEncodingToHex.ts" />
-    <None Include="src\database\migrations\1577286712824-AlterAddresses.ts" />
     <None Include="src\database\models\addressEntity.ts" />
     <None Include="src\database\models\baseEntity.ts" />
     <None Include="src\database\models\blacklistEntity.ts" />
@@ -83,9 +72,14 @@
     <TypeScriptCompile Include="src\controllers\intoController.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\database\migrations\1585071763549-AddAuthTable.ts" />
-    <TypeScriptCompile Include="src\database\migrations\1586626595480-AddSettingsProperties.ts" />
-    <TypeScriptCompile Include="src\database\migrations\1587751592847-AddCoumnTypeToSettingsProperties.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589020478736-CreatePasswordTable.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589025176281-CreateAddressTable.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589025602960-CreateAuthTable.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589025773648-CreateBlacklistTable.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589025912108-CreateCodeGeneratorTable.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589026409725-CreateCreditcardTable.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589026793595-CreateSettingsTable.ts" />
+    <TypeScriptCompile Include="src\database\migrations\1589027093202-CreateSettingsPropertiesTable.ts" />
     <TypeScriptCompile Include="src\database\models\authEntity.ts" />
     <TypeScriptCompile Include="src\utils\constants.ts" />
     <TypeScriptCompile Include="src\utils\prototypes\string-prototype.ts" />

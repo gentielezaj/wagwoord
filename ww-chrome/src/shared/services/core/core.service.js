@@ -223,8 +223,8 @@ export class CoreService {
 
     async _syncFromServer(forece) {
         let item = (await this.db.store.orderBy('lastModified').reverse().first()) || {};
-        let localStorageLastModified = await this.chromeService.get(this.lastModifiedStorageKey);
-        let lastModified = item.lastModified > localStorageLastModified ? item.lastModified : localStorageLastModified;
+        let localStorageLastModified = (await this.chromeService.get(this.lastModifiedStorageKey)) || 0;
+        let lastModified = item.lastModified > (localStorageLastModified || 0) ? item.lastModified : localStorageLastModified;
         if (localStorageLastModified == "-1" || forece) lastModified = 0;
         const data = await this.proxy.patch({
             params: lastModified || 0

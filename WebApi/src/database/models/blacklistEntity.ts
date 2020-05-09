@@ -6,19 +6,19 @@ import { Identifier } from "../querys/modelDecorator";
 export class BlacklistEntity extends BaseEntity {
 
     @Identifier()
-    @Column({ nullable: false, type: 'varchar', length: 64 })
+    @Column({ nullable: false, type: 'varchar', length: 64, unique: true })
     public name: string;
 
-    @Column({nullable: false, default: false, type:'int'})
+    @Column({nullable: false, default: false, type:'bool'})
     public password: boolean;
 
-    @Column({nullable: false, default: false, type:'int'})
+    @Column({nullable: false, default: false, type:'bool'})
     public address: boolean;
 
-    @Column({nullable: false, default: false, type:'int'})
+    @Column({nullable: false, default: false, type:'bool'})
     public creditCard: boolean;
 
-    @Column({nullable: false, default: false, type:'int'})
+    @Column({nullable: false, default: false, type:'bool'})
     public codeGenerator: boolean;
 
     static create(obj: any) : BlacklistEntity |undefined {

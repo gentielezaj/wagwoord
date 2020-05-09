@@ -9,10 +9,10 @@ export abstract class BaseEntity {
     @PrimaryGeneratedColumn({type: 'int'})
     public id: number;
 
-    @Column({nullable: false, type: 'int'})
+    @Column({ nullable: false, type: 'int'})
     public lastModified: number;
 
-    @Column({nullable: false, default: false, type:'int'})
+    @Column({nullable: false, default: false, type:'bool'})
     public deleted: boolean;
 
     protected static create(model: BaseEntity, obj: any): BaseEntity {
@@ -31,7 +31,7 @@ export abstract class BaseEncryptionEntity extends BaseEntity {
         this.encrypted = false;
     }
 
-    @Column({nullable: false, default: false, type:'int'})
+    @Column({nullable: false, default: false, type:'bool'})
     public encrypted: boolean;
 
     protected static create(model: BaseEncryptionEntity, obj: any): BaseEncryptionEntity {

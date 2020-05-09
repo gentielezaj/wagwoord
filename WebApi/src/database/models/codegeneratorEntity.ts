@@ -37,7 +37,7 @@ export class CodeGeneratorEntity extends BaseEntity {
     public window: number; 
 
 
-    @Column({ nullable: true, type: 'nvarchar' })
+    @Column({ nullable: true, type: 'varchar' })
     public icon: string; 
 
     static create(obj: any): CodeGeneratorEntity | undefined {

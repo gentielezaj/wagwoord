@@ -7,7 +7,7 @@ export class SettingsEntity extends BaseEntity {
     @Column({ nullable: false, type: 'varchar', length: 64, unique: true })
     public name: string;
 
-    @Column({nullable: false, default: false, type:'int'})
+    @Column({nullable: false, default: false, type:'bool'})
     public encrypted: boolean;
 
     @OneToMany(type => SettingsPropertyEntity, property => property.settings)
@@ -40,16 +40,16 @@ export class SettingsPropertyEntity {
     @PrimaryGeneratedColumn({ type: 'int' })
     public id: number;
 
-    @Column({ nullable: false, type: "nvarchar", length: 128})
+    @Column({ nullable: false, type: "varchar", length: 128})
     public property: string;
     
-    @Column({ nullable: false, type: "text"})
+    @Column({ nullable: false, type: "varchar"})
     public value: string;
 
     @Column({nullable: false, type:"int"})
     public settingsId: number;
 
-    @Column({ nullable: false, type: "text" })
+    @Column({ name:"propertyType", nullable: false, type: "varchar", length:64 })
     public type: string;
 
     @ManyToOne(type => SettingsEntity, property => property.properties)

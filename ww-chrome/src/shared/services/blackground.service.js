@@ -193,7 +193,7 @@ export default class BackgroundService {
         if (!model) return undefined;
         if (typeof model === 'string') model = JSON.parse(model);
         let result = {};
-        const addressModel = model.address.model ? model.address.model : model.address;
+        const addressModel = model.address?.model ? model.address.model : model.address;
         if(!model.password && addressModel && addressModel.username && addressModel.password && addressModel.domain) {
             model.password = {
                 username: addressModel.username,
@@ -291,15 +291,15 @@ export default class BackgroundService {
         if (model.password) {
             model.password.name = model.password.name || model.password.domain;
             model.password.synced = true;
-            this.$password.save(model.password).then();
+            this.$password.saveOrUpdate(model.password).then();
         }
         if (model.creditcard) {
             model.creditcard.synced = true;
-            this.$creditCards.save(model.creditcard).then();
+            this.$creditCards.saveOrUpdate(model.creditcard).then();
         }
         if (model.address) {
             model.address.synced = true;
-            this.$addressService.save(model.address).then();
+            this.$addressService.saveOrUpdate(model.address).then();
         }
 
         return false;

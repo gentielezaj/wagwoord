@@ -74,6 +74,7 @@ export default {
             });
         },
         openaddressDialog(address) {
+            if(!address) return;
             this.openDialog({
                 title: address.action == 'update' ? 'Update password' : 'Save address',
                 message: address.model.username || '[No username]',

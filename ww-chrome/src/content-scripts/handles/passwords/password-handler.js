@@ -52,7 +52,7 @@ export default {
             });
         },
         openPasswordDialog(password) {
-            if(password) return;
+            if(!password) return;
             this.openDialog({
                 title: password.action == 'update' ? 'Update password' : 'Save password',
                 message: password.model.username || '[No username]',

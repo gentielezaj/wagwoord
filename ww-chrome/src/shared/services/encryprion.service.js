@@ -68,7 +68,7 @@ export default class EncryptionService {
         key = key || await this.getKey();
         let hash = '';
         if(key) {
-            hash = type ? CryptoJS[type](key).toString() : CryptoJS.SHA3(key).toString();
+            hash = type ? CryptoJS[type](key).toString() : CryptoJS.SHA512(key).toString();
         }
 
         return hash;

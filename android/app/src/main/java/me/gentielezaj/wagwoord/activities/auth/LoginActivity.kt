@@ -98,7 +98,7 @@ class LoginActivity : CoreActivity() {
                     Toast.makeText(applicationContext, getString(R.string.data_updated), Toast.LENGTH_SHORT).show()
                     skip()
                 } else {
-                    setHepText(getString(R.string.login_failed), R.color.error)
+                    setHepText(getString(R.string.login_failed) + "\n" + authenticate.errorMessage, R.color.error)
                     btnLogin.revertAnimation()
                     Toast.makeText(applicationContext, getString(R.string.login_failed), Toast.LENGTH_SHORT).show()
                 }

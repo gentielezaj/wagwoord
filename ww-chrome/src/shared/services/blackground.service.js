@@ -345,7 +345,7 @@ export default class BackgroundService {
             await this.$app.setData({
                 isFirstStart: true
             });
-        } else if(this.$app.version <= '1.0.1') {
+        } else {
             await this.$authService.checkHash();
         }
     }

@@ -4,15 +4,21 @@ import android.content.Context
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
+import dev.turingcomplete.kotlinonetimepassword.HmacAlgorithm
+import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordConfig
+import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordGenerator
 import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.common.LocalStorage
 import kotlinx.coroutines.*
 import me.gentielezaj.wagwoord.common.LogData
+import me.gentielezaj.wagwoord.common.empty
 import me.gentielezaj.wagwoord.models.proxyModels.RequestData
 import me.gentielezaj.wagwoord.models.proxyModels.ResponseData
+import me.gentielezaj.wagwoord.services.encryption.EncryptionService
 import java.lang.Exception
 
 class ProxyService(protected val context: Context, private val controller: String? = null) {
+    var encryptionService = EncryptionService(context);
 
     suspend inline fun <reified T> get(action: String?, params: Map<String, String> = mapOf()): ResponseData<T> {
         return get(T::class.java, action, params)
@@ -39,7 +45,7 @@ class ProxyService(protected val context: Context, private val controller: Strin
             val response = sendRequest(
                 RequestData(
                 action = "isValidConnection",
-                controller = "util",
+                controller = "auth",
                     domain = domain
             ), Boolean::class.java)
 
@@ -50,22 +56,14 @@ class ProxyService(protected val context: Context, private val controller: Strin
         }
     }
 
-    protected suspend inline fun <T> sendRequest(requestData: RequestData, entityType: Class<T>): ResponseData<T> {
+    private suspend inline fun <T> sendRequest(requestData: RequestData, entityType: Class<T>): ResponseData<T> {
         val url = getUrl(requestData);
         if (url.isNullOrEmpty()) return ResponseData<T>(noProxy = true);
 
         var responseModel = suspendCancellableCoroutine<ResponseData<T>> {continuation ->
             val queue = Volley.newRequestQueue(context)
-            var header: MutableMap<String, String>? = null
-
-            if (requestData.headers != null) header = requestData.headers
-            else header = LocalStorage.get<MutableMap<String, String>>(
-                context,
-                Constants.LocalStorageKeys.SERVER_HEADERS
-            )
-
             val stringRequest = WWRequest<T>(
-                requestData.method?: Request.Method.GET, url!!, header,
+                requestData.method?: Request.Method.GET, url!!, headers(requestData.headers),
                 Response.Listener<ResponseData<T>> { response ->
                     continuation.resume(response, {})
                 },
@@ -81,7 +79,7 @@ class ProxyService(protected val context: Context, private val controller: Strin
         return responseModel
     }
 
-    fun getUrl(requestData: RequestData): String? {
+    private fun getUrl(requestData: RequestData): String? {
         var url = requestData.domain ?: LocalStorage.get<String>(
             context,
             Constants.LocalStorageKeys.SERVER_URL
@@ -99,6 +97,26 @@ class ProxyService(protected val context: Context, private val controller: Strin
         return url
     }
 
+    private fun headers(headers: Map<String, String>?) : MutableMap<String, String> {
+        var header: MutableMap<String, String> = LocalStorage.get<MutableMap<String, String>>(
+            context,
+            Constants.LocalStorageKeys.SERVER_HEADERS,
+            mutableMapOf()
+        )
 
+        if (headers != null) {
+            header.putAll(headers)
+        }
+
+        var hash = encryptionService.getEncryptionHash();
+        if(!hash.isNullOrEmpty()) {
+            var counter = System.currentTimeMillis()
+            var code = HmacOneTimePasswordGenerator(hash.toByteArray(), HmacOneTimePasswordConfig(codeDigits = 6, hmacAlgorithm = HmacAlgorithm.SHA1)).generate(counter)
+            header["hash"] = "${code}-${code}"
+        }
+        else header["hash"] = String.empty
+
+        return header;
+    }
 }
 

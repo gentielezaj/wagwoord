@@ -85,12 +85,12 @@ export class AuthService {
     async checkHash() {
         try {
             if (await this.encryptionService.getKey()) {
-                const md5 = await this.encryptionService.getHash(undefined, 'MD5');
+                const SHA3 = await this.encryptionService.getHash(undefined, 'SHA3');
                 const sh = await this.encryptionService.getHash(undefined);
 
                 await this.proxy.patch({
                     data: {
-                        old: md5,
+                        old: SHA3,
                         new: sh
                     }
                 });

@@ -16,7 +16,6 @@
     <!-- region login activity-->
     <string name="connecting_to_server">Connecting to server</string>
     <string name="sync_data">Synchronizing data</string>
-    <!-- endregion error messages -->
 
     <!-- region search activity-->
     <string name="search">Search</string>
@@ -32,9 +31,15 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
 
-    <!-- region login activity-->
+    <!-- endregion login activity-->
 
     <!-- region error messages -->
+
+    <!-- region response error messages -->
+    <string name="unauthorised">Un authorised</string>
+    <string name="server_error">Server error</string>
+    <!-- endregion response error messages -->
+
     <string name="login_failed">"Login failed"</string>
     <string name="title_activity_settings">Settings</string>
 

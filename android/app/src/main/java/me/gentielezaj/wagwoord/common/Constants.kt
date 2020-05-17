@@ -19,4 +19,21 @@ class Constants {
             val INTERNET = 1
         }
     }
+
+    class LoginAuthTypes {
+        companion object {
+            val UNAUTHRISED = "unAuthorised"
+            val LOGIN = "login"
+            val CHANGE = "change"
+        }
+    }
+}
+
+class RequestUrl() {
+    class Auth {
+        companion object {
+            val login = "login"
+            val change = "change"
+        }
+    }
 }

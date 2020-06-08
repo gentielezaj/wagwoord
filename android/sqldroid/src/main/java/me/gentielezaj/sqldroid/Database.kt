@@ -10,9 +10,12 @@ import me.gentielezaj.sqldroid.exceptions.queryExectution.MultipleRowsException
 import me.gentielezaj.sqldroid.models.ColumnType
 import me.gentielezaj.sqldroid.models.TableInfo
 import me.gentielezaj.sqldroid.query.*
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
+import java.util.*
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
 import kotlin.reflect.jvm.javaField
 
 class Database internal constructor(val db: SQLiteDatabase) {
@@ -41,7 +44,7 @@ class Database internal constructor(val db: SQLiteDatabase) {
         var model = entity
         if (foreignDepended) model = saveForeign(model)
         val primaryKeyValue = table.primaryKey.get(entity)!!
-        val id = db.update(table.name, getContentValues(model, table), "id = ${primaryKeyValue}", null)
+        db.update(table.name, getContentValues(model, table), "id = ${primaryKeyValue}", null)
         if (foreignDepended) saveForeignList(model)
         return primaryKeyValue
     }
@@ -61,8 +64,7 @@ class Database internal constructor(val db: SQLiteDatabase) {
     private fun saveForeignList(model: Any) {
         var table = TableInfo.create(model.javaClass.kotlin)
         for (f in table.foreignList ?: listOf()) {
-            val propertyValue = f.property.get(model) as Iterable<out Any>?;
-            if(propertyValue == null) return;
+            val propertyValue = f.property.get(model) as Iterable<out Any>? ?: return;
             for(item in propertyValue) {
                 val id = table.primaryKey.property.get(model);
                 f.foreignProperty.javaField!!.set(item, id)
@@ -82,7 +84,6 @@ class Database internal constructor(val db: SQLiteDatabase) {
         }
 
         val q = builder as BaseQueryBuilder<T>
-
         return QueryExecuterEntity(db, q.from, q.where, q.joins, q.orders, q.alias)
     }
 
@@ -112,11 +113,16 @@ class Database internal constructor(val db: SQLiteDatabase) {
         var values = ContentValues()
         for (column in table.columns) {
             if (column.isAutoIncrement) continue
-            val propertyValue = column.property.get(model)
+            var propertyValue = column.property.get(model)
+            if(column.converter != null) {
+                propertyValue = column.converter.createInstance().write(propertyValue);
+            }
+
             if (propertyValue == null) values.putNull(column.name)
             else {
                 when (column.type) {
                     ColumnType.INT -> values.put(column.name, propertyValue as Int)
+                    ColumnType.BIGINT -> values.put(column.name, propertyValue as Long)
                     ColumnType.TEXT, ColumnType.NVARCHAR -> values.put(
                         column.name,
                         propertyValue as String
@@ -127,16 +133,16 @@ class Database internal constructor(val db: SQLiteDatabase) {
                         if (propertyValue as Boolean) 1 else 0
                     )
                     ColumnType.TIME -> {
-                        val format = DateTimeFormatter.ofPattern(DatePatterns.time)
-                        values.put(column.name, format.format(propertyValue as TemporalAccessor))
+                        val format = SimpleDateFormat(DatePatterns.time)
+                        if(propertyValue is Date) values.put(column.name, format.format(propertyValue))
                     }
                     ColumnType.DATETIME -> {
-                        val format = DateTimeFormatter.ofPattern(DatePatterns.dateTime)
-                        values.put(column.name, format.format(propertyValue as TemporalAccessor))
+                        val format = SimpleDateFormat(DatePatterns.dateTime)
+                        if(propertyValue is Date) values.put(column.name, format.format(propertyValue))
                     }
                     ColumnType.DATE -> {
-                        val format = DateTimeFormatter.ofPattern(DatePatterns.date)
-                        values.put(column.name, format.format(propertyValue as TemporalAccessor))
+                        val format = SimpleDateFormat(DatePatterns.date)
+                        if(propertyValue is Date) values.put(column.name, format.format(propertyValue))
                     }
                     else -> throw UnsuportedColumnTypeException()
                 }

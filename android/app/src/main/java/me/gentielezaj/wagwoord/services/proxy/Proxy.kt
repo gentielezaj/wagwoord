@@ -7,57 +7,133 @@ import com.android.volley.toolbox.Volley
 import dev.turingcomplete.kotlinonetimepassword.HmacAlgorithm
 import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordConfig
 import dev.turingcomplete.kotlinonetimepassword.HmacOneTimePasswordGenerator
-import me.gentielezaj.wagwoord.common.Constants
-import me.gentielezaj.wagwoord.common.LocalStorage
 import kotlinx.coroutines.*
-import me.gentielezaj.wagwoord.common.LogData
-import me.gentielezaj.wagwoord.common.empty
+import me.gentielezaj.wagwoord.common.*
 import me.gentielezaj.wagwoord.models.proxyModels.RequestData
 import me.gentielezaj.wagwoord.models.proxyModels.ResponseData
+import me.gentielezaj.wagwoord.services.ServiceUtilities
 import me.gentielezaj.wagwoord.services.encryption.EncryptionService
 import java.lang.Exception
+import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.primaryConstructor
 
 class ProxyService(protected val context: Context, private val controller: String? = null) {
     var encryptionService = EncryptionService(context);
+    val localStorage = LocalStorage(context)
+    val serviceUtilities = ServiceUtilities(context)
 
-    suspend inline fun <reified T> get(action: String?, params: Map<String, String> = mapOf()): ResponseData<T> {
-        return get(T::class.java, action, params)
+    fun setDomain(domain: String? = null) {
+        if(domain.isNullOrEmpty()) localStorage.remove(Constants.LocalStorageKeys.SERVER_URL)
+        else localStorage.set(Constants.LocalStorageKeys.SERVER_URL, domain)
     }
 
-    suspend fun <T> get(entityType: Class<T>, action: String?, params: Map<String, String> = mapOf()): ResponseData<T> {
+    fun setHeaders(headers: Map<String, String>? = null) {
+        if(headers == null) localStorage.remove(Constants.LocalStorageKeys.SERVER_HEADERS)
+        else localStorage.set(Constants.LocalStorageKeys.SERVER_HEADERS, headers)
+    }
+
+    suspend inline fun <reified T: Any> get(action: String?, params: Map<String, String> = mapOf()): ResponseData<T> {
+        return get(T::class, action, params)
+    }
+
+    suspend fun <T: Any> get(entityType: KClass<T>, action: String?, params: Map<String, String> = mapOf()): ResponseData<T> {
         return request(entityType, RequestData(action, params = params))
     }
+    // endregion post
 
-    suspend inline fun <reified T> request(requestData: RequestData): ResponseData<T> {
-        return request(T::class.java, requestData)
+    suspend inline fun <reified T: Any> request(requestData: RequestData): ResponseData<T> {
+        return request(T::class, requestData)
     }
 
-    suspend fun <T> request(entityType: Class<T>, requestData: RequestData): ResponseData<T> {
+    suspend fun <T: Any> request(entityType: KClass<out Any>, requestData: RequestData): ResponseData<T> {
         return sendRequest(requestData, entityType)
     }
 
-    suspend fun isSet(forsed: Boolean = false) : Boolean {
-        val domain = LocalStorage.get<String>(context, Constants.LocalStorageKeys.SERVER_URL);
-        if(domain.isNullOrEmpty()) return false;
-        else if(!forsed) return true;
+    suspend fun <T: Any> requestList(entityType: KClass<out Any>, requestData: RequestData): ResponseData<List<T>> {
+        return sendRequestList(requestData, entityType)
+    }
+
+    suspend fun isSet(force: Boolean) : ServerStatus {
+        val domain = localStorage.get<String>(Constants.LocalStorageKeys.SERVER_URL);
+        if(domain.isNullOrEmpty()) return ServerStatus.OFF;
+
+        if(!force) {
+            return localStorage.get<ServerStatus>(Constants.LocalStorageKeys.SERVER_STATUS, ServerStatus.ERROR)
+        }
 
         try {
-            val response = sendRequest(
+            val response = sendRequest<Boolean>(
                 RequestData(
                 action = "isValidConnection",
-                controller = "auth",
-                    domain = domain
-            ), Boolean::class.java)
+                controller = "auth"
+            ), Boolean::class)
 
-            return response.data?: false
+            val status = if(response.success) ServerStatus.OK else ServerStatus.ERROR
+            localStorage.set(Constants.LocalStorageKeys.SERVER_STATUS, status)
+
+            return status;
         } catch (e: Exception) {
             LogData(e, "proxyService.isSet()")
-            return false;
+            throw e;
         }
     }
 
-    private suspend inline fun <T> sendRequest(requestData: RequestData, entityType: Class<T>): ResponseData<T> {
-        val url = getUrl(requestData);
+    private suspend inline fun <T: Any> sendRequest(requestData: RequestData, entityType: KClass<out Any>): ResponseData<T> {
+        @Suppress("UNCHECKED_CAST")
+        return sendRequest(requestData, entityType, WWRequest::class as KClass<CoreRequest<T>>)
+    }
+
+    private suspend inline fun <T: Any> sendRequestList(requestData: RequestData, entityType: KClass<out Any>): ResponseData<T> {
+        @Suppress("UNCHECKED_CAST")
+        return sendRequest(requestData, entityType, WWRequestList::class as KClass<CoreRequest<T>>)
+    }
+
+    private suspend inline fun <T: Any> sendRequest(requestData: RequestData, entityType: KClass<out Any>, wwRequestType: KClass<CoreRequest<T>>): ResponseData<T> {
+        if(!serviceUtilities.hasInternetConnection()) return return ResponseData(null, 0, false, "No Intrnat", true)
+        var domain = requestData.domain
+        if(domain.isNullOrEmpty()) {
+            domain = localStorage.get<String>(Constants.LocalStorageKeys.SERVER_URL)
+        }
+        if(domain.isNullOrEmpty()) {
+            return ResponseData(null, 0, false, "No Intrnat", true)
+        }
+
+        val url = getUrl(requestData, domain);
+        if (url.isNullOrEmpty()) return ResponseData<T>(noProxy = true);
+
+        var responseModel = suspendCancellableCoroutine<ResponseData<T>> {continuation ->
+            val queue = Volley.newRequestQueue(context)
+            var stringRequest = wwRequestType.primaryConstructor!!.call(
+                requestData.method?: Request.Method.GET, url!!, headers(requestData.headers),
+                Response.Listener<ResponseData<T>> { response ->
+                    continuation.resume(response, {})
+                },
+                Response.ErrorListener { error ->
+                    LogData(error, "Request", error.toString())
+                    continuation.resume(ResponseData<T>(exception = error), {})
+                },
+                entityType.java,
+                requestData.data
+            )
+            queue.add(stringRequest)
+        }
+
+        return responseModel
+    }
+
+    private suspend inline fun <T: Any> baseSendRequest(requestData: RequestData, entityType: KClass<out Any>): ResponseData<T> {
+        if(!serviceUtilities.hasInternetConnection()) return return ResponseData(null, 0, false, "No Intrnat", true)
+        var domain = requestData.domain
+        if(domain.isNullOrEmpty()) {
+            domain = localStorage.get<String>(Constants.LocalStorageKeys.SERVER_URL)
+        }
+        if(domain.isNullOrEmpty()) {
+            return ResponseData(null, 0, false, "No Intrnat", true)
+        }
+
+        val url = getUrl(requestData, domain);
         if (url.isNullOrEmpty()) return ResponseData<T>(noProxy = true);
 
         var responseModel = suspendCancellableCoroutine<ResponseData<T>> {continuation ->
@@ -71,7 +147,8 @@ class ProxyService(protected val context: Context, private val controller: Strin
                     LogData(error, "Request", error.toString())
                     continuation.resume(ResponseData<T>(), {})
                 },
-                entityType = entityType
+                entityType = entityType.java,
+                data = requestData.data
             )
             queue.add(stringRequest)
         }
@@ -79,11 +156,8 @@ class ProxyService(protected val context: Context, private val controller: Strin
         return responseModel
     }
 
-    private fun getUrl(requestData: RequestData): String? {
-        var url = requestData.domain ?: LocalStorage.get<String>(
-            context,
-            Constants.LocalStorageKeys.SERVER_URL
-        )
+    private fun getUrl(requestData: RequestData, domain: String): String? {
+        var url = domain
         if (url.isNullOrEmpty()) return null
 
         if (!url.endsWith("/")) url += "/"
@@ -98,8 +172,7 @@ class ProxyService(protected val context: Context, private val controller: Strin
     }
 
     private fun headers(headers: Map<String, String>?) : MutableMap<String, String> {
-        var header: MutableMap<String, String> = LocalStorage.get<MutableMap<String, String>>(
-            context,
+        var header: MutableMap<String, String> = localStorage.get<MutableMap<String, String>>(
             Constants.LocalStorageKeys.SERVER_HEADERS,
             mutableMapOf()
         )
@@ -112,7 +185,7 @@ class ProxyService(protected val context: Context, private val controller: Strin
         if(!hash.isNullOrEmpty()) {
             var counter = System.currentTimeMillis()
             var code = HmacOneTimePasswordGenerator(hash.toByteArray(), HmacOneTimePasswordConfig(codeDigits = 6, hmacAlgorithm = HmacAlgorithm.SHA1)).generate(counter)
-            header["hash"] = "${code}-${code}"
+            header["hash"] = "${code}-${counter}"
         }
         else header["hash"] = String.empty
 

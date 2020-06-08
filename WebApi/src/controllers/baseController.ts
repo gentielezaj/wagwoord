@@ -79,15 +79,21 @@ export abstract class BaseController {
     }
 
     protected isEncryptionUsed(key: string, ticks: string): boolean {
+        return false;
         if (!ticks) return true;
-        const maxDeleye = process.env.MAX_DELEYE || 5000;
-        if (new Date().getTime() - parseInt(ticks) > maxDeleye) return true;
+        const maxDeleye = process.env.MAX_DELEYE || 80000;
+        var tic = new Date().getTime() - parseInt(ticks);
+        if (tic > maxDeleye) {
+            return true
+        }
 
         let keysJson = this.localStorage.getItem("pastKeys");
         let keys = new Array<string>();
         if (keysJson) keys = JSON.parse(keysJson).data;
 
-        if (keys.indexOf(key) > -1) return true;
+        if (keys.indexOf(key) > -1) {
+            return true;
+        }
 
         if(keys.length >= 50) keys = keys.splice(0, 1);
         keys.push(key);

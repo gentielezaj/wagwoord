@@ -9,11 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.activities.demo.DemoActivity
 import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.fragments.CoreFragment
+import me.gentielezaj.wagwoord.services.BackgroundService
+import me.gentielezaj.wagwoord.services.inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +33,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class DemoFragment : CoreFragment(R.layout.fragment_demo) {
+    lateinit var backgroundService :BackgroundService
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,9 +42,12 @@ class DemoFragment : CoreFragment(R.layout.fragment_demo) {
         val view = super.onCreateView(inflater, container, savedInstanceState)!!
 
         val button = view.findViewById<Button>(R.id.demo_clear_storage)
-
+        val con = requireContext();
+        backgroundService = BackgroundService(con)
         view.findViewById<Button>(R.id.demo_open_activity).setOnClickListener { v: View ->
-            startActivity(Intent(requireContext(), DemoActivity::class.java))
+            GlobalScope.launch(Dispatchers.Main) {
+                backgroundService.sync()
+            }
         }
 
         button.setOnClickListener { v: View? ->

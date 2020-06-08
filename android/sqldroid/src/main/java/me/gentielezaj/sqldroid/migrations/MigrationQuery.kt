@@ -1,22 +1,25 @@
 package me.gentielezaj.sqldroid.migrations
 
 import android.database.sqlite.SQLiteDatabase
+import me.gentielezaj.sqldroid.models.ColumnInfo
 import me.gentielezaj.sqldroid.models.TableInfo
+import java.util.*
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
 
 class MigrationQuery internal constructor(val db: SQLiteDatabase) {
     private val resolver = MigrationResolver()
 
     // region table
 
-    private fun tableInfo(clazzs: Array<out KClass<*>>) : List<TableInfo> {
-        return clazzs.map{ TableInfo.create(it)!!  }
+    private fun <T: Any> columnInfo(clazzs: Set<KProperty1<T, Any?>>) : List<ColumnInfo> {
+        return clazzs.map{ ColumnInfo.create(it)!!  }
     }
 
-    fun createTable(vararg clazzs: KClass<*>) = execute(resolver.createTable(tableInfo(clazzs), false))
-    fun createTableIfNotExists(vararg clazzs: KClass<*>) = execute(resolver.createTable(tableInfo(clazzs), false))
-    fun dropTable(vararg clazzs: KClass<*>) = execute(resolver.dropTable(tableInfo(clazzs), false))
-    fun dropTableIfExists(vararg clazzs: KClass<*>) = execute(resolver.dropTable(tableInfo(clazzs), true))
+    fun <T: Any> createTable(clazzs: KClass<T>, properties: Set<KProperty1<T, Any?>>) = execute(resolver.createTable(TableInfo.create(clazzs), false, columnInfo(properties)))
+    fun <T:Any> createTableIfNotExists(clazzs: KClass<T>, properties: Set<KProperty1<T, Any?>>) = execute(resolver.createTable(TableInfo.create(clazzs), false, columnInfo(properties)))
+    fun dropTable(clazzs: KClass<*>) = execute(resolver.dropTable(TableInfo.create(clazzs), false))
+    fun dropTableIfExists(clazzs: KClass<*>) = execute(resolver.dropTable(TableInfo.create(clazzs), true))
 
     fun renameTable(tableName: String, newName: String) = execute(resolver.renameTable(tableName, newName))
     // end region

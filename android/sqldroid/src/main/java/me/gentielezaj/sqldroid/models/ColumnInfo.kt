@@ -1,7 +1,7 @@
 package me.gentielezaj.sqldroid.models
 
+import android.annotation.SuppressLint
 import android.database.Cursor
-import androidx.annotation.Nullable
 import androidx.core.database.getDoubleOrNull
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
@@ -11,31 +11,28 @@ import me.gentielezaj.sqldroid.models.annotations.column.PrimaryKey
 import me.gentielezaj.sqldroid.common.valueOrDefault
 import me.gentielezaj.sqldroid.common.valueOrNull
 import me.gentielezaj.sqldroid.exceptions.UnsuportedColumnTypeException
-import me.gentielezaj.sqldroid.models.annotations.column.ForeignKey
-import java.lang.Exception
+import me.gentielezaj.sqldroid.models.annotations.column.ColumnConverter
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.reflect.KMutableProperty
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KProperty1
-import kotlin.reflect.KType
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.isSupertypeOf
+import kotlin.reflect.*
+import kotlin.reflect.full.*
 
-data class ColumnInfo(val name: String,
-                      val type: ColumnType,
-                      val nullable: Boolean,
-                      val length: Int,
-                      val default: Any?,
-                      val readOnly: Boolean,
-                      val property: KMutableProperty1<Any, Any?>,
-                      val primaryKey: PrimaryKeyInfo?,
-                      val foreignKey: ForeignKeyInfo?) {
+@Suppress("UNCHECKED_CAST")
+data class ColumnInfo(
+    val name: String,
+    val type: ColumnType,
+    val nullable: Boolean,
+    val length: Int,
+    val default: Any?,
+    val readOnly: Boolean,
+    val property: KMutableProperty1<Any, Any?>,
+    val primaryKey: PrimaryKeyInfo?,
+    val foreignKey: ForeignKeyInfo?,
+    val converter: KClass<out ColumnConverter>?
+) {
 
     val isAutoIncrement: Boolean
-        get() = isPrimaryKey && type == ColumnType.INT && primaryKey?.autoincrement?: false
+        get() = isPrimaryKey && type == ColumnType.INT && primaryKey?.autoincrement ?: false
 
     val isPrimaryKey: Boolean
         get() = primaryKey != null
@@ -43,12 +40,12 @@ data class ColumnInfo(val name: String,
     val isForeignKey: Boolean
         get() = foreignKey != null
 
-    fun get(model: Any) : Any? = property.get(model)
+    fun get(model: Any): Any? = property.get(model)
 
-    fun <T: Any> get(c: Cursor) : T? {
+    fun <T : Any> get(c: Cursor): T? {
         val columnIndex = c.getColumnIndexOrThrow(name)
 
-        var dbValue: Any? = when(type) {
+        val dbValue = when (type) {
             ColumnType.BIGINT -> c.getLongOrNull(columnIndex)
             ColumnType.BOOLEAN -> c.getIntOrNull(columnIndex)
             ColumnType.INT -> c.getIntOrNull(columnIndex)
@@ -57,9 +54,15 @@ data class ColumnInfo(val name: String,
             else -> c.getStringOrNull(columnIndex)
         } ?: return null
 
-        return (when(type) {
+        if(converter != null) {
+            return converter.createInstance().read(dbValue) as T
+        }
+
+        return (when (type) {
             ColumnType.BOOLEAN -> dbValue == 1
-            ColumnType.DATETIME, ColumnType.TIME, ColumnType.DATE -> SimpleDateFormat(getDatePattern()).parse(dbValue as String)
+            ColumnType.DATETIME, ColumnType.TIME, ColumnType.DATE -> SimpleDateFormat(getDatePattern()).parse(
+                dbValue as String
+            )
             else -> dbValue
         }) as T
     }
@@ -67,7 +70,7 @@ data class ColumnInfo(val name: String,
     fun setValue(model: Any, value: Any?) = property.set(model, value)
     fun setValue(model: Any, c: Cursor) = setValue(model, get<Any>(c))
 
-    fun getDatePattern() : String? = when(this.type) {
+    private fun getDatePattern(): String? = when (this.type) {
         ColumnType.DATETIME -> me.gentielezaj.sqldroid.common.DatePatterns.dateTime
         ColumnType.DATE -> me.gentielezaj.sqldroid.common.DatePatterns.date
         ColumnType.TIME -> me.gentielezaj.sqldroid.common.DatePatterns.time
@@ -75,31 +78,39 @@ data class ColumnInfo(val name: String,
     }
 
     companion object {
-        fun create(property: KProperty1<out Any, Any?>) : ColumnInfo? {
-            val column = property.findAnnotation<Column>()
-            if(column == null) return null
+        fun create(property: KProperty1<out Any, Any?>): ColumnInfo? {
+            val column = property.findAnnotation<Column>() ?: return null
 
             val primaryKey = property.findAnnotation<PrimaryKey>()
             val columnType = getColumnType(property.returnType, column.type)
 
+            val converter = if(column.converter != ColumnConverter::class) column.converter else null
+
+            var isNullable = when(column.nullable) {
+                Nullable.NOT_NULL -> false
+                Nullable.NULL -> true
+                else -> property.returnType.isMarkedNullable
+            }
+
             return ColumnInfo(
                 name = column.name.valueOrDefault(property.name),
                 type = columnType,
-                nullable = column.nullable && property.returnType.isMarkedNullable && primaryKey == null,
+                nullable = isNullable && primaryKey == null,
                 length = column.length,
-                default = column.default.valueOrNull()?.to(property.returnType),
+                default = column.default.valueOrNull(),
                 readOnly = column.computed,
                 property = property as KMutableProperty1<Any, Any?>,
-                primaryKey = if(primaryKey != null) PrimaryKeyInfo(primaryKey.autoincrement) else null,
-                foreignKey = ForeignKeyInfo.create(property)
+                primaryKey = if (primaryKey != null) PrimaryKeyInfo(primaryKey.autoincrement) else null,
+                foreignKey = ForeignKeyInfo.create(property),
+                converter = converter
             )
         }
 
-        fun getColumnType(type: KType, columnType: ColumnType = ColumnType.DEFAULT) : ColumnType {
-            if(columnType != ColumnType.DEFAULT) return columnType
-            return when(type) {
+        fun getColumnType(type: KType, columnType: ColumnType = ColumnType.DEFAULT): ColumnType {
+            if (columnType != ColumnType.DEFAULT) return columnType
+            return when (type) {
                 Int::class.createType(nullable = type.isMarkedNullable)
-                    -> ColumnType.INT
+                -> ColumnType.INT
                 Float::class.createType(nullable = type.isMarkedNullable) -> ColumnType.REAL
                 Date::class.createType(nullable = type.isMarkedNullable) -> ColumnType.DATETIME
                 Boolean::class.createType(nullable = type.isMarkedNullable) -> ColumnType.BOOLEAN
@@ -123,4 +134,10 @@ enum class ColumnType {
     DATETIME,
     REAL,
     DEFAULT,
+}
+
+enum class Nullable {
+    DEFAULT,
+    NULL,
+    NOT_NULL
 }

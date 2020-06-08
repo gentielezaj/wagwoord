@@ -1,8 +1,16 @@
 package me.gentielezaj.wagwoord.fragments.addresses
 
 import android.os.Bundle
+import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.fragments.CorFragmentList
 import me.gentielezaj.wagwoord.fragments.CoreFragment
+import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
+import me.gentielezaj.wagwoord.models.entities.Address
+import me.gentielezaj.wagwoord.models.entities.Password
+import me.gentielezaj.wagwoord.services.entity.CoreEntityService
+import me.gentielezaj.wagwoord.services.injectEntityService
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,7 +25,19 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AddressListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddressListFragment : CoreFragment(R.layout.fragment_address_list) {
+class AddressListFragment : CorFragmentList<Address>() {
+
+    protected override val entityService: CoreEntityService<Address> by injectEntityService<Address>()
+    protected override val viewModel: AddressViewModel by activityViewModels()
+
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int): Address? {
+        val item = dataSet[position];
+
+        holder.findViewById<TextView>(R.id.core_list_item_subject).text = "${item.firstName} ${item.lastName} - ${item.username}"
+        holder.findViewById<TextView>(R.id.core_list_item_description).text = "${item.street} ${item.city}"
+
+        return item;
+    }
 
     companion object {
         /**

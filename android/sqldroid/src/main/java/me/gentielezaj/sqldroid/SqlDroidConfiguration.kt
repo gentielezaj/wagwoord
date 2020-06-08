@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import me.gentielezaj.sqldroid.migrations.Migration
 import me.gentielezaj.sqldroid.migrations.MigrationQuery
 
-private fun getVersion(version: Int?, migrations: Iterable<out Migration>? = null): Int {
+private fun getVersion(version: Int?, migrations: Iterable<Migration>? = null): Int {
     if (version != null) return version;
     if (migrations == null) return 1
     var dbVersion = 1
@@ -16,18 +16,18 @@ private fun getVersion(version: Int?, migrations: Iterable<out Migration>? = nul
     return dbVersion
 }
 
-private fun Log(string: String): Unit {
+private fun log(string: String): Unit {
     android.util.Log.d("exeption", string)
 }
-private fun LogExeption(e: Exception, string: String): Unit {
-    android.util.Log.d("exeption", string)
+private fun logExeption(e: Exception, string: String): Unit {
+    android.util.Log.d("exeption", e.message + string)
 }
 
 
 open class SqlDroidConfiguration(
     val context: Context,
     databaseName: String,
-    val migrations: Iterable<out Migration>? = null,
+    private val migrations: Iterable<Migration>? = null,
     var version: Int,
     val log: (String) -> Unit,
     val logException: (Exception, String) -> Unit
@@ -38,14 +38,14 @@ open class SqlDroidConfiguration(
         databaseName,
         null,
         1,
-        ::Log,
-        ::LogExeption
+        ::log,
+        ::logExeption
     )
 
     constructor(
         context: Context,
         databaseName: String,
-        migrations: Iterable<out Migration>,
+        migrations: Iterable<Migration>,
         log: (String) -> Unit,
         logException: (Exception, String) -> Unit
     ) : this(
@@ -57,13 +57,13 @@ open class SqlDroidConfiguration(
         logException
     )
 
-    constructor(context: Context, databaseName: String, migrations: Iterable<out Migration>) : this(
+    constructor(context: Context, databaseName: String, migrations: Iterable<Migration>) : this(
         context,
         databaseName,
         migrations,
         getVersion(null, migrations),
-        ::Log,
-        ::LogExeption
+        ::log,
+        ::logExeption
     )
 
     // region override

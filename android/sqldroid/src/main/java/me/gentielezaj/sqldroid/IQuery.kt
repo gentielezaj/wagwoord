@@ -1,10 +1,15 @@
 package me.gentielezaj.sqldroid
 
 import me.gentielezaj.sqldroid.query.*
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.memberProperties
 
 interface ICoreQuery<T>
+
+interface IQueryCriteria<T>
 
 interface IQuery<T: Any, TResult: Any> : ICoreQuery<T>, ICoreQueryBuilder<T, IQuery<T, TResult>, IQuery<T, T>, IQuery<T,  Map<KProperty1<out Any, out Any?>, out Any?>>>  {
     fun toList(criteria: ICriteria<T>? = null): List<TResult>
@@ -24,18 +29,21 @@ interface IQuery<T: Any, TResult: Any> : ICoreQuery<T>, ICoreQueryBuilder<T, IQu
     fun <TValue: Any> select(property: KProperty1<T, TValue?>) : IQuery<T, TValue>
 
     fun count(criteria: ICriteria<T>? = null): Int
+
+    fun any(criteria: ICriteria<T>? = null): Boolean = count(criteria) > 0
 }
 
-interface IQueryBuilder<T:Any> : ICoreQuery<T>, ICoreQueryBuilder<T, IQueryBuilder<T>, IQueryBuilder<T>, IQueryBuilder<T>> {
+interface IQueryBuilder<T:Any> : ICoreQuery<T>, ICoreQueryBuilder<T, IQueryBuilder<T>, IQueryBuilder<T>, IQueryBuilder<T>>, IQueryCriteria<T> {
     fun <TValue: Any> select(property: KProperty1<T, TValue?>) : IQueryBuilder<T>
 }
 
 interface ICoreQueryBuilder<T:Any, TResult: Any, TAll: Any, TMap: Any> : SqlBuilder<T> {
     // region order
     fun resetOrder()
-    infix fun asc(proeprty: KProperty1<T, Any?>) : TResult = orderBy(proeprty, OrderDirections.ASC)
-    infix fun desc(proeprty: KProperty1<T, Any?>) : TResult =  orderBy(proeprty, OrderDirections.DESC)
-    fun orderBy(proeprty: KProperty1<T, Any?>, directions: OrderDirections) : TResult
+    infix fun asc(property: KProperty1<T, Any?>) : TResult = orderBy(property, OrderDirections.ASC)
+    infix fun desc(property: KProperty1<T, Any?>) : TResult =  orderBy(property, OrderDirections.DESC)
+    fun desc(type:KClass<T>, property: String) : TResult =  orderBy(type.memberProperties.find { it.name == property }!!, OrderDirections.DESC)
+    fun orderBy(property: KProperty1<T, Any?>, directions: OrderDirections) : TResult
     fun orderBy(order: Order<T>): TResult
     // endregion order
 

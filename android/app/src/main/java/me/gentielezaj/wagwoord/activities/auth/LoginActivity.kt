@@ -24,7 +24,6 @@ import me.gentielezaj.wagwoord.services.inject
 import me.gentielezaj.wagwoord.ui.ResizeAnimation
 
 class LoginActivity : CoreActivity() {
-    private val backgroundService by inject<BackgroundService>()
     private val authService by inject<AuthService>()
     private val url: EditText by bindView(R.id.setup_url)
     private val encryptionKey by bindView<EditText>(R.id.setup_encryption_key)
@@ -94,7 +93,7 @@ class LoginActivity : CoreActivity() {
                     btnLogin.doneLoadingAnimation(color, AppUtil.vectorToBitmap(this, R.drawable.ic_check))
                     Toast.makeText(applicationContext, getString(R.string.welcome), Toast.LENGTH_SHORT).show()
                     setHepText(getString(R.string.sync_data))
-                    backgroundService.updateAll()
+                    authService.proxy.isSet(true)
                     Toast.makeText(applicationContext, getString(R.string.data_updated), Toast.LENGTH_SHORT).show()
                     skip()
                 } else {

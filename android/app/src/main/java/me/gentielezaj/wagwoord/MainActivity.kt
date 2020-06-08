@@ -25,15 +25,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import me.gentielezaj.wagwoord.activities.CoreActivity
 import me.gentielezaj.wagwoord.activities.auth.LoginActivity
 import me.gentielezaj.wagwoord.activities.settings.SettingsActivity
-import me.gentielezaj.wagwoord.common.Constants
-import me.gentielezaj.wagwoord.common.LocalStorage
-import me.gentielezaj.wagwoord.common.LogData
+import me.gentielezaj.wagwoord.common.*
 import me.gentielezaj.wagwoord.fragments.OnFragmentInteractionListener
+import me.gentielezaj.wagwoord.services.BackgroundService
 import me.gentielezaj.wagwoord.services.bindView
+import me.gentielezaj.wagwoord.services.inject
 
 
 class MainActivity : CoreActivity(), OnFragmentInteractionListener {
 
+    private val appService: BackgroundService by inject()
     private val toolbar by bindView<Toolbar>(R.id.toolbar)
     private val appBar by bindView<AppBarLayout>(R.id.app_bar)
     private val collapsingToolbarLayout by bindView<CollapsingToolbarLayout>(R.id.collapsing_toolbar)
@@ -44,8 +45,8 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
     private var isAppBarExpended = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         checkIfAppIsSetup()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // region toolbar
@@ -76,7 +77,10 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
     }
 
     private fun checkIfAppIsSetup() {
-        if (!LocalStorage.get<Boolean>(this, Constants.LocalStorageKeys.APP_IS_SETUP, false)) {
+        appService.onStart()
+        var isSetup = localStorage.get<Boolean>(Constants.LocalStorageKeys.APP_IS_SETUP, false)
+        var isError = localStorage.get<ServerStatus>(Constants.LocalStorageKeys.SERVER_STATUS, ServerStatus.OFF) == ServerStatus.ERROR
+        if (!isSetup || isError) {
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }

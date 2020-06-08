@@ -4,7 +4,9 @@ import me.gentielezaj.sqldroid.exceptions.UnsuportedColumnTypeException
 import me.gentielezaj.sqldroid.models.ColumnInfo
 import me.gentielezaj.sqldroid.models.ColumnType
 import me.gentielezaj.sqldroid.models.TableInfo
+import me.gentielezaj.sqldroid.models.annotations.column.Column
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.javaField
 
@@ -12,38 +14,36 @@ internal class MigrationResolver {
 
     // region table
 
-    fun createTable(tables: List<TableInfo>, ifNotExists: Boolean) : String {
+    fun createTable(table: TableInfo, ifNotExists: Boolean, columns: List<ColumnInfo>) : String {
         var sql = mutableListOf<String>()
-        for(table in tables) {
-            sql.add("CREATE TABLE")
-            if(ifNotExists) sql.add("IF NOT EXISTS")
-            sql.add(table.name)
-            sql.add("(")
-            sql.add(getCoumnsConstant(table))
-            sql.add(");")
-        }
+
+        sql.add("CREATE TABLE")
+        if(ifNotExists) sql.add("IF NOT EXISTS")
+        sql.add(table.name)
+        sql.add("(")
+        sql.add(getCoumnsConstant(table, columns))
+        sql.add(");")
 
         return sql.joinToString(" ")
     }
 
-    private fun getCoumnsConstant(table: TableInfo): String {
+    private fun getCoumnsConstant(table: TableInfo, columns: List<ColumnInfo>): String {
         var sql = mutableListOf<String>()
-        sql.addAll(table.columns.map {createColumn( it )})
+        sql.addAll(columns.map {createColumn( it )})
         sql.add(createUniqueKey(table))
         return sql.filter{!it.isNullOrEmpty()}.joinToString(", ")
     }
 
-    fun dropTable(table: List<TableInfo>, ifNotExists: Boolean = false) : String {
+    fun dropTable(table: TableInfo, ifNotExists: Boolean = false) : String {
         var sql = mutableListOf<String>()
-        for(t in table) {
-            sql.add("DROP TABLE ${if(ifNotExists) "IF EXISTS" else ""} ${t.name};")
-        }
+        sql.add("DROP TABLE ${if(ifNotExists) "IF EXISTS" else ""} ${table.name};")
         return sql.joinToString("; ")
     }
 
     fun renameTable(currentName: String, newName: String) : String = "ALTER TABLE ${currentName} RENAME TO ${newName};"
 
     // endregion
+
 
     //region foreignKeys primery and unique key
     fun createUniqueKey(table: TableInfo) : String {
@@ -117,13 +117,13 @@ internal class MigrationResolver {
         private val mr: MigrationResolver
             get() = MigrationResolver()
 
-        fun createTable(vararg clazzs: KClass<*>) : String = mr.createTable(clazzs.map{TableInfo.create(it)!!}.toList(), false)
-        fun createTableIfNotExists(vararg clazzs: KClass<*>) : String = mr.createTable(clazzs.map{TableInfo.create(it)!!}.toList(), true)
+        fun <T:Any> createTable(clazzs: KClass<T>, vararg properties: KProperty1<T, Any?>) : String = mr.createTable(TableInfo.create(clazzs), false, properties.map { ColumnInfo.create(it)!! })
+        fun <T:Any> createTableIfNotExists(clazzs: KClass<T>, vararg properties: KProperty1<T, Any?>) : String = mr.createTable(TableInfo.create(clazzs), true, properties.map { ColumnInfo.create(it)!! })
 
-        fun addColumn(property: KProperty1<out Any, Any?>) : String = mr.createColumn(TableInfo.create(property.javaField!!.declaringClass.kotlin)!!, ColumnInfo.create(property)!!)
+        fun addColumn(property: KProperty1<out Any, Any?>) : String = mr.createColumn(TableInfo.create(property.javaField!!.declaringClass.kotlin), ColumnInfo.create(property)!!)
 
-        fun createIndex(unique: Boolean, clazz: KClass<*>, vararg columns: KProperty1<out Any, Any?>) = mr.createIndex(unique, TableInfo.create(clazz)!!, null, columns.map{ ColumnInfo.create(it)!! })
-        fun createIndex(unique: Boolean, column: KProperty1<out Any, Any?>) = mr.createIndex(unique, TableInfo.create(column.javaField!!.declaringClass.kotlin)!!, null, listOf(ColumnInfo.create(column)!!))
+        fun createIndex(unique: Boolean, clazz: KClass<*>, vararg columns: KProperty1<out Any, Any?>) = mr.createIndex(unique, TableInfo.create(clazz), null, columns.map{ ColumnInfo.create(it)!! })
+        fun createIndex(unique: Boolean, column: KProperty1<out Any, Any?>) = mr.createIndex(unique, TableInfo.create(column.javaField!!.declaringClass.kotlin), null, listOf(ColumnInfo.create(column)!!))
         fun dropIndex(name: String) = mr.dropIndex(name)
     }
 }

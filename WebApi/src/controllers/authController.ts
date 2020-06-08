@@ -103,7 +103,9 @@ export class AuthController extends BaseController {
     protected async change(req: Request, res: Response) {
         const encryptionHashReq = req.body ? req.body[Constants.EncryptionHashKey] : '';
         try {
-            if (this.checkWagwoordId(req) && this.isEncryptionEqual(req)) {
+            const w = this.checkWagwoordId(req);
+            const e = this.isEncryptionEqual(req);
+            if (w && e) {
                 await this.repository.SaveEncryptionHash(encryptionHashReq);
                 this.sendResponse(res, this.repository.returnHeadersModel());
             } else {

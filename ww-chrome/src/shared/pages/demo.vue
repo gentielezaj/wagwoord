@@ -396,6 +396,22 @@
           </div>
         </div>
       </article>
+      <article v-collapse="'.content'">
+        <header>
+          <h2>Encryption</h2>
+        </header>
+        <div class="content">
+          <div class="input-container">
+            <input type="text" v-model="encryption.key" name="encryptionKey" placeholder="encryptionKey" />
+            <button v-if="encryption.key" @click="encryption.key = ''" class="input-sufix  icon-remove"></button>
+          </div>
+          <div class="cards">
+            <button @click="testEncryption()" >
+              Test
+            </button>
+          </div>
+        </div>
+      </article>
     </main>
   </div>
 </template>
@@ -403,6 +419,7 @@
 <script>
 import loader from "../components/common/loader.component";
 import { pageCoreComponentMixin } from "../components/common/core.component";
+import EncryptionService from "../services/encryprion.service";
 
 export default {
   name: "demo-page",
@@ -441,13 +458,23 @@ export default {
         input: "",
         checkbox: false,
         textarea: ""
-      }
+      },
+      encryption: {}
     };
   },
-  computed: {},
+  computed: {
+    encryptionService() {
+      return new EncryptionService();
+    }
+  },
   methods: {
     addNotification(type) {
       this.notify("notification", type);
+    },
+    testEncryption() {
+      this.encryption.hash = this.encryptionService.getHash(this.encryption.key);
+      this.encryption.sha = this.encryptionService.getHash(this.encryption.key);
+      console.log(this.encryption);
     },
     randomClick(e) {
       e.preventDefault();

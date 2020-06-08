@@ -139,7 +139,7 @@ open class QueryExecuter<T : Any, TResult : Any>(
     override fun count(criteria: ICriteria<T>?): Int = execute(criteria).count
 
     fun execute(criteria: ICriteria<T>? = null): Cursor {
-        if (criteria != null) where(criteria!!);
+        if (criteria != null) where(criteria);
         val sql = toSqlString()
         return database.rawQuery(sql, null)
     }

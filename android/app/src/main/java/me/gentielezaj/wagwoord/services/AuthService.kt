@@ -3,57 +3,66 @@ package me.gentielezaj.wagwoord.services
 import android.content.Context
 import com.android.volley.Request
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.common.Constants
-import me.gentielezaj.wagwoord.common.LocalStorage
-import me.gentielezaj.wagwoord.common.RequestUrl
+import me.gentielezaj.wagwoord.common.*
 import me.gentielezaj.wagwoord.models.ApiModes.SetupDataModel
 import me.gentielezaj.wagwoord.models.proxyModels.RequestData
 import me.gentielezaj.wagwoord.models.proxyModels.ResponseData
 import me.gentielezaj.wagwoord.services.encryption.EncryptionService
 import me.gentielezaj.wagwoord.services.proxy.ProxyService
-import kotlin.math.log
 
-public class AuthService(val context: Context) {
+public class AuthService(context: Context) : BaseService(context) {
     val proxy: ProxyService = ProxyService(context, "auth")
+    val backgroundService = BackgroundService(context)
     val encryption = EncryptionService(context)
 
-    suspend fun login(domain: String, encryptionKey: String): ResponseData<SetupDataModel> {
-        val encryptionHash = encryption.getEncryptionHash(encryptionKey)
-
+    suspend fun login(domain: String, encryptionKey: String): ResponseData<out Any> {
+        val newEncryptionHash = encryption.getEncryptionHash(encryptionKey)?: String.empty
+        var oldEncryptionHash = encryption.getEncryptionHash()?: String.empty
         if (!domain.isNullOrEmpty()) {
-            var request = RequestData("", domain = domain, method = Request.Method.POST, data = encryptionHash)
+            var request = RequestData("", domain = domain, method = Request.Method.POST, data = mapOf("newEncryptionHash" to newEncryptionHash, "oldEncryptionHash" to oldEncryptionHash))
 
             val response = proxy.request<String>(request)
 
             if(!response.success || response.noProxy) {
-                return ResponseData<SetupDataModel>(success = false, errorMessage = context.getString(R.string.server_error));
+                response.errorMessage = context.getString(R.string.server_error);
+                return response
             }
             else if(response.data == Constants.LoginAuthTypes.UNAUTHRISED) {
-                return ResponseData<SetupDataModel>(success = false, errorMessage = context.getString(R.string.unauthorised));
+                return response.copy(success = false, errorMessage = context.getString(R.string.unauthorised));
             }
 
             var loginRequest = if(response.data == Constants.LoginAuthTypes.LOGIN) {
-                RequestData(RequestUrl.Auth.login, domain = domain, method = Request.Method.POST)
+                RequestData(RequestUrl.Auth.login, domain = domain, method = Request.Method.POST, data = mapOf("encryptionHash" to newEncryptionHash))
             } else {
-                syncFromServer()
-                RequestData(RequestUrl.Auth.change, domain = domain, method = Request.Method.POST)
+                backgroundService.syncLocal()
+                RequestData(RequestUrl.Auth.change, domain = domain, method = Request.Method.POST, data = mapOf("encryptionHash" to newEncryptionHash))
             }
 
             var loginResponse = proxy.request<SetupDataModel>(loginRequest);
             if(loginResponse.success) {
+                proxy.setDomain(domain)
+                proxy.setHeaders(loginResponse.data?.headers)
                 saveEncryption(encryptionKey);
-                sync()
+                if(proxy.isSet(true) != ServerStatus.OK) {
+                    proxy.setDomain()
+                    proxy.setHeaders()
+                    saveEncryption(String.empty);
+                    return ResponseData<SetupDataModel>(
+                        success = false,
+                        errorMessage = context.getString(R.string.server_error)
+                    );
+                }
+
+                backgroundService.sync()
             }
             return loginResponse;
         } else {
+            proxy.setDomain()
+            proxy.setHeaders()
             saveEncryption(encryptionKey);
             return ResponseData<SetupDataModel>(success = true);
         }
     }
-
-    private fun syncFromServer() {}
-    private fun syncServer() {}
-    private fun sync() {}
 
     private fun saveEncryption(encryptionKey: String) { encryption.encryptionKey = encryptionKey }
 

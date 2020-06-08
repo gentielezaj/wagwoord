@@ -15,18 +15,18 @@
         android:id="@+id/navigation_password"
         android:name="me.gentielezaj.wagwoord.fragments.passwords.PasswordListFragment"
         android:label="@string/passwords"
-        tools:layout="@layout/fragment_password_list" />
+        tools:layout="@layout/fragment_core_list" />
 
     <fragment
         android:id="@+id/navigation_creditcard"
-        android:name="me.gentielezaj.wagwoord.fragments.creditcards.CreditcardListFragment"
+        android:name="me.gentielezaj.wagwoord.fragments.creditcards.CreditCardListFragment"
         android:label="@string/creditcards"
-        tools:layout="@layout/fragment_creditcard_list" />
+        tools:layout="@layout/fragment_core_list" />
     <fragment
         android:id="@+id/navigation_address"
         android:name="me.gentielezaj.wagwoord.fragments.addresses.AddressListFragment"
         android:label="@string/addresses"
-        tools:layout="@layout/fragment_address_list" />
+        tools:layout="@layout/fragment_core_list" />
     <fragment
         android:id="@+id/navigation_demo"
         android:name="me.gentielezaj.wagwoord.fragments.demo.DemoFragment"

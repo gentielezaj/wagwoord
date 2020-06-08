@@ -103,7 +103,7 @@ export default class BackgroundService {
                 if (credetialsFor == 'change') {
                     for (let i = 0; i < this.serviceList.length; i++) {
                         if (typeof this.services[this.serviceList[i]]._syncFromServer == 'function') {
-                            await this.services[this.serviceList[i]]._syncFromServer();
+                            await this.services[this.serviceList[i]]._syncFromServer(true);
                         }
                     }
                     const serverStatus = await this.$authService.login(data.domain, data.encryptionKey, data.encryptLocal, credetialsFor);

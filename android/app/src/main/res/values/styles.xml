@@ -36,4 +36,9 @@
         <item name="android:textColorSecondary">@color/colorAccentLight</item>
         <item name="iconSize">24dp</item>
     </style>
+
+    <style name="SplashTheme" parent="BaseAppTheme">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
 </resources>

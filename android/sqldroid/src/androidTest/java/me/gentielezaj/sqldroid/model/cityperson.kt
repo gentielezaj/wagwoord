@@ -1,5 +1,6 @@
 package me.gentielezaj.sqldroid.model
 
+import me.gentielezaj.sqldroid.models.Nullable
 import me.gentielezaj.sqldroid.models.annotations.column.Column
 import me.gentielezaj.sqldroid.models.annotations.column.ForeignKey
 import me.gentielezaj.sqldroid.models.annotations.column.PrimaryKey
@@ -17,7 +18,7 @@ class City() {
     @Column
     public var id: Int = 0
 
-    @Column(nullable = false)
+    @Column(nullable = Nullable.NOT_NULL)
     @Unique
     lateinit var name: String
 

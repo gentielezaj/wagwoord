@@ -103,10 +103,6 @@ abstract class CoreQueryBuilder<T: Any, TResult: Any, TAll: Any, TMap: Any>() : 
     // region toSqlString
     override fun toSqlString(alias: String?): String {
         var sql = "${selectToSqlString()} ${fromToSqlString()} ${whereToSqlString()} ${orderToSqlString()} ${takeSkipToSqlString()}"
-
-        var orderSql = orderToSqlString()
-        if(orderSql.isNotEmpty()) sql += " $orderSql"
-
         return sql;
     }
 

@@ -1,6 +1,7 @@
 package me.gentielezaj.sqldroid.models
 
 import me.gentielezaj.sqldroid.common.getClassFormGenericType
+import me.gentielezaj.sqldroid.common.valueOrNull
 import me.gentielezaj.sqldroid.exceptions.InvalidForeingKeyException
 import me.gentielezaj.sqldroid.models.annotations.column.Column
 import me.gentielezaj.sqldroid.models.annotations.column.ForeignKey
@@ -26,8 +27,7 @@ data class ForeignKeyInfo(val table: TableInfo, val column: ColumnInfo, val tabl
 
         fun create(property: KProperty1<out Any, Any?>) : ForeignKeyInfo? {
             val clazz = property.javaField!!.declaringClass.kotlin!!
-            val foreignKey = property.findAnnotation<ForeignKey>()
-            if(foreignKey == null) return null;
+            val foreignKey = property.findAnnotation<ForeignKey>() ?: return null
 
             if(foreignKey.clazz == Unit::class && foreignKey.property.isNullOrEmpty()) {
                 throw InvalidForeingKeyException(property.name, clazz.simpleName!!)
@@ -36,11 +36,11 @@ data class ForeignKeyInfo(val table: TableInfo, val column: ColumnInfo, val tabl
             var fClass = foreignKey.clazz;
             var tablePoperty: KProperty1<out Any, Any?>? = null
             if(fClass == Unit::class) {
-                val tablePoperty = clazz.declaredMemberProperties.find { it.name == foreignKey.property }
+                val tablePoperty = clazz.memberProperties.find { it.name == foreignKey.property }
                 if(tablePoperty == null) throw InvalidForeingKeyException(property.name, clazz.simpleName!!)
                 fClass = tablePoperty.javaField!!.declaringClass.kotlin
             } else {
-                tablePoperty = clazz.declaredMemberProperties.find { it.name == foreignKey.property }
+                tablePoperty = clazz.memberProperties.find { it.name == foreignKey.property }
             }
 
             val table = TableInfo.create(fClass)!!
@@ -48,7 +48,7 @@ data class ForeignKeyInfo(val table: TableInfo, val column: ColumnInfo, val tabl
 
             if(table == null || fColumn == null || tablePoperty == null) throw InvalidForeingKeyException(property.name, clazz.simpleName!!)
 
-            return ForeignKeyInfo(table, fColumn, tablePoperty as KProperty1<Any, *>)
+            return ForeignKeyInfo(table, fColumn, property as KProperty1<Any, *>)
         }
     }
 }

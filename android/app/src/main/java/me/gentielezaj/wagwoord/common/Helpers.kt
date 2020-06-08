@@ -7,7 +7,16 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.memberProperties
 
+fun <T: Any> KClass<T>.property(name: String) : KProperty1<T, Any?> = this.propertyOrNull(name)!!
+
+fun <T: Any> KClass<T>.propertyOrNull(name: String) : KProperty1<T, Any?>? {
+    return this.memberProperties.find { it.name == name }
+}
 
 public val String.Companion.empty: String
     get() = ""

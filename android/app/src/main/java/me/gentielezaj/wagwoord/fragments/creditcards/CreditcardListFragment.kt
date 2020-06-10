@@ -4,14 +4,9 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.fragments.CorFragmentList
-import me.gentielezaj.wagwoord.fragments.CoreFragment
-import me.gentielezaj.wagwoord.fragments.addresses.AddressListFragment
-import me.gentielezaj.wagwoord.fragments.addresses.AddressViewModel
-import me.gentielezaj.wagwoord.fragments.passwords.PasswordListFragment
+import me.gentielezaj.wagwoord.fragments.CoreFragmentList
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.CreditCard
-import me.gentielezaj.wagwoord.models.entities.Password
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
 import me.gentielezaj.wagwoord.services.injectEntityService
 
@@ -28,7 +23,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CreditcardListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CreditCardListFragment : CorFragmentList<CreditCard>() {
+class CreditCardListFragment : CoreFragmentList<CreditCard>() {
 
     protected override val entityService: CoreEntityService<CreditCard> by injectEntityService<CreditCard>()
     protected override val viewModel: CreditCardViewModel by activityViewModels()
@@ -39,7 +34,7 @@ class CreditCardListFragment : CorFragmentList<CreditCard>() {
         var subject = item.name;
         if(!item.bank.isNullOrEmpty()) subject += " (${item.bank})"
 
-        val description = "${item.cardType} **** ${item.cardNumber.substring(item.cardNumber.length - 5)}"
+        val description = "${item.cardType} **** ${item.cardNumber.substring(item.cardNumber.length - 4)}"
 
         holder.findViewById<TextView>(R.id.core_list_item_subject).text = subject
         holder.findViewById<TextView>(R.id.core_list_item_description).text = description

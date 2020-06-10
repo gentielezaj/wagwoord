@@ -63,7 +63,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
     protected val lastModifiedKey
         get() = type.simpleName + "LastModified"
 
-    private fun getControllerName() : String {
+    protected open fun getControllerName() : String {
         if(!controller.isNullOrEmpty()) return controller!!;
         return classType.simpleName.replace("Entity", "")
     }

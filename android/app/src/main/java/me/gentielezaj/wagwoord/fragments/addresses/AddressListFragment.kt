@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.fragments.CorFragmentList
-import me.gentielezaj.wagwoord.fragments.CoreFragment
+import me.gentielezaj.wagwoord.fragments.CoreFragmentList
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.Address
-import me.gentielezaj.wagwoord.models.entities.Password
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
 import me.gentielezaj.wagwoord.services.injectEntityService
 
@@ -25,7 +23,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AddressListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddressListFragment : CorFragmentList<Address>() {
+class AddressListFragment : CoreFragmentList<Address>() {
 
     protected override val entityService: CoreEntityService<Address> by injectEntityService<Address>()
     protected override val viewModel: AddressViewModel by activityViewModels()

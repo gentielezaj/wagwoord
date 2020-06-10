@@ -16,10 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import me.gentielezaj.wagwoord.MainActivity
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.fragments.CoreFragmentList
 import me.gentielezaj.wagwoord.fragments.CoreFragment
+import me.gentielezaj.wagwoord.fragments.passwords.PasswordViewModel
 import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
+import me.gentielezaj.wagwoord.models.entities.Password
 import me.gentielezaj.wagwoord.models.entities.Totp
+import me.gentielezaj.wagwoord.services.entity.CoreEntityService
+import me.gentielezaj.wagwoord.services.injectEntityService
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,68 +39,15 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TotpListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TotpListFragment : CoreFragment(R.layout.fragment_totp_list) {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: CoreRecyclerViewAdapter<Totp>
-    private lateinit var viewManager: RecyclerView.LayoutManager
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+class TotpListFragment : CoreFragmentList<Totp>() {
 
-    private val viewModel: TotpViewModel by activityViewModels()
-    private var dataSet: List<Totp> = listOf()
+    override val entityService: CoreEntityService<Totp> by injectEntityService<Totp>()
+    override val viewModel: TotpViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        var view = super.onCreateView(inflater, container, savedInstanceState)!!
-
-        viewAdapter = CoreRecyclerViewAdapter<Totp>(
-            dataSet,
-            R.layout.fragment_totp_list_item,
-            { myViewHolder: MyViewHolder, i: Int -> onBindViewHolder(myViewHolder, i) })
-
-        viewManager = LinearLayoutManager(context);
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutTotp)
-        swipeRefreshLayout.setOnRefreshListener {
-            //refresh()
-            swipeRefreshLayout.isRefreshing = false;
-        };
-
-        recyclerView = view.findViewById<RecyclerView>(R.id.my_recycler_view)
-        recyclerView.apply {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
-            setHasFixedSize(true)
-
-            // use a linear layout manager
-            layoutManager = viewManager
-
-            // specify an viewAdapter (see also next example)
-            adapter = viewAdapter
-        }
-
-        viewModel.getData().observe(this as LifecycleOwner, Observer {data ->
-            updateData(data)
-        })
-
-        return view;
-    }
-
-    private fun updateData(data: List<Totp>) {
-        dataSet = data
-        viewAdapter.updateData(dataSet)
-    }
-
-    fun onBindViewHolder(holder: MyViewHolder, position: Int): Totp? {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int): Totp? {
         val item = dataSet[position];
-
-        val imageView: ImageView = holder.findViewById<ImageView>(R.id.totp_list_item_image)
-        if (item.icon.isNullOrEmpty()) {
-            imageView.visibility = View.INVISIBLE
-        }
-
-        holder.findViewById<TextView>(R.id.totp_list_item_issuer).text = item.issuer
-        holder.findViewById<TextView>(R.id.totp_list_item_username).text = item.username
+        holder.findViewById<TextView>(R.id.core_list_item_subject).text = item.issuer
+        holder.findViewById<TextView>(R.id.core_list_item_description).text = item.username
 
         return item;
     }

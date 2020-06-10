@@ -1,28 +1,14 @@
 package me.gentielezaj.wagwoord.fragments.passwords
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.fragments.CorFragmentList
-import me.gentielezaj.wagwoord.fragments.CoreFragment
-import me.gentielezaj.wagwoord.fragments.addresses.AddressViewModel
-import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
+import me.gentielezaj.wagwoord.fragments.CoreFragmentList
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.Password
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
-import me.gentielezaj.wagwoord.services.inject
 import me.gentielezaj.wagwoord.services.injectEntityService
-import me.gentielezaj.wagwoord.viewModels.CoreViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,7 +23,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [PasswordListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PasswordListFragment : CorFragmentList<Password>() {
+class PasswordListFragment : CoreFragmentList<Password>() {
 
     protected override val entityService: CoreEntityService<Password> by injectEntityService<Password>()
     protected override val viewModel: PasswordViewModel by activityViewModels()

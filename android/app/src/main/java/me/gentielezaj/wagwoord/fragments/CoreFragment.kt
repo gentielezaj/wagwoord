@@ -84,7 +84,7 @@ abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
     }
 }
 
-abstract class CorFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout.fragment_core_list, val fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item) : CoreFragment(fragmentListLayoutId) {
+abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout.fragment_core_list, val fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item) : CoreFragment(fragmentListLayoutId) {
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var viewAdapter: CoreRecyclerViewAdapter<T>
     protected lateinit var viewManager: RecyclerView.LayoutManager

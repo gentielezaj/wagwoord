@@ -11,6 +11,7 @@ import me.gentielezaj.wagwoord.models.entities.Totp
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
+import me.gentielezaj.wagwoord.services.entity.TotpService
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import kotlin.Exception
@@ -43,7 +44,7 @@ class DI {
     }
 
     companion object {
-        protected val extends = mapOf<KClass<out IEntity>, KClass<BaseService>>()
+        protected val extends = mapOf<KClass<out IEntity>, KClass<out BaseService>>(Totp::class to TotpService::class)
 
         inline fun <reified T : BaseService> resolve(context: Context) : T {
             try {

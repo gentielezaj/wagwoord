@@ -9,7 +9,7 @@
         android:id="@+id/navigation_totp"
         android:name="me.gentielezaj.wagwoord.fragments.totp.TotpListFragment"
         android:label="@string/totp"
-        tools:layout="@layout/fragment_totp_list" />
+        tools:layout="@layout/fragment_core_list" />
 
     <fragment
         android:id="@+id/navigation_password"

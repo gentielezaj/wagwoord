@@ -1,10 +1,12 @@
 package me.gentielezaj.wagwoord.fragments.creditcards
 
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.CoreFragmentList
+import me.gentielezaj.wagwoord.fragments.CoreFragmentListBinder
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.CreditCard
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
@@ -23,7 +25,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CreditcardListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CreditCardListFragment : CoreFragmentList<CreditCard>() {
+class CreditCardListFragment : CoreFragmentListBinder<CreditCard>() {
 
     protected override val entityService: CoreEntityService<CreditCard> by injectEntityService<CreditCard>()
     protected override val viewModel: CreditCardViewModel by activityViewModels()
@@ -38,6 +40,14 @@ class CreditCardListFragment : CoreFragmentList<CreditCard>() {
 
         holder.findViewById<TextView>(R.id.core_list_item_subject).text = subject
         holder.findViewById<TextView>(R.id.core_list_item_description).text = description
+        holder.findViewById<TextView>(R.id.core_list_item_expand_content_primary).text = "CVS: ${item.cvv}"
+        holder.findViewById<TextView>(R.id.core_list_item_expand_content_secondary).text = "pin: ${item.pin}"
+
+        holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnClickListener {
+            holder.toggle()
+        }
+
+        holder.bind(item)
 
         return item;
     }

@@ -100,10 +100,7 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
     ): View? {
         var view = super.onCreateView(inflater, container, savedInstanceState)!!
 
-        viewAdapter = CoreRecyclerViewAdapter<T>(
-            dataSet,
-            R.layout.fragment_core_list_item,
-            { myViewHolder: MyViewHolder, i: Int -> onBindViewHolder(myViewHolder, i) })
+        viewAdapter = adapter()
 
         viewManager = LinearLayoutManager(context);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutList)
@@ -136,9 +133,25 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
         return view;
     }
 
+    protected open fun adapter() : CoreRecyclerViewAdapter<T> {
+        return CoreRecyclerViewAdapter<T>(
+            dataSet,
+            fragmentListItemLayoutId)
+    }
+
     protected open fun updateData(data: List<T>) {
         dataSet = data
         viewAdapter.updateData(dataSet)
+    }
+}
+
+abstract class CoreFragmentListBinder<T: IEntity>(fragmentListLayoutId: Int = R.layout.fragment_core_list, fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item) : CoreFragmentList<T>(fragmentListLayoutId, fragmentListItemLayoutId) {
+
+    protected override fun  adapter() : CoreRecyclerViewAdapter<T> {
+        return CoreRecyclerViewAdapter<T>(
+            dataSet,
+            fragmentListItemLayoutId,
+            { myViewHolder: MyViewHolder, i: Int -> onBindViewHolder(myViewHolder, i) })
     }
 
     protected abstract fun onBindViewHolder(holder: MyViewHolder, position: Int): T?

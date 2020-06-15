@@ -28,15 +28,6 @@ class PasswordListFragment : CoreFragmentList<Password>() {
     protected override val entityService: CoreEntityService<Password> by injectEntityService<Password>()
     protected override val viewModel: PasswordViewModel by activityViewModels()
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int): Password? {
-        val item = dataSet[position];
-
-        holder.findViewById<TextView>(R.id.core_list_item_subject).text = item.username
-        holder.findViewById<TextView>(R.id.core_list_item_description).text = item.name
-
-        return item;
-    }
-
     companion object {
         /**
          * Use this factory method to create a new instance of

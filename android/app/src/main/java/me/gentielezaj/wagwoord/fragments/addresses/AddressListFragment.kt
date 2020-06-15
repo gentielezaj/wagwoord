@@ -1,10 +1,12 @@
 package me.gentielezaj.wagwoord.fragments.addresses
 
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.fragments.CoreFragmentList
+import me.gentielezaj.wagwoord.fragments.CoreFragmentListBinder
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.Address
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
@@ -23,7 +25,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AddressListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddressListFragment : CoreFragmentList<Address>() {
+class AddressListFragment : CoreFragmentListBinder<Address>() {
 
     protected override val entityService: CoreEntityService<Address> by injectEntityService<Address>()
     protected override val viewModel: AddressViewModel by activityViewModels()
@@ -33,7 +35,7 @@ class AddressListFragment : CoreFragmentList<Address>() {
 
         holder.findViewById<TextView>(R.id.core_list_item_subject).text = "${item.firstName} ${item.lastName} - ${item.username}"
         holder.findViewById<TextView>(R.id.core_list_item_description).text = "${item.street} ${item.city}"
-
+        holder.findViewById<ImageView>(R.id.core_list_item_expand).visibility = View.GONE
         return item;
     }
 

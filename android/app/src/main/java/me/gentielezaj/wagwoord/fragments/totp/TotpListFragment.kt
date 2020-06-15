@@ -44,14 +44,6 @@ class TotpListFragment : CoreFragmentList<Totp>() {
     override val entityService: CoreEntityService<Totp> by injectEntityService<Totp>()
     override val viewModel: TotpViewModel by activityViewModels()
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int): Totp? {
-        val item = dataSet[position];
-        holder.findViewById<TextView>(R.id.core_list_item_subject).text = item.issuer
-        holder.findViewById<TextView>(R.id.core_list_item_description).text = item.username
-
-        return item;
-    }
-
     companion object {
         /**
          * Use this factory method to create a new instance of

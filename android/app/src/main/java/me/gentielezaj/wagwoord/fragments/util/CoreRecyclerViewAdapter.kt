@@ -1,10 +1,21 @@
 package me.gentielezaj.wagwoord.fragments.util
 
+import android.media.Image
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.common.empty
+import me.gentielezaj.wagwoord.models.annotations.ListData
+import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
+import me.gentielezaj.wagwoord.models.annotations.getListDataText
+import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.memberProperties
 
 open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     RecyclerView.Adapter<MyViewHolder>() {
@@ -12,17 +23,19 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     private lateinit var dataSet: List<TModel>
     private var listItemFragmentId: Int = 0
     private lateinit var onBindViewHolderFun:(holder: MyViewHolder, position: Int) -> TModel?
+    private var hasBinder = false
     private var viewValueMap: List<ViewValueMap<*>>? = null
 
     constructor(dataSet: List<TModel>, listItemFragmentId: Int, onBindViewHolderFun:(holder: MyViewHolder, position: Int) -> TModel?) : this(dataSet, listItemFragmentId) {
         this.onBindViewHolderFun = onBindViewHolderFun
+        hasBinder = true
     }
 
     constructor(dataSet: List<TModel>, listItemFragmentId: Int, viewValueMap: List<ViewValueMap<*>>): this(dataSet, listItemFragmentId) {
         this.viewValueMap = viewValueMap
     }
 
-    private  constructor(dataSet: List<TModel>, listItemFragmentId: Int) : this() {
+    constructor(dataSet: List<TModel>, listItemFragmentId: Int) : this() {
         this.dataSet = dataSet.toMutableList()
         this.listItemFragmentId = listItemFragmentId
     }
@@ -38,10 +51,26 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        if(viewValueMap != null) {
-            TODO("set this shit up")
-        } else {
-            onBindViewHolderFun(holder, position)
+        when {
+            viewValueMap != null -> {
+                TODO("set this shit up")
+            }
+            hasBinder -> {
+                onBindViewHolderFun(holder, position)
+            }
+            else -> {
+                val item = dataSet[position]
+                holder.findViewById<TextView>(R.id.core_list_item_subject).text = getListDataText(item, ListDataTypes.Subject)
+                holder.findViewById<TextView>(R.id.core_list_item_description).text = getListDataText(item, ListDataTypes.Description)
+                holder.findViewById<TextView>(R.id.core_list_item_expand_content_primary).text = getListDataText(item, ListDataTypes.ExpandPrimary)
+                holder.findViewById<TextView>(R.id.core_list_item_expand_content_secondary).text = getListDataText(item, ListDataTypes.ExpandSecondary)
+
+                holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnClickListener {
+                    holder.toggle()
+                }
+
+                holder.bind(item)
+            }
         }
     }
 
@@ -65,5 +94,17 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun <T> findViewById(id: Int) : T {
         return  this.findViewById(id) as T
+    }
+
+    fun toggle() {
+        val view = findViewById<RelativeLayout>(R.id.core_list_item_expand_content)
+        view.visibility = if(view.visibility == View.GONE) View.VISIBLE else View.GONE
+    }
+
+    fun bind(item: Any) {
+        itemView.setOnClickListener {
+            Log.d("click", "click")
+            // TODO: crete open view
+        }
     }
 }

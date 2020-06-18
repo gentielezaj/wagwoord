@@ -11,6 +11,7 @@ import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConne
 // #endregion prototypes
 
 const PORT = process.env.PORT || '4040';
+const HOST = process.env.HOST || 'localhost';
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'dev') {
     require('dotenv').config();
@@ -77,11 +78,11 @@ function getSqliteConfig(): SqliteConnectionOptions {
 
 
 createConnection(getTypeOrmConfig()).then(e => {
-    console.log('db set');
-    new App().app.listen(parseInt(PORT), (e) => {
+    AppLogger.info('db set');
+    new App().app.listen(parseInt(PORT), HOST, (e) => {
         console.log('Express server listening on port ' + PORT);
     });
 }).catch(e => {
-    console.log('db error:');
-    console.log(e);
+    AppLogger.error('db error:');
+    AppLogger.error(e);
 });

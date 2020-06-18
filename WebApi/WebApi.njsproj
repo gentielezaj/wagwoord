@@ -26,6 +26,7 @@
     <Content Include=".env" />
     <Content Include=".env_sqlite" />
     <Content Include=".eslintrc" />
+    <None Include="FTPProfile.pubxml" />
     <Content Include="ormlogs.log" />
     <Content Include="Procfile" />
     <Content Include="src\controllers\authController.ts" />

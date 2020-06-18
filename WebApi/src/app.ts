@@ -12,6 +12,7 @@ import { PasswordEntity } from "./database/models/passwordEntity";
 import { AuthController } from "./controllers/authController";
 import { AuthRepository } from "./database/repositories/authRepository";
 import { InfoController } from "./controllers/intoController";
+import { AppLogger } from "./utils/appLogger";
 
 export class App {
 
@@ -58,7 +59,7 @@ export class App {
                 res.sendFile('index.html', { root: __dirname + '/views' });
             });
 
-            console.log('controllers registed')
+            AppLogger.info('controllers registed')
         });
     }
 }

@@ -1,13 +1,13 @@
 {
   "name": "wagwoord-webapi",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "wagwoord webapi -- this versin requirs ecryptionHash",
   "main": "index.js",
   "scripts": {
     "build": "tsc && copyfiles src/views/* dist/views --flat",
-    "dev": "ts-node ./src/server.ts",
-    "start": "tsc && node ./dist/server.js",
-    "server": "ts-node -r tsconfig-paths/register src/server.ts",
+    "dev": "ts-node ./src/app.ts",
+    "start": "tsc && node ./dist/app.js",
+    "server": "ts-node -r tsconfig-paths/register src/app.ts",
     "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./ormconfig.json"
   },
   "author": "Genti Elezaj",

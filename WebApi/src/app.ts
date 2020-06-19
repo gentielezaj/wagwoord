@@ -1,65 +1,97 @@
-import * as express from "express";
-import * as cros from 'cors';
-import * as bodyParser from "body-parser";
-import { SettingsController } from "./controllers/settingsController";
-import { CoreController } from './controllers/coreController';
-
-import { AddressEntity } from "./database/models/addressEntity";
-import { CreditCardModel } from "./database/models/creadit-card";
-import { BlacklistEntity } from "./database/models/blacklistEntity";
-import { CodeGeneratorEntity } from "./database/models/codegeneratorEntity";
-import { PasswordEntity } from "./database/models/passwordEntity";
-import { AuthController } from "./controllers/authController";
-import { AuthRepository } from "./database/repositories/authRepository";
-import { InfoController } from "./controllers/intoController";
+import "reflect-metadata";
+import { Server } from "./server";
+import { createConnection, ConnectionOptions } from "typeorm";
+import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions";
+import { PostgresConnectionCredentialsOptions } from "typeorm/driver/postgres/PostgresConnectionCredentialsOptions";
 import { AppLogger } from "./utils/appLogger";
 
-export class App {
+// #region prototypes
+import './utils/prototypes/string-prototype';
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
+// #endregion prototypes
 
-    public app: express.Application;
-    public readonly authRepository: AuthRepository;
-    //public reouter: Route = new Route();
+const PORT = process.env.PORT || '4040';
+const HOST = process.env.HOST || 'localhost';
 
-    constructor() {
-        this.app = express();
-        this.authRepository = new AuthRepository();
-        this.config();
-        this.initControllers();
-    }
+if (process.env.NODE_ENV === 'dev') {
+    require('dotenv').config();
+}
 
-    private config(): void {
-        console.log("configuration app");
-        this.app.use
-        this.app.use(cros())
-        // support application/json type post data
-        this.app.use(bodyParser.json());
-        //support application/x-www-form-urlencoded post data
-        this.app.use(bodyParser.urlencoded({ extended: false }));
-        // setup view
+function getType(): 'postgres' | 'sqlite' {
+    if (process.env.TYPEORM_TYPE == 'postgres') return 'postgres';
+    if (process.env.TYPEORM_TYPE == 'sqlite') return 'sqlite';
+    throw 'not suported db';
+}
 
-        // this.app.set('views', __dirname + '/views');
-        // this.app.engine('html', require('ejs').renderFile);
-        // this.app.set('view engine', 'html');
-    }
+function getTypeOrmConfig(): ConnectionOptions {
+    switch (process.env.TYPEORM_CONNECTION) {
+        case 'postgres': return pgConfig();
+        case 'sqlite': return getSqliteConfig();
+        default: return {
+            type: getType(),
+            "database": process.env.TYPEORM_DATABASE,
+            host: process.env.TYPEORM_HOST,
+            password: process.env.TYPEORM_PASSWORD,
+            port: parseInt(process.env.TYPEORM_PORT),
+            url: process.env.TYPEORM_URL,
+            username: process.env.TYPEORM_USERNAME,
 
-    private initControllers() {
-        this.authRepository.setup().then(() => {
-            console.log('encryption set');
 
-            this.app.use('/api/password', new CoreController<PasswordEntity>(PasswordEntity, 'password').GetRouter());
-            this.app.use('/api/blacklist', new CoreController<BlacklistEntity>(BlacklistEntity, 'blacklist').GetRouter());
-            this.app.use('/api/settings', new SettingsController().GetRouter());
-            this.app.use('/api/codegenerator', new CoreController<CodeGeneratorEntity>(CodeGeneratorEntity, 'codegenerator').GetRouter());
-            this.app.use('/api/address', new CoreController<AddressEntity>(AddressEntity, 'address').GetRouter());
-            this.app.use('/api/creditcard', new CoreController<CreditCardModel>(CreditCardModel, 'creditcard').GetRouter());
-            this.app.use('/api/auth', new AuthController().GetRouter());
-            this.app.use('/api/info', new InfoController().GetRouter());
-
-            this.app.get('/', function (req, res) {
-                res.sendFile('index.html', { root: __dirname + '/views' });
-            });
-
-            AppLogger.info('controllers registed')
-        });
+            "entities": [process.env.TYPEORM_ENTITIES],
+            "migrations": [process.env.TYPEORM_MIGRATIONS],
+            "cli": {
+                "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR
+            },
+            migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || !process.env.TYPEORM_MIGRATIONS_RUN ? true : false,
+            logging: ["error", "migration", "warn"],
+            logger: "file"
+        };
     }
 }
+
+function pgConfig(): PostgresConnectionOptions {
+    return {
+        type: 'postgres',
+        database: process.env.TYPEORM_DATABASE || 'postgres',
+        host: process.env.TYPEORM_HOST || 'localhost',
+        password: process.env.TYPEORM_PASSWORD || '123456',
+        port: parseInt(process.env.TYPEORM_PORT) || 5432,
+        url: process.env.TYPEORM_URL,
+        username: process.env.TYPEORM_USERNAME || 'postgres',
+        entities: [process.env.TYPEORM_ENTITIES || 'database/models/*.js'],
+        migrations: [process.env.TYPEORM_MIGRATIONS || 'database/migrations/*.js'],
+        cli: {
+            migrationsDir: process.env.TYPEORM_MIGRATIONS_DIR || 'database/migrations'
+        },
+        migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || !process.env.TYPEORM_MIGRATIONS_RUN ? true : false,
+        logging: ["error", "migration", "warn"],
+        logger: "file"
+    }
+}
+
+function getSqliteConfig(): SqliteConnectionOptions {
+    return {
+        "type": "sqlite",
+        "database": process.env.TYPEORM_DATABASE || 'appData/wagwoord.sqlite',
+        "entities": [process.env.TYPEORM_ENTITIES || 'dist/database/models/*.js'],
+        "migrations": [process.env.TYPEORM_MIGRATIONS || 'dist/database/migrations/*.js'],
+        "cli": {
+            "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR || 'dist/database/migrations'
+        },
+        migrationsRun: process.env.TYPEORM_MIGRATIONS_RUN == 'True' || process.env.TYPEORM_MIGRATIONS_RUN == 'true' || !process.env.TYPEORM_MIGRATIONS_RUN ? true : false,
+        logging: ["error", "migration", "warn"],
+        logger: "file"
+    }
+}
+
+
+
+createConnection(getTypeOrmConfig()).then(e => {
+    AppLogger.info('db set');
+    new Server().app.listen(parseInt(PORT), HOST, (e) => {
+        console.log('Express server listening on port ' + PORT);
+    });
+}).catch(e => {
+    AppLogger.error('db error:');
+    AppLogger.error(e);
+});

@@ -79,9 +79,8 @@ export abstract class BaseController {
     }
 
     protected isEncryptionUsed(key: string, ticks: string): boolean {
-        return false;
         if (!ticks) return true;
-        const maxDeleye = process.env.MAX_DELEYE || 80000;
+        const maxDeleye = process.env.MAX_DELEYE || 100000;
         var tic = new Date().getTime() - parseInt(ticks);
         if (tic > maxDeleye) {
             return true

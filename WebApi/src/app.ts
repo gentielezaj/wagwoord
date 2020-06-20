@@ -13,7 +13,7 @@ import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConne
 const PORT = process.env.PORT || '4040';
 const HOST = process.env.HOST || 'localhost';
 
-if (process.env.NODE_ENV === 'dev') {
+if (process.env.NODE_ENV === 'dev-local') {
     require('dotenv').config();
 }
 
@@ -73,7 +73,7 @@ function getSqliteConfig(): SqliteConnectionOptions {
     return {
         "type": "sqlite",
         "database": process.env.TYPEORM_DATABASE || 'appData/wagwoord.sqlite',
-        "entities": [process.env.TYPEORM_ENTITIES || 'dist/database/models/*.js'],
+        "entities": [process.env.TYPEORM_ENTITIES || 'database/models/*.js'],
         "migrations": [process.env.TYPEORM_MIGRATIONS || 'dist/database/migrations/*.js'],
         "cli": {
             "migrationsDir": process.env.TYPEORM_MIGRATIONS_DIR || 'dist/database/migrations'

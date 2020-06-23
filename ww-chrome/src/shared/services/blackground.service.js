@@ -314,7 +314,8 @@ export default class BackgroundService {
                 path: "assets/logo/logo_128_square_waring.png"
             });
             
-            await this.$app.chrome.open('options/options.html#/settings?open=login');
+            // removed because heliohost is down all the time
+            // await this.$app.chrome.open('options/options.html#/settings?open=login');
         } else chrome.browserAction.setIcon({
             path: "assets/logo/logo_128_square.png"
         });

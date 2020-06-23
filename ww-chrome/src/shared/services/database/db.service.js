@@ -49,15 +49,17 @@ export default class DB {
             if (!query) {
                 return await os.toArray();
             }
-            if (query.searchText) {
-                query.searchText = query.searchText.toLowerCase();
-                os = os.filter(i => i.searchField.indexOf(query.searchText) > -1);
-            }
+
+            // order needs to be before search
             if (query.order) {
                 if (typeof query.order === 'string' || query.order.property)
                     os = os.orderBy(query.order.property || query.order);
                 if (query.order.desc)
                     os = os.reverse();
+            }
+            if (query.searchText) {
+                query.searchText = query.searchText.toLowerCase();
+                os = os.filter(i => i.searchField.indexOf(query.searchText) > -1);
             }
             if(query.where) {
                 if(!Array.isArray(query.where)) query.where = [query.where];

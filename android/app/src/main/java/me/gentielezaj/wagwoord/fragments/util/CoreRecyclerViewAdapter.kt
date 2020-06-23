@@ -1,21 +1,22 @@
 package me.gentielezaj.wagwoord.fragments.util
 
-import android.media.Image
-import android.util.Log
+import android.app.PendingIntent.getActivity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.common.empty
-import me.gentielezaj.wagwoord.models.annotations.ListData
+import me.gentielezaj.wagwoord.activities.views.generic.GenericViewActivity
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.annotations.getListDataText
-import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.memberProperties
+import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
+
 
 open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     RecyclerView.Adapter<MyViewHolder>() {
@@ -101,10 +102,11 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         view.visibility = if(view.visibility == View.GONE) View.VISIBLE else View.GONE
     }
 
-    fun bind(item: Any) {
+    fun bind(item: IIdEntity) {
         itemView.setOnClickListener {
-            Log.d("click", "click")
-            // TODO: crete open view
+            val intent = Intent(itemView.context, GenericViewActivity::class.java)
+            intent.putExtra("id", item.id)
+            itemView.context.startActivity(intent)
         }
     }
 }

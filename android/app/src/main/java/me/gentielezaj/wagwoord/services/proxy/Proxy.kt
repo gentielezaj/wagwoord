@@ -1,6 +1,7 @@
 package me.gentielezaj.wagwoord.services.proxy
 
 import android.content.Context
+import android.util.Log
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.Volley
@@ -91,7 +92,10 @@ class ProxyService(protected val context: Context, private val controller: Strin
     }
 
     private suspend inline fun <T: Any> sendRequest(requestData: RequestData, entityType: KClass<out Any>, wwRequestType: KClass<CoreRequest<T>>): ResponseData<T> {
-        if(!serviceUtilities.hasInternetConnection()) return return ResponseData(null, 0, false, "No Intrnat", true)
+        if(!serviceUtilities.hasInternetConnection()) {
+            Log.d("PROXY", "-- PROXY => no Internet")
+            return ResponseData(null, 0, false, "No Intrnat", true)
+        }
         var domain = requestData.domain
         if(domain.isNullOrEmpty()) {
             domain = localStorage.get<String>(Constants.LocalStorageKeys.SERVER_URL)
@@ -124,7 +128,7 @@ class ProxyService(protected val context: Context, private val controller: Strin
     }
 
     private suspend inline fun <T: Any> baseSendRequest(requestData: RequestData, entityType: KClass<out Any>): ResponseData<T> {
-        if(!serviceUtilities.hasInternetConnection()) return return ResponseData(null, 0, false, "No Intrnat", true)
+        if(!serviceUtilities.hasInternetConnection()) return ResponseData(null, 0, false, "No Intrnat", true)
         var domain = requestData.domain
         if(domain.isNullOrEmpty()) {
             domain = localStorage.get<String>(Constants.LocalStorageKeys.SERVER_URL)

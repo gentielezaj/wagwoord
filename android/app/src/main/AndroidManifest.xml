@@ -13,12 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.demo.DemoActivity" />
+        <activity android:name=".activities.views.generic.GenericViewActivity"></activity>
         <activity
             android:name=".activities.settings.SettingsActivity"
             android:label="@string/settings" />
         <activity android:name=".activities.auth.LoginActivity" />
-        <activity android:name=".MainActivity"  android:theme="@style/SplashTheme">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -9,6 +9,7 @@
     <string name="password">Password</string>
     <string name="server_url">Server url</string>
     <string name="data_updated">Data updated</string>
+    <string name="data_updated_failed">Data updated failed</string>
 
 
     <string name="settings">Settings</string>

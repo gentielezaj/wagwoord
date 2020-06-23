@@ -1,14 +1,19 @@
 package me.gentielezaj.wagwoord.fragments
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,6 +27,7 @@ import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
 import me.gentielezaj.wagwoord.viewModels.CoreViewModel
+import java.lang.Exception
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -92,7 +98,7 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
     protected abstract val entityService: CoreEntityService<T>
 
     protected abstract val viewModel: CoreViewModel<T>
-    protected var dataSet: List<T> = listOf()
+    protected var dataSet: List<T> = listOf<T>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,8 +111,11 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
         viewManager = LinearLayoutManager(context);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutList)
         swipeRefreshLayout.setOnRefreshListener {
-            //refresh()
-            swipeRefreshLayout.isRefreshing = false;
+            // refresh()
+            run {
+                getData(true)
+                swipeRefreshLayout.isRefreshing = false;
+            }
         };
 
         recyclerView = view.findViewById<RecyclerView>(R.id.core_recycler_view_list)
@@ -122,6 +131,8 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
             adapter = viewAdapter
         }
 
+        recyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
+
         viewModel.data.observe(this as LifecycleOwner, Observer { data ->
             updateData(data)
         })
@@ -131,6 +142,18 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
         }
 
         return view;
+    }
+
+    protected suspend fun getData(sync: Boolean) {
+        if(sync && entityService.hasInternetConnectionAndServerSet()) {
+            if(entityService.syncLocal()) {
+                Toast.makeText(context, getString(R.string.data_updated), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, getString(R.string.data_updated_failed), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.setData(entityService.list())
     }
 
     protected open fun adapter() : CoreRecyclerViewAdapter<T> {

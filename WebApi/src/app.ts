@@ -13,7 +13,7 @@ import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConne
 const PORT = process.env.PORT || '4040';
 const HOST = process.env.HOST || 'localhost';
 
-if (process.env.NODE_ENV === 'dev-local') {
+if (!process.env.NODE_ENV) {
     require('dotenv').config();
 }
 

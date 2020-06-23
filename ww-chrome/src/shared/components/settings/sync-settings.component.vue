@@ -24,6 +24,7 @@
           <option value="http://localhost:4040/api"></option>
           <option value="https://wagwoord.herokuapp.com/api"></option>
           <option value="https://wagwoord-api.unubo.app/api"></option>
+          <option value="https://app.wagwoord.heliohost.org/api"></option>
         </datalist>
       </div>
     </div>

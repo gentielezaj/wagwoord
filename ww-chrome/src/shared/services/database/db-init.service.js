@@ -28,5 +28,8 @@ db.version(5).stores({
 db.version(7).stores({
     address: '++id,firtName,lastName,birthDate,street,secundStreet,city,state,country,username,postalCode,searchField,serverId,lastModified,organization,phone,encrypted,synced,count,callingCode,region,subregion,countryAlpha2Code,countryAlpha3Code,[callingCode+phone]'
 });
+db.version(8).stores({
+    log: '++id,type,time, message'
+});
 
 export default db;

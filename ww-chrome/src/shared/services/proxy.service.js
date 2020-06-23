@@ -3,6 +3,7 @@ import EncryptionService from './encryprion.service';
 import {
     hotp
 } from "otplib";
+import Log from './log.service';
 
 export class ProxySettingsService {
     constructor() {
@@ -193,6 +194,7 @@ export class ProxyService {
                 serverStatus = response.success ? 'ok' : 'error';
             }
         } catch (error) {
+            Log.error(`PROXY - server = ${serverStatus}`, error);
             serverStatus = 'error';
         }
 
@@ -230,6 +232,7 @@ export class ProxyService {
         try {
             return await fetch(url, requestData);
         } catch (error) {
+            Log.error(`PROXY - ${controller || this.controller}/${action || ''}`, error);
             throw error;
         }
     }

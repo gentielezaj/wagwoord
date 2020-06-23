@@ -68,7 +68,7 @@ export class AuthController extends BaseController {
         try {
             if (this.compareEncryptionHash(req.body.oldEncryptionHash) && this.checkWagwoordId(req)) {
                 status = 'change';
-            } else if (this.compareEncryptionHash(req.body.newEncryptionHash)) {
+            } else {
                 status = 'login'
             }
         } catch (e) {

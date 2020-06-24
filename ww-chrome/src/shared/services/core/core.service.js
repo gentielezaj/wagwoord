@@ -100,9 +100,13 @@ export class CoreService {
             oldItem = await this.getItem({
                 serverId: item.serverId
             });
-        } else if (item.id) {
+        } 
+        
+        if (!oldItem && item.id) {
             oldItem = await this.getItem(item.id);
-        } else if (uniqeQuery) {
+        } 
+        
+        if (!oldItem && uniqeQuery) {
             oldItem = await this.getItem(uniqeQuery);
         }
 

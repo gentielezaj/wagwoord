@@ -167,15 +167,3 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
         viewAdapter.updateData(dataSet)
     }
 }
-
-abstract class CoreFragmentListBinder<T: IEntity>(fragmentListLayoutId: Int = R.layout.fragment_core_list, fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item) : CoreFragmentList<T>(fragmentListLayoutId, fragmentListItemLayoutId) {
-
-    protected override fun  adapter() : CoreRecyclerViewAdapter<T> {
-        return CoreRecyclerViewAdapter<T>(
-            dataSet,
-            fragmentListItemLayoutId,
-            { myViewHolder: MyViewHolder, i: Int -> onBindViewHolder(myViewHolder, i) })
-    }
-
-    protected abstract fun onBindViewHolder(holder: MyViewHolder, position: Int): T?
-}

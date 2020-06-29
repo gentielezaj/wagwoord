@@ -1,14 +1,14 @@
 package me.gentielezaj.wagwoord.fragments.util
 
-import android.app.PendingIntent.getActivity
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.activities.views.generic.GenericViewActivity
@@ -23,14 +23,7 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
 
     private lateinit var dataSet: List<TModel>
     private var listItemFragmentId: Int = 0
-    private lateinit var onBindViewHolderFun:(holder: MyViewHolder, position: Int) -> TModel?
-    private var hasBinder = false
     private var viewValueMap: List<ViewValueMap<*>>? = null
-
-    constructor(dataSet: List<TModel>, listItemFragmentId: Int, onBindViewHolderFun:(holder: MyViewHolder, position: Int) -> TModel?) : this(dataSet, listItemFragmentId) {
-        this.onBindViewHolderFun = onBindViewHolderFun
-        hasBinder = true
-    }
 
     constructor(dataSet: List<TModel>, listItemFragmentId: Int, viewValueMap: List<ViewValueMap<*>>): this(dataSet, listItemFragmentId) {
         this.viewValueMap = viewValueMap
@@ -51,28 +44,32 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
         return  dataSet.size
     }
 
+    protected open fun mapBindView (item: TModel) : Map<ListDataTypes, String> = getListDataText(item)
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        when {
-            viewValueMap != null -> {
-                TODO("set this shit up")
-            }
-            hasBinder -> {
-                onBindViewHolderFun(holder, position)
-            }
-            else -> {
-                val item = dataSet[position]
-                holder.findViewById<TextView>(R.id.core_list_item_subject).text = getListDataText(item, ListDataTypes.Subject)
-                holder.findViewById<TextView>(R.id.core_list_item_description).text = getListDataText(item, ListDataTypes.Description)
-                holder.findViewById<TextView>(R.id.core_list_item_expand_content_primary).text = getListDataText(item, ListDataTypes.ExpandPrimary)
-                holder.findViewById<TextView>(R.id.core_list_item_expand_content_secondary).text = getListDataText(item, ListDataTypes.ExpandSecondary)
+        val item = dataSet[position]
+        var map = mapBindView(item)
+        holder.findViewById<TextView>(R.id.core_list_item_subject).text = map[ListDataTypes.Subject]
+        holder.findViewById<TextView>(R.id.core_list_item_description).text = map[ListDataTypes.Description]
 
-                holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnClickListener {
-                    holder.toggle()
-                }
+        if(map.containsKey(ListDataTypes.ExpandPrimary) || map.containsKey(ListDataTypes.ExpandSecondary)) {
+            holder.findViewById<TextView>(R.id.core_list_item_expand_content_primary).text =
+                map[ListDataTypes.ExpandPrimary]
+            holder.findViewById<TextView>(R.id.core_list_item_expand_content_secondary).text =
+                map[ListDataTypes.ExpandSecondary]
 
-                holder.bind(item)
+            holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnClickListener {
+                holder.toggle()
             }
+
+            holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnLongClickListener(OnLongClickListener {
+                TODO("implement on hold")
+            })
+        } else {
+            holder.findViewById<ImageView>(R.id.core_list_item_expand).visibility = View.GONE
         }
+
+        holder.bind(item)
     }
 
     fun updateData(data: List<TModel>) {

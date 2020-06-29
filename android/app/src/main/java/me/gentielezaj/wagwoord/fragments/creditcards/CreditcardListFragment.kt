@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.CoreFragmentList
-import me.gentielezaj.wagwoord.fragments.CoreFragmentListBinder
+import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.CreditCard
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
@@ -25,32 +25,12 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CreditcardListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CreditCardListFragment : CoreFragmentListBinder<CreditCard>() {
+class CreditCardListFragment : CoreFragmentList<CreditCard>() {
 
     protected override val entityService: CoreEntityService<CreditCard> by injectEntityService<CreditCard>()
     protected override val viewModel: CreditCardViewModel by activityViewModels()
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int): CreditCard? {
-        val item = dataSet[position];
-
-        var subject = item.name;
-        if(!item.bank.isNullOrEmpty()) subject += " (${item.bank})"
-
-        val description = "${item.cardType} **** ${item.cardNumber.substring(item.cardNumber.length - 4)}"
-
-        holder.findViewById<TextView>(R.id.core_list_item_subject).text = subject
-        holder.findViewById<TextView>(R.id.core_list_item_description).text = description
-        holder.findViewById<TextView>(R.id.core_list_item_expand_content_primary).text = "CVS: ${item.cvv}"
-        holder.findViewById<TextView>(R.id.core_list_item_expand_content_secondary).text = "pin: ${item.pin}"
-
-        holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnClickListener {
-            holder.toggle()
-        }
-
-        holder.bind(item)
-
-        return item;
-    }
+    override fun adapter(): CoreRecyclerViewAdapter<CreditCard> = CreditCardRecyclerViewAdapter(dataSet)
 
     companion object {
         /**

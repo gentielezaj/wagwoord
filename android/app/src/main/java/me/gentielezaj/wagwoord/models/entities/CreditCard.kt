@@ -9,6 +9,8 @@ import me.gentielezaj.sqldroid.models.annotations.column.Unique
 import me.gentielezaj.sqldroid.models.annotations.table.Table
 import me.gentielezaj.wagwoord.models.annotations.Encrypt
 import me.gentielezaj.wagwoord.models.annotations.Identifier
+import me.gentielezaj.wagwoord.models.annotations.ListData
+import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntityCount
 import java.lang.NullPointerException
 
@@ -40,9 +42,11 @@ class CreditCardTypeConverter : ColumnConverter() {
 @Table
 class CreditCard : CoreEntityCount() {
     @Column(length = 254)
+    @ListData(ListDataTypes.Subject)
     lateinit var name: String;
 
     @Column(type = ColumnType.TEXT, length = 254, converter = CreditCardTypeConverter::class)
+    @ListData(ListDataTypes.Description)
     var cardType: CreditCardType = CreditCardType.Unknown
 
     @Column(nullable = Nullable.NOT_NULL)
@@ -52,6 +56,7 @@ class CreditCard : CoreEntityCount() {
     @Unique
     @Encrypt
     @Column(length = 64)
+    @ListData(ListDataTypes.Description, order = 1)
     lateinit var cardNumber: String;
 
     @Column(nullable = Nullable.NOT_NULL)
@@ -59,13 +64,16 @@ class CreditCard : CoreEntityCount() {
 
     @Column
     @Encrypt
+    @ListData(ListDataTypes.ExpandPrimary, "CVS: ")
     var cvv: String? = null;
 
     @Column
+    @ListData(ListDataTypes.Subject, "(", ")", 1)
     var bank: String? = null;
 
     @Column
     @Encrypt
+    @ListData(ListDataTypes.ExpandSecondary, "PIN: ")
     var pin: String? = null;
 
     @Column(default = "0")

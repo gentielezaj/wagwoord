@@ -5,33 +5,46 @@ import me.gentielezaj.sqldroid.models.ColumnType
 import me.gentielezaj.sqldroid.models.annotations.column.Column
 import me.gentielezaj.sqldroid.models.annotations.table.Table
 import me.gentielezaj.wagwoord.models.annotations.Encrypt
+import me.gentielezaj.wagwoord.models.annotations.ListData
+import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntityCount
 import java.util.Date
 
 @Table
 class Address : CoreEntityCount() {
     @Column(length = 64)
+    @ListData(ListDataTypes.Subject)
     var firstName: String? = null;
+
+    @ListData(ListDataTypes.Subject, order = 1)
     @Column(length = 64)
     var lastName: String? = null;
+
     @Column(type = ColumnType.DATE)
     var birthDate: Date? = null;
 
     @Column(length = 2048)
     @Encrypt
+    @ListData(ListDataTypes.Description)
     var street: String? = null;
 
     @Column(length = 2048)
     @Encrypt
     var secundStreet: String? = null;
+
     @Column(length = 128)
+    @ListData(ListDataTypes.Description, prefix = ", ", order = 1)
     var city: String? = null;
+
     @Column(length = 128)
     var state: String? = null;
     @Column(length = 128)
     var country: String? = null;
+
     @Column(length = 128)
+    @ListData(ListDataTypes.Subject, prefix = "- ", order = 2)
     var username: String? = null;
+
     @Column(length = 128)
     var postalCode: String? = null;
     @Column(length = 128)

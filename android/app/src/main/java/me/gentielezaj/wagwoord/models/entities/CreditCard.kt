@@ -15,14 +15,28 @@ import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntityCount
 import java.lang.NullPointerException
 
 enum class CreditCardType(val value: String) {
-    @SerializedName("mastercard")
-    MasterCard("mastercard"),
-    @SerializedName("visa")
-    Visa("visa"),
+    @SerializedName("electron")
+    VisaElectron("electron"),
     @SerializedName("maestro")
     Maestro("maestro"),
-    @SerializedName("paypal")
-    Paypal("paypal"),
+    @SerializedName("dankort")
+    Dankort("dankort"),
+    @SerializedName("interpayment")
+    InterPayment("interpayment"),
+    @SerializedName("unionpay")
+    UnionPay("unionpay"),
+    @SerializedName("visa")
+    Visa("visa"),
+    @SerializedName("mastercard")
+    MasterCard("mastercard"),
+    @SerializedName("amex")
+    AmericanExpress("amex"),
+    @SerializedName("diners")
+    Diners("diners"),
+    @SerializedName("discover")
+    Discover("discover_club"),
+    @SerializedName("jcb")
+    JCB("jcb"),
     @SerializedName("unknown")
     Unknown("unknown")
 }
@@ -46,7 +60,6 @@ class CreditCard : CoreEntityCount() {
     lateinit var name: String;
 
     @Column(type = ColumnType.TEXT, length = 254, converter = CreditCardTypeConverter::class)
-    @ListData(ListDataTypes.Description)
     var cardType: CreditCardType = CreditCardType.Unknown
 
     @Column(nullable = Nullable.NOT_NULL)
@@ -56,7 +69,7 @@ class CreditCard : CoreEntityCount() {
     @Unique
     @Encrypt
     @Column(length = 64)
-    @ListData(ListDataTypes.Description, order = 1)
+    @ListData(ListDataTypes.Description)
     lateinit var cardNumber: String;
 
     @Column(nullable = Nullable.NOT_NULL)

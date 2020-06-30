@@ -21,7 +21,7 @@ import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
 open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     RecyclerView.Adapter<MyViewHolder>() {
 
-    private lateinit var dataSet: List<TModel>
+    protected lateinit var dataSet: List<TModel>
     private var listItemFragmentId: Int = 0
     private var viewValueMap: List<ViewValueMap<*>>? = null
 

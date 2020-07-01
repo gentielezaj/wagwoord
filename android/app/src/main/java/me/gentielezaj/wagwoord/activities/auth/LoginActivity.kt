@@ -53,6 +53,7 @@ class LoginActivity : CoreActivity() {
         })
         btnSkip.startAnimation(animation)
     }
+
     fun showSkipButton() {
         var animation = ResizeAnimation(btnSkip, 350)
         animation.duration = 300

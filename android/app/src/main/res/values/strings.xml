@@ -14,6 +14,12 @@
 
     <string name="settings">Settings</string>
 
+    <!-- region Clipboard -->
+    <string name="copy_to_clipboard">Copy to Clipboard</string>
+    <string name="copy_to_clipboard_no_value">No value</string>
+    <string name="copy_to_clipboard_copied">Copied</string>
+    <!-- endregion Clipboard -->
+
     <!-- region login activity-->
     <string name="connecting_to_server">Connecting to server</string>
     <string name="sync_data">Synchronizing data</string>

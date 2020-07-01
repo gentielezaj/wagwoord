@@ -18,18 +18,19 @@ class Password: CoreEntityCount() {
 
     @Column
     @Identifier
+    @ListData(ListDataTypes.None, showOnCopyList = true)
     @Unique("domain_username")
     lateinit var domain: String;
 
     @Column(length = 128)
     @Identifier
     @Unique("domain_username")
-    @ListData(ListDataTypes.Subject)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true)
     var username: String? = null;
 
     @Column
     @Encrypt
-    @ListData(ListDataTypes.ExpandPrimary)
+    @ListData(ListDataTypes.ExpandPrimary, showOnCopyList = true)
     lateinit var password: String
 
     @Column

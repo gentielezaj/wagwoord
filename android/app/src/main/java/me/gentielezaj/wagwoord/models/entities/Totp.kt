@@ -14,9 +14,9 @@ import java.util.*
 
 @Table
 class Totp : CoreEntity() {
-    @ListData(ListDataTypes.Subject)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true)
     @Column var issuer: String = ""
-    @ListData(ListDataTypes.Description)
+    @ListData(ListDataTypes.Description, showOnCopyList = true)
     @Column var username: String = ""
 
     @Column

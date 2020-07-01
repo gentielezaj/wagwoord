@@ -13,10 +13,10 @@ import java.util.Date
 @Table
 class Address : CoreEntityCount() {
     @Column(length = 64)
-    @ListData(ListDataTypes.Subject)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true)
     var firstName: String? = null;
 
-    @ListData(ListDataTypes.Subject, order = 1)
+    @ListData(ListDataTypes.Subject, order = 1, showOnCopyList = true)
     @Column(length = 64)
     var lastName: String? = null;
 
@@ -25,7 +25,7 @@ class Address : CoreEntityCount() {
 
     @Column(length = 2048)
     @Encrypt
-    @ListData(ListDataTypes.Description)
+    @ListData(ListDataTypes.Description, showOnCopyList = true)
     var street: String? = null;
 
     @Column(length = 2048)
@@ -42,7 +42,7 @@ class Address : CoreEntityCount() {
     var country: String? = null;
 
     @Column(length = 128)
-    @ListData(ListDataTypes.Subject, prefix = "- ", order = 2)
+    @ListData(ListDataTypes.Subject, prefix = "- ", order = 2, showOnCopyList = true)
     var username: String? = null;
 
     @Column(length = 128)

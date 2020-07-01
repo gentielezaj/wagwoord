@@ -56,7 +56,7 @@ class CreditCardTypeConverter : ColumnConverter() {
 @Table
 class CreditCard : CoreEntityCount() {
     @Column(length = 254)
-    @ListData(ListDataTypes.Subject)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true)
     lateinit var name: String;
 
     @Column(type = ColumnType.TEXT, length = 254, converter = CreditCardTypeConverter::class)
@@ -69,7 +69,7 @@ class CreditCard : CoreEntityCount() {
     @Unique
     @Encrypt
     @Column(length = 64)
-    @ListData(ListDataTypes.Description)
+    @ListData(ListDataTypes.Description, showOnCopyList = true)
     lateinit var cardNumber: String;
 
     @Column(nullable = Nullable.NOT_NULL)
@@ -77,7 +77,7 @@ class CreditCard : CoreEntityCount() {
 
     @Column
     @Encrypt
-    @ListData(ListDataTypes.ExpandPrimary, "CVS: ")
+    @ListData(ListDataTypes.ExpandPrimary, "CVS: ", showOnCopyList = true)
     var cvv: String? = null;
 
     @Column
@@ -86,7 +86,7 @@ class CreditCard : CoreEntityCount() {
 
     @Column
     @Encrypt
-    @ListData(ListDataTypes.ExpandSecondary, "PIN: ")
+    @ListData(ListDataTypes.ExpandSecondary, "PIN: ", showOnCopyList = true)
     var pin: String? = null;
 
     @Column(default = "0")

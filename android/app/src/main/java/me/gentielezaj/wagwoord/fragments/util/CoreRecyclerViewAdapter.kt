@@ -1,7 +1,9 @@
 package me.gentielezaj.wagwoord.fragments.util
 
-import android.content.Intent
+import android.app.AlertDialog
+import android.content.*
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -9,13 +11,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.activities.views.generic.GenericViewActivity
+import me.gentielezaj.wagwoord.models.annotations.ListData
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.annotations.getListDataText
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.memberProperties
 
 
 open class CoreRecyclerViewAdapter<TModel : IEntity>() :
@@ -62,14 +68,41 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
                 holder.toggle()
             }
 
-            holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnLongClickListener(OnLongClickListener {
-                TODO("implement on hold")
+            holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnLongClickListener(OnLongClickListener { view ->
+                createDialog(view, item)
+                true
             })
         } else {
             holder.findViewById<ImageView>(R.id.core_list_item_expand).visibility = View.GONE
         }
 
         holder.bind(item)
+    }
+    
+    private fun createDialog(view: View, item: TModel) {
+        var properties = item.javaClass.kotlin.memberProperties.filter { it.findAnnotation<ListData>()?.showOnCopyList == true }.map { it.name }.toTypedArray()
+
+        if(properties.isEmpty()) return
+
+        var dialog = view.context.let {
+            val builder = AlertDialog.Builder(it)
+            builder.setTitle(R.string.copy_to_clipboard)
+                .setItems(properties,
+                    DialogInterface.OnClickListener { dialog, which ->
+                        var propertyValue = item.javaClass.kotlin.memberProperties.find { it.name == properties[which] }?.get(item)?.toString()
+                        val toastMessage = if(!propertyValue.isNullOrBlank()) {
+                            var clipboardManager = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboardManager.setPrimaryClip(ClipData.newPlainText(propertyValue, propertyValue))
+                            dialog.dismiss()
+                            view.context.getString(R.string.copy_to_clipboard_copied)
+                        } else view.context.getString(R.string.copy_to_clipboard_no_value)
+
+                        Toast.makeText(view.context, toastMessage, Toast.LENGTH_SHORT).show()
+                    })
+            builder.create()
+        }
+
+        dialog.show()
     }
 
     fun updateData(data: List<TModel>) {

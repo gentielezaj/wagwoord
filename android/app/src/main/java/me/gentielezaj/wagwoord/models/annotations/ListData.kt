@@ -11,10 +11,11 @@ enum class ListDataTypes {
     Subject,
     Description,
     ExpandPrimary,
-    ExpandSecondary
+    ExpandSecondary,
+    None
 }
 
-annotation class ListData(val dataFor: ListDataTypes, val prefix:String = "", val sufix: String = "", val order:Int = 0)
+annotation class ListData(val dataFor: ListDataTypes, val prefix:String = "", val sufix: String = "", val order:Int = 0, val showOnCopyList: Boolean = false)
 
 fun getListDataText(item: Any, type: ListDataTypes) : String {
     val prop = item.javaClass.kotlin.memberProperties.find { it.findAnnotation<ListData>()?.dataFor == type }

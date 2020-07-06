@@ -153,13 +153,6 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
         return super.onCreateOptionsMenu(menu)
     }
 
-    fun closeKeyboard() {
-        val imm: InputMethodManager =
-            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        val view: View = currentFocus ?: View(this)
-        imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
-    }
-
     fun closeSearchAndKeyBoard() {
         if (!searchView.isIconified && !isAppBarExpended) {
             searchView.onActionViewCollapsed();

@@ -18,6 +18,7 @@
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:navigationBarDividerColor">@color/colorPrimaryDark</item>
         <item name="android:backgroundSplit">@color/colorPrimaryDark</item>
+        <item name="editTextStyle">@style/EditText</item>
     </style>
 
     <!-- Base application theme. -->
@@ -39,6 +40,11 @@
 
     <style name="SplashTheme" parent="BaseAppTheme">
         <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+    
+    <style name="EditText" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/shape_edit_text_square</item>
+        <item name="android:padding">6dp</item>
     </style>
 
 </resources>

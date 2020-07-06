@@ -54,6 +54,7 @@
             android:background="@drawable/button_shape_default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorMain"
             app:spinning_bar_color="@color/colorAccentLight"
             app:spinning_bar_padding="2dp"
             app:spinning_bar_width="5dp"

@@ -4,9 +4,11 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +26,7 @@ import me.gentielezaj.wagwoord.services.inject
 import me.gentielezaj.wagwoord.ui.ResizeAnimation
 
 class LoginActivity : CoreActivity() {
+
     private val authService by inject<AuthService>()
     private val url: EditText by bindView(R.id.setup_url)
     private val encryptionKey by bindView<EditText>(R.id.setup_encryption_key)
@@ -34,6 +37,18 @@ class LoginActivity : CoreActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        if(intent.getBooleanExtra(HIDE_SKIP_BUTTON_KEY, false)) {
+            btnSkip.visibility = View.GONE
+        }
+
+        encryptionKey.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE) {
+                closeKeyboard()
+                btnLogin.performClick()
+            }
+            true
+        }
     }
 
     fun skip(view: View? = null) {
@@ -161,5 +176,9 @@ class LoginActivity : CoreActivity() {
     override fun onDestroy() {
         super.onDestroy()
         btnLogin.dispose()
+    }
+
+    companion object {
+        public val HIDE_SKIP_BUTTON_KEY = "HIDE_SKIP_BUTTON_KEY"
     }
 }

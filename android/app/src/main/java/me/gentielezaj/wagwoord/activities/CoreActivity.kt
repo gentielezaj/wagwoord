@@ -1,5 +1,8 @@
 package me.gentielezaj.wagwoord.activities
+import android.app.Activity
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -26,6 +29,13 @@ abstract class CoreActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.Main) {
             statement()
         }
+    }
+
+    fun closeKeyboard() {
+        val imm: InputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view: View = currentFocus ?: View(this)
+        imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
     }
 }
 

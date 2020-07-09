@@ -41,10 +41,37 @@
     <style name="SplashTheme" parent="BaseAppTheme">
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
-    
+
     <style name="EditText" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/shape_edit_text_square</item>
         <item name="android:padding">6dp</item>
     </style>
 
+
+    <!-- region dialog -->
+    <style name="AppDialog">
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+
+        <item name="android:windowBackground">@color/colorTransparent50</item>
+        <item name="android:background">@color/colorMainLight</item>
+
+
+        <item name="android:windowSwipeToDismiss">true</item>
+        <item name="android:windowTitleStyle">@style/AppDialogTitle</item>
+
+    </style>
+
+    <style name="AppDialogTitle">
+        <item name="android:textColor">@color/colorAccentLight</item>
+        <item name="android:background">@color/colorMainLight</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+    <!-- endregion dialog -->
 </resources>

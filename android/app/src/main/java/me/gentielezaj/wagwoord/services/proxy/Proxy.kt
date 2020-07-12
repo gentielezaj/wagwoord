@@ -35,6 +35,7 @@ class ProxyService(protected val context: Context, private val controller: Strin
         else localStorage.set(Constants.LocalStorageKeys.SERVER_HEADERS, headers)
     }
 
+    // endregion get
     suspend inline fun <reified T: Any> get(action: String?, params: Map<String, String> = mapOf()): ResponseData<T> {
         return get(T::class, action, params)
     }
@@ -42,7 +43,19 @@ class ProxyService(protected val context: Context, private val controller: Strin
     suspend fun <T: Any> get(entityType: KClass<T>, action: String?, params: Map<String, String> = mapOf()): ResponseData<T> {
         return request(entityType, RequestData(action, params = params))
     }
-    // endregion post
+    // endregion get
+
+
+    // endregion delete
+    suspend inline fun delete(id: Int): ResponseData<Any> {
+        return request<Any>(RequestData(data = id, method = Request.Method.DELETE))
+    }
+
+    suspend inline fun delete(ids: String): ResponseData<Any> {
+        return request<Any>(RequestData(method =  Request.Method.DELETE, data = ids))
+    }
+
+    // endregion delete
 
     suspend inline fun <reified T: Any> request(requestData: RequestData): ResponseData<T> {
         return request(T::class, requestData)

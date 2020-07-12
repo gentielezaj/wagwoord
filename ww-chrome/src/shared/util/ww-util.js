@@ -97,7 +97,7 @@ export class WWUtil {
 
     // #region password generate
     static generatePassword(length, regex, passwordSettings) {
-        if(!passwordSettings) return '';
+        if (!passwordSettings) return '';
         length = length || passwordSettings.passwordLength;
         let string = "abcdefghijklmnopqrstuvwxyz";
         let numeric = '0123456789';
@@ -178,7 +178,7 @@ export class WWUtil {
         if (/^[0-9]+/g.test(card)) {
             card = WWUtil.getCreditcardType(card);
         }
-        
+
         switch (card || '') {
             case 'visa':
             case 'electron':
@@ -189,6 +189,8 @@ export class WWUtil {
                 return 'icon-cc-amex';
             case 'discover':
                 return 'icon-cc-discover';
+            case 'diners':
+                return 'icon-cc-diners-club';
             default:
                 return 'icon-card';
         }

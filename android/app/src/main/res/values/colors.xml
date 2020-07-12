@@ -19,4 +19,6 @@
 
     <color name="colorTransparent">@android:color/transparent</color>
     <color name="colorTransparent50">#800D0D0D</color>
+
+    <color name="icon_colors">@color/colorAccentLight</color>
 </resources>

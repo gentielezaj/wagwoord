@@ -1,18 +1,13 @@
 package me.gentielezaj.sqldroid
 
 import android.content.ContentValues
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.location.Criteria
 import me.gentielezaj.sqldroid.common.DatePatterns
 import me.gentielezaj.sqldroid.exceptions.UnsuportedColumnTypeException
-import me.gentielezaj.sqldroid.exceptions.queryExectution.MultipleRowsException
 import me.gentielezaj.sqldroid.models.ColumnType
 import me.gentielezaj.sqldroid.models.TableInfo
 import me.gentielezaj.sqldroid.query.*
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAccessor
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -98,13 +93,19 @@ class Database internal constructor(val db: SQLiteDatabase) {
 
     // region delete
 
-    fun <T: Any> delete(clazz: KClass<T>, id: Any?) : Boolean {
-        if(id == null) return false;
+    fun delete(clazz: KClass<*>, id: Any?) {
         var table = TableInfo.create(clazz)
-        return db.delete(table.name, "${table.primaryKey.name} = ${id}", null) > -1
+        delete(table, id)
     }
 
-    inline fun <reified T: Any> delete(id: Any?) : Boolean = delete(T::class, id)
+    fun delete(item: Any) {
+        var tableInfo = TableInfo.create(item.javaClass.kotlin)
+        var id = tableInfo.primaryKey.property.get(item)
+        delete(tableInfo, id)
+    }
+
+    fun delete(table: TableInfo, id: Any?) =
+        db.delete(table.name, "${table.primaryKey.name} = $id", null)
 
     // endregion
 

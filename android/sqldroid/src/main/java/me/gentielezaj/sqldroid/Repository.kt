@@ -69,5 +69,9 @@ class Repository<TDatabase: SqlDroidConfiguration, TEntity: Any>(val db: TDataba
     fun insert(model: TEntity, foreignDepended: Boolean = true) : Int  = db.write { it.insert(model, foreignDepended) } as Int
 
     fun update(model: TEntity, foreignDepended: Boolean = true) : Int = db.write { it.update(model, foreignDepended) } as Int
+
+    fun delete(model: TEntity) {
+        db.write { it.delete(entity) }
+    }
     // endregion write
 }

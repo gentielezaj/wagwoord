@@ -40,8 +40,11 @@ abstract class CoreEntity : CoreIdEntity(), IEntity {
     @Column override var encrypted:Boolean = false
 
     @Column(type = ColumnType.INT, converter = SyncStatusConverter::class) override var sync: SyncStatus = SyncStatus.OFF
+
+    override var deleted = false
 }
 
 abstract class CoreEntityCount : CoreEntity(), IEntityCount {
     @Column(default = "0") override var count: Int = 0
 }
+

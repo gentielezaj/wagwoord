@@ -40,6 +40,8 @@ class RepositoryAsync<TDatabase : SqlDroidConfiguration, TEntity : Any>(
     suspend fun save(model: TEntity, foreignDepended: Boolean = true) : Int = run { repository.save(model, foreignDepended) }
     suspend fun insert(model: TEntity, foreignDepended: Boolean = true) : Int  = run { repository.insert(model, foreignDepended) }
     suspend fun update(model: TEntity, foreignDepended: Boolean = true) : Int = run { repository.update(model, foreignDepended) }
+
+    suspend fun delete(model: TEntity) = run { repository.delete(model) }
     // endregion write
 
     private suspend fun <T> run(statement: () -> T): T = suspendCancellableCoroutine<T> { continuation ->

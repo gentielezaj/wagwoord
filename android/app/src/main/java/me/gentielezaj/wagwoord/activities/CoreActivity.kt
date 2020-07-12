@@ -6,15 +6,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.common.AppUtil
 import me.gentielezaj.wagwoord.common.LocalStorage
 import me.gentielezaj.wagwoord.services.bindView
 
@@ -25,11 +19,7 @@ abstract class CoreActivity : AppCompatActivity() {
         return super.onCreate(savedInstanceState)
     }
 
-    fun launch(statement: suspend () -> Unit) {
-        GlobalScope.launch(Dispatchers.Main) {
-            statement()
-        }
-    }
+    fun launch(statement: suspend () -> Unit) = AppUtil.launch(statement)
 
     fun closeKeyboard() {
         val imm: InputMethodManager =

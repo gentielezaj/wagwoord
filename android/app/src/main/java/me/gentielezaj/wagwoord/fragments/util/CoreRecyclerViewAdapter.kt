@@ -77,31 +77,11 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     }
     
     private fun createDialog(view: View, item: TModel) {
-//        var properties = item.javaClass.kotlin.memberProperties.filter { it.findAnnotation<ListData>()?.showOnCopyList == true }.map { it.name }.toTypedArray()
-//
-//        if(properties.isEmpty()) return
-//        var dialog = view.context.let {
-//            val builder = AlertDialog.Builder(it, R.style.AppDialog)
-//            builder.setTitle(R.string.copy_to_clipboard)
-//                .setItems(properties,
-//                    DialogInterface.OnClickListener { dialog, which ->
-//                        var propertyValue = item.javaClass.kotlin.memberProperties.find { it.name == properties[which] }?.get(item)?.toString()
-//                        val toastMessage = if(!propertyValue.isNullOrBlank()) {
-//                            var clipboardManager = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//                            clipboardManager.setPrimaryClip(ClipData.newPlainText(propertyValue, propertyValue))
-//                            dialog.dismiss()
-//                            view.context.getString(R.string.copy_to_clipboard_copied)
-//                        } else view.context.getString(R.string.copy_to_clipboard_no_value)
-//
-//                        Toast.makeText(view.context, toastMessage, Toast.LENGTH_SHORT).show()
-//                    })
-//            builder.create()
-//        }
-
         val dialog = ListMenuBottomSheetDialog.create(view.context, item)
+        dialog.setOnCancelListener {
+            TODO("implement on action")
+        }
         dialog.show()
-        //dialog.window!!.setGravity(Gravity.BOTTOM)
-        //dialog.window!!.setLayout(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT)
     }
 
     fun updateData(data: List<TModel>) {

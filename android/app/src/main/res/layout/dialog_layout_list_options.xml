@@ -10,6 +10,7 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center_vertical"
+        android:textSize="24dp"
         android:paddingHorizontal="@dimen/base_padding"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintLeft_toRightOf="parent"
@@ -18,6 +19,7 @@
     <ListView
         android:id="@+id/dialog_layout_list_options_list"
         android:layout_width="match_parent"
+        android:padding="@dimen/base_padding"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/dialog_layout_list_options_title"
         app:layout_constraintLeft_toLeftOf="parent"

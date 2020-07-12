@@ -16,6 +16,7 @@
 
     <!-- region Clipboard -->
     <string name="copy_to_clipboard">Copy to Clipboard</string>
+    <string name="copy">Copy</string>
     <string name="copy_to_clipboard_no_value">No value</string>
     <string name="copy_to_clipboard_copied">Copied</string>
     <!-- endregion Clipboard -->
@@ -71,4 +72,8 @@
     <string name="item_menu">Item menu:</string>
     <!-- endregion list menu item -->
 
+
+    <!-- region crud item -->
+    <string name="deleted">Item deleted</string>
+    <!-- endregion  -->
 </resources>

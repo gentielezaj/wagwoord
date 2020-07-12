@@ -1,22 +1,19 @@
 package me.gentielezaj.wagwoord.services.entity
 
 import android.content.Context
-import com.google.gson.internal.LinkedTreeMap
-import com.google.gson.reflect.TypeToken
 import me.gentielezaj.sqldroid.RepositoryAsync
-import me.gentielezaj.sqldroid.models.ColumnInfo
 import me.gentielezaj.sqldroid.models.TableInfo
 import me.gentielezaj.sqldroid.query.Restriction
 import me.gentielezaj.sqldroid.query.Where
 import me.gentielezaj.sqldroid.query.eq
 import me.gentielezaj.wagwoord.common.LogData
 import me.gentielezaj.wagwoord.common.ServerStatus
+import me.gentielezaj.wagwoord.common.empty
 import me.gentielezaj.wagwoord.database.Database
 import me.gentielezaj.wagwoord.models.annotations.Encrypt
 import me.gentielezaj.wagwoord.models.annotations.Identifier
 import me.gentielezaj.wagwoord.models.common.SaveErrorCodes
 import me.gentielezaj.wagwoord.models.common.SaveResult
-import me.gentielezaj.wagwoord.models.entities.Password
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntityCount
 import me.gentielezaj.wagwoord.models.entities.coreEntities.SyncStatus
@@ -24,18 +21,11 @@ import me.gentielezaj.wagwoord.models.proxyModels.RequestData
 import me.gentielezaj.wagwoord.services.BaseService
 import me.gentielezaj.wagwoord.services.encryption.EncryptionService
 import me.gentielezaj.wagwoord.services.proxy.ProxyService
-import java.lang.reflect.Type
 import kotlin.reflect.KClass
-import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.full.*
-import kotlin.jvm.kotlin as kolin
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.memberProperties
 
-abstract class CoreEntityCountService<T>(context: Context, type: KClass<T>) : CoreEntityService<T>(context, type) where T: IEntityCount {
-    constructor(context: Context, type: KClass<T>, controller: String?) : this(context, type) {
-        this.controller = controller
-    }
-}
 
 abstract class CoreService<T>(context: Context) : BaseService(context)  where T: IEntity {
 
@@ -48,23 +38,24 @@ abstract class CoreService<T>(context: Context) : BaseService(context)  where T:
 
 open class CoreEntityService<T: IEntity>(context: Context, protected val type: KClass<T>) : CoreService<T>(context) {
     protected var controller: String? = null
-    protected val encryptionService = EncryptionService(context)
+    private val encryptionService = EncryptionService(context)
+
+    private val localStorageDeleteKey = type.simpleName + "DeletedEntities"
+    private val lastModifiedKey
+        get() = type.simpleName + "LastModified"
 
     constructor(context: Context, type: KClass<T>, controller: String?) : this(context, type) {
         this.controller = controller
     }
 
-    protected val proxy = ProxyService(context, getControllerName())
-    protected val db = Database(context)
-    protected val repository = RepositoryAsync<Database, T>(db, type, context)
-    protected val classType: Class<T> get() { return type.java  }
-    protected val tableInfo = TableInfo.create(type)
-
-    protected val lastModifiedKey
-        get() = type.simpleName + "LastModified"
+    private val proxy = ProxyService(context, getControllerName())
+    private val db = Database(context)
+    private val repository = RepositoryAsync(db, type, context)
+    private val classType: Class<T> get() { return type.java  }
+    private val tableInfo = TableInfo.create(type)
 
     protected open fun getControllerName() : String {
-        if(!controller.isNullOrEmpty()) return controller!!;
+        if(!controller.isNullOrEmpty()) return controller!!
         return classType.simpleName.replace("Entity", "")
     }
 
@@ -89,7 +80,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
         var model = entity
         if(!isValidModel(model)) return SaveResult(model, SaveErrorCodes.INVALID_MODEL)
 
-        var oldItem: T?
+        val oldItem: T?
         oldItem = when {
             model.id > 0 -> {
                 repository.get(model.id)
@@ -98,8 +89,8 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
                 repository.firstOrNull(Restriction.eq(type, "serverId", model.serverId))
             }
             else -> {
-                val existingId = hasUniqueConflict(model);
-                if(!canUpdate && existingId != null) return SaveResult(model, SaveErrorCodes.ITEM_ALREADY_EXISTS);
+                val existingId = hasUniqueConflict(model)
+                if(!canUpdate && existingId != null) return SaveResult(model, SaveErrorCodes.ITEM_ALREADY_EXISTS)
                 repository.firstOrNull(Restriction.eq(type, "serverId", model.serverId))
             }
         }
@@ -123,7 +114,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
     }
 
     private suspend fun hasUniqueConflict(model: T) : Int? {
-        var query = Where.AND<T>()
+        val query = Where.AND<T>()
         for (property in type.memberProperties.filter {it.findAnnotation<Identifier>() != null }) {
             query.criteria.add(property eq property.get(model))
         }
@@ -135,12 +126,33 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
 
     private fun isValidModel(model : T) : Boolean {
         for(column in tableInfo.columns.filter { !it.nullable }) {
-            if(column.get(model) == null) return false;
+            if(column.get(model) == null) return false
         }
 
-        return true;
+        return true
     }
     // endregion save
+
+    // region delete
+
+    suspend fun delete(entity: T, sync: Boolean = true) {
+        if(sync && !proxy.delete(entity.id).success) {
+            var ids = localStorage.get(localStorageDeleteKey, String.empty)
+            ids += "${entity.serverId},"
+            localStorage.set(localStorageDeleteKey, ids)
+        }
+
+        repository.delete(entity)
+    }
+
+    private suspend fun syncDeleted() {
+        val ids = localStorage.get<String>(localStorageDeleteKey)
+        if(!ids.isNullOrEmpty()) {
+            if(proxy.delete(ids).success) localStorage.remove(localStorageDeleteKey)
+        }
+    }
+
+    // endregion delete
 
     // region sync
 
@@ -151,8 +163,9 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
 
     override suspend fun syncServer() : Boolean {
         if(!hasInternetConnectionAndServerSet()) return false
-        var list = repository.toList(Restriction.eq(type, "sync", SyncStatus.Syncing))
-        var request = proxy.request<List<T>>(RequestData.Post(list))
+        syncDeleted()
+        val list = repository.toList(Restriction.eq(type, "sync", SyncStatus.Syncing))
+        val request = proxy.request<List<T>>(RequestData.Post(list))
 
         return request.success
     }
@@ -160,7 +173,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
     private suspend fun syncServerItem(entity: T) : T {
         var model = entity
         if(!hasInternetConnectionAndServerSet()) model.sync = SyncStatus.Syncing
-        var request = proxy.request<T>(type, RequestData.Post(model))
+        val request = proxy.request<T>(type, RequestData.Post(model))
         model = request.data?:model
 
         model.sync = if(request.success) SyncStatus.Synced else SyncStatus.Syncing
@@ -174,41 +187,55 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
             if(!hasInternetConnectionAndServerSet()) return false
 
             val lastModifiedQuery = repository.queryBuilder.desc(type, "lastModified").take(1)
-            var lastModified = repository.firstOrNull(lastModifiedQuery)?.lastModified?:0L;
-            val lastModifiedStorage = localStorage.get<Long>(lastModifiedKey)?:0L;
+            var lastModified = repository.firstOrNull(lastModifiedQuery)?.lastModified?:0L
+            val lastModifiedStorage = localStorage.get<Long>(lastModifiedKey)?:0L
             lastModified = if(lastModified < lastModifiedStorage) lastModifiedStorage else lastModified
 
-            val response = proxy.requestList<T>(type, RequestData.Patch(mapOf("lastModified" to lastModified.toString())));
-            if(!response.success) return false;
+            val response = proxy.requestList<T>(type, RequestData.Patch(mapOf("lastModified" to lastModified.toString())))
+            if(!response.success) {
+                return false
+            }
+
             if(response.data?.any() == true) {
                 for (i in response.data!!) {
+                    if(i.deleted) delete(i, false)
+
                     var item = i
                     if(item.encrypted) item = decryptData(item)
                     item.sync = SyncStatus.Synced
-                    coreSave(item, true)
+                    saveOrUpdate(item)
                 }
             }
 
+            localStorage.set(lastModifiedKey, System.currentTimeMillis())
+
             return true
         } catch (e: Exception) {
-            throw e;
+            throw e
         }
     }
 
     private fun decryptData(item: T) : T {
-        if(!item.encrypted) return item;
+        if(!item.encrypted) return item
         var cryptoProperties = type.memberProperties.filter { it.findAnnotation<Encrypt>() != null }
         if(cryptoProperties.isEmpty()) return item;
 
         var data = item;
         for (property in cryptoProperties) {
-            val value: Any? = property.get(data) ?: continue;
+            val value: Any? = property.get(data) ?: continue
             val dData = encryptionService.decrypt(value.toString())
             val m = property as KMutableProperty1<T, String>
-            m?.set(data, dData)
+            m.set(data, dData)
         }
 
-        return item;
+        return item
     }
     // endregion sync
+}
+
+
+abstract class CoreEntityCountService<T>(context: Context, type: KClass<T>) : CoreEntityService<T>(context, type) where T: IEntityCount {
+    constructor(context: Context, type: KClass<T>, controller: String?) : this(context, type) {
+        this.controller = controller
+    }
 }

@@ -15,6 +15,7 @@ interface IEntity : IIdEntity {
     var serverId: Int?
     var encrypted:Boolean
     var sync: SyncStatus
+    var deleted: Boolean
 }
 
 interface IEntityCount : IEntity {

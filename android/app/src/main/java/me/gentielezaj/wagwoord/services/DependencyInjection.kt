@@ -5,20 +5,19 @@ import android.content.Context
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
-import com.google.gson.reflect.TypeToken
 import me.gentielezaj.wagwoord.common.LogData
 import me.gentielezaj.wagwoord.models.entities.Totp
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
-import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
+import me.gentielezaj.wagwoord.services.entity.CoreEntityCountService
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
 import me.gentielezaj.wagwoord.services.entity.TotpService
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
-import kotlin.Exception
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
 
+@Suppress("UNCHECKED_CAST")
 class DI {
     protected open class TypeLiteral<T: BaseService>(t: KClass<T>? = null) {
         val type: Type
@@ -29,20 +28,21 @@ class DI {
             } else type =  (this.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
         }
 
+        @Suppress("UNCHECKED_CAST")
         val cl: Class<T>
             get() = type as Class<T>
 
-        val balcklist = listOf(String::class)
+        private val blacklist = listOf(String::class)
 
         fun reflections() : Map<KClass<Any>, KClass<Any>> {
-            val map= mapOf<KClass<Any>, KClass<Any>>()
-            return  map;
+            return mapOf()
         }
 
         val isGeneric: Boolean
-            get() = !balcklist.map{"Data<" + it.java.name + ">"}.contains(type.toString()) // type != object : TypeLiteral<Data<String>>() {}.type
+            get() = !blacklist.map{"Data<" + it.java.name + ">"}.contains(type.toString()) // type != object : TypeLiteral<Data<String>>() {}.type
     }
 
+    @Suppress("PROTECTED_CALL_FROM_PUBLIC_INLINE")
     companion object {
         protected val extends = mapOf<KClass<out IEntity>, KClass<out BaseService>>(Totp::class to TotpService::class)
 
@@ -57,6 +57,14 @@ class DI {
                     }
                     return T::class.java.getConstructor(Context::class.java, KClass::class.java).newInstance(context, cl)
                 }
+                else if(T::class == CoreEntityCountService::class && type.isGeneric) {
+                    val className = type.type.typeName.replace(".+<".toRegex(), "").replace(">", "")
+                    val cl = Class.forName(className).kotlin
+                    if(extends.containsKey(cl)) {
+                        return extends[cl]!!.primaryConstructor!!.call(context) as T
+                    }
+                    return T::class.java.getConstructor(Context::class.java, KClass::class.java).newInstance(context, cl)
+                }
                 else return T::class.java.getConstructor(Context::class.java).newInstance(context)
             } catch (e: Exception) {
                 LogData(e, "Resolve repository")
@@ -64,7 +72,7 @@ class DI {
             }
         }
 
-        inline fun <reified T: IEntity> resolveEntity(context: Context) : CoreEntityService<T> = resolve<CoreEntityService<T>>(context)
+        inline fun <reified T: IEntity> resolveEntity(context: Context) : CoreEntityService<T> = resolve(context)
 
         fun <T: IEntity> resolveEntity(context: Context, entity: KClass<T>) : CoreEntityService<T> {
             try {
@@ -96,7 +104,12 @@ inline fun <reified T: BaseService> Fragment.inject() : Lazy<T> {
     return lazy { DI.resolve<T>(requireContext()) }
 }
 
-inline fun <reified T: IEntity> Fragment.injectEntityService() : Lazy<out CoreEntityService<T>> {
+inline fun <reified T: IEntity> Fragment.injectEntityService() : Lazy<CoreEntityService<T>> {
     @Suppress("UNCHECKED_CAST")
     return lazy { DI.resolveEntity<T>(requireContext(), T::class) }
+}
+
+fun <T: IEntity> Context.injectEntityService(entity: KClass<T>) : Lazy<CoreEntityService<T>> {
+    @Suppress("UNCHECKED_CAST")
+    return lazy { DI.resolveEntity<T>(this, entity) }
 }

@@ -4,21 +4,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:layout_height="wrap_content">
+    android:gravity="center_vertical"
+    android:layout_height="56dp">
 
 
     <ImageView
         android:id="@+id/dialog_layout_list_item_options_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight=".00001"
-        app:srcCompat="@drawable/ic_copy" />
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_weight=".1"
+        app:srcCompat="@drawable/ic_copy_24" />
 
     <TextView
         android:id="@+id/dialog_layout_list_item_options_text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:layout_weight="1"
+        android:layout_weight=".9"
+        android:textSize="18dp"
         android:text="TextView" />
 </LinearLayout>

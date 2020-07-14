@@ -136,13 +136,14 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
     // region delete
 
     suspend fun delete(entity: T, sync: Boolean = true) {
-        if(sync && !proxy.delete(entity.id).success) {
+        if(sync && entity.serverId != null && !proxy.delete(entity.serverId!!).success) {
             var ids = localStorage.get(localStorageDeleteKey, String.empty)
             ids += "${entity.serverId},"
             localStorage.set(localStorageDeleteKey, ids)
         }
 
-        repository.delete(entity)
+        if(entity.id > 0) repository.delete(entity)
+        else repository.delete(Restriction.eq(type, "serverId", entity.serverId))
     }
 
     private suspend fun syncDeleted() {
@@ -186,11 +187,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
 
             if(!hasInternetConnectionAndServerSet()) return false
 
-            val lastModifiedQuery = repository.queryBuilder.desc(type, "lastModified").take(1)
-            var lastModified = repository.firstOrNull(lastModifiedQuery)?.lastModified?:0L
-            val lastModifiedStorage = localStorage.get<Long>(lastModifiedKey)?:0L
-            lastModified = if(lastModified < lastModifiedStorage) lastModifiedStorage else lastModified
-
+            val lastModified = localStorage.get<Long>(lastModifiedKey)?:0L
             val response = proxy.requestList<T>(type, RequestData.Patch(mapOf("lastModified" to lastModified.toString())))
             if(!response.success) {
                 return false
@@ -218,7 +215,10 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
     private fun decryptData(item: T) : T {
         if(!item.encrypted) return item
         var cryptoProperties = type.memberProperties.filter { it.findAnnotation<Encrypt>() != null }
-        if(cryptoProperties.isEmpty()) return item;
+        if(cryptoProperties.isEmpty()) {
+            item.encrypted = false
+            return item
+        }
 
         var data = item;
         for (property in cryptoProperties) {
@@ -228,6 +228,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
             m.set(data, dData)
         }
 
+        item.encrypted = false
         return item
     }
     // endregion sync

@@ -16,6 +16,7 @@ import me.gentielezaj.wagwoord.models.annotations.ListData
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.services.encryption.EncryptionService
 import me.gentielezaj.wagwoord.services.injectEntityService
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
@@ -29,10 +30,8 @@ class ListMenuBottomSheetDialog {
                 item.javaClass.kotlin.memberProperties.filter { it.findAnnotation<ListData>()?.showOnCopyList == true }
             val encryptionService = EncryptionService(context)
             val itemDatas = mutableListOf<ItemData>()
-            for (property in properties) {
-                var value = property.get(item) ?: continue
-                if(property.findAnnotation<Encrypt>() != null && item.encrypted) value = encryptionService.decrypt(value.toString())
-                itemDatas.add(ItemData(R.drawable.ic_copy_24,"$copyString ${property.name}", DataActionType.Copy, value))
+            for (property in properties.filter { it.get(item) != null }) {
+                itemDatas.add(ItemData(R.drawable.ic_copy_24,"$copyString ${property.name}", DataActionType.Copy, property))
             }
 
             itemDatas.addAll(
@@ -84,10 +83,15 @@ class ListMenuBottomSheetDialog {
                     val service by context.injectEntityService(item.javaClass.kotlin)
 
                     when (itemData.action) {
-                        DataActionType.Copy -> AppUtil.copyToClipBoard(
-                            view.context,
-                            itemData.value.toString()
-                        )
+                        DataActionType.Copy -> {
+                            val property = itemData.value as KProperty1<TEntity, Any>
+                            var value = property.get(item).toString()
+                            if(property.findAnnotation<Encrypt>() != null && item.encrypted) value = encryptionService.decrypt(value)
+                            AppUtil.copyToClipBoard(
+                                view.context,
+                                value
+                            )
+                        }
                         DataActionType.View -> TODO("Create View")
                         DataActionType.Delete -> AppUtil.launch {
                             service.delete(item)
@@ -140,6 +144,6 @@ class ListMenuBottomSheetDialog {
         val icon: Int,
         val text: String,
         val action: DataActionType,
-        val value: Any?
+        val value: Any
     )
 }

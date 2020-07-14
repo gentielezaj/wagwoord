@@ -66,7 +66,7 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
             }
 
             holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnLongClickListener(OnLongClickListener { view ->
-                createDialog(view, item)
+                createDialog(view, item, position)
                 true
             })
         } else {
@@ -76,10 +76,11 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
         holder.bind(item)
     }
     
-    private fun createDialog(view: View, item: TModel) {
+    private fun createDialog(view: View, item: TModel, position: Int) {
         val dialog = ListMenuBottomSheetDialog.create(view.context, item)
         dialog.setOnCancelListener {
-            TODO("implement on action")
+            dataSet.drop(position)
+            notifyDataSetChanged()
         }
         dialog.show()
     }

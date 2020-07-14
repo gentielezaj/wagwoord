@@ -98,10 +98,17 @@ class Database internal constructor(val db: SQLiteDatabase) {
         delete(table, id)
     }
 
-    fun delete(item: Any) {
+    fun <T: Any> delete(item: T) {
         var tableInfo = TableInfo.create(item.javaClass.kotlin)
         var id = tableInfo.primaryKey.property.get(item)
         delete(tableInfo, id)
+    }
+
+    fun <T: Any> delete(clazz: KClass<T>, query: ICriteria<T>) {
+        val list = getQuery(clazz).toList(query)
+        for(item in list) {
+            delete(item)
+        }
     }
 
     fun delete(table: TableInfo, id: Any?) =

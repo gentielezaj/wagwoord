@@ -8,8 +8,6 @@ import me.gentielezaj.wagwoord.models.annotations.Encrypt
 import me.gentielezaj.wagwoord.models.annotations.ListData
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntityCount
-import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntityCountServer
-import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntityServer
 import java.util.Date
 
 @Table

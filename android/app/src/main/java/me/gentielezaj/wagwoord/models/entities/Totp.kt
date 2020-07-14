@@ -1,16 +1,18 @@
 package me.gentielezaj.wagwoord.models.entities
 
+import android.annotation.SuppressLint
+import dev.turingcomplete.kotlinonetimepassword.HmacAlgorithm
+import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordConfig
+import dev.turingcomplete.kotlinonetimepassword.TimeBasedOneTimePasswordGenerator
 import me.gentielezaj.sqldroid.models.annotations.column.Column
-import me.gentielezaj.sqldroid.models.annotations.column.PrimaryKey
 import me.gentielezaj.sqldroid.models.annotations.column.Unique
 import me.gentielezaj.sqldroid.models.annotations.table.Table
 import me.gentielezaj.wagwoord.models.annotations.Encrypt
 import me.gentielezaj.wagwoord.models.annotations.ListData
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
-import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntityCount
-import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntityCount
-import java.util.*
+import org.apache.commons.codec.binary.Base32
+import java.util.concurrent.TimeUnit
 
 @Table
 class Totp : CoreEntity() {
@@ -32,4 +34,12 @@ class Totp : CoreEntity() {
     @Column(default = "30") var step: Int = 30
     @Column(default = "0") var window: Int? = 0
     @Column var icon: String? = null
+
+    @ListData(ListDataTypes.None, showOnCopyList = true)
+    val code: String
+        @SuppressLint("DefaultLocale")
+        get() {
+            val config = TimeBasedOneTimePasswordConfig(step.toLong(), TimeUnit.SECONDS, digits?:6, HmacAlgorithm.valueOf((algorithm?:"sha1").toUpperCase()))
+            return TimeBasedOneTimePasswordGenerator(Base32().decode(secret), config).generate()
+        }
 }

@@ -20,7 +20,7 @@ class CreditCardRecyclerViewAdapter(dataSet: List<CreditCard>) : CoreRecyclerVie
         return map
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder<CreditCard>, position: Int) {
         super.onBindViewHolder(holder, position)
         val item = dataSet[position]
         var creditCardDrawableId = creditCardIcon(item.cardType)

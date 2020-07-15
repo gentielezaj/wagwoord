@@ -22,6 +22,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import me.gentielezaj.wagwoord.MainActivity
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.fragments.util.BaseRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
@@ -90,9 +91,9 @@ abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
     }
 }
 
-abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout.fragment_core_list, val fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item) : CoreFragment(fragmentListLayoutId) {
+abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragmentListLayoutId: Int = R.layout.fragment_core_list, val fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item) : CoreFragment(fragmentListLayoutId) {
     protected lateinit var recyclerView: RecyclerView
-    protected lateinit var viewAdapter: CoreRecyclerViewAdapter<T>
+    protected lateinit var viewAdapter: BaseRecyclerViewAdapter<T, TViewHodler>
     protected lateinit var viewManager: RecyclerView.LayoutManager
     protected lateinit var swipeRefreshLayout: SwipeRefreshLayout
     protected abstract val entityService: CoreEntityService<T>
@@ -156,14 +157,20 @@ abstract class CoreFragmentList<T: IEntity>(fragmentListLayoutId: Int = R.layout
         viewModel.setData(entityService.list())
     }
 
-    protected open fun adapter() : CoreRecyclerViewAdapter<T> {
-        return CoreRecyclerViewAdapter<T>(
-            dataSet,
-            fragmentListItemLayoutId)
-    }
+    abstract fun adapter() : BaseRecyclerViewAdapter<T, TViewHodler>
 
     protected open fun updateData(data: List<T>) {
         dataSet = data
         viewAdapter.updateData(dataSet)
+    }
+}
+
+abstract class CoreFragmentList<TEntity: IEntity>(fragmentListLayoutId: Int = R.layout.fragment_core_list, fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item)
+    : BaseFragmentList<TEntity, MyViewHolder<TEntity>>(fragmentListLayoutId, fragmentListItemLayoutId) {
+
+    override fun adapter() : BaseRecyclerViewAdapter<TEntity, MyViewHolder<TEntity>> {
+        return CoreRecyclerViewAdapter<TEntity>(
+            dataSet,
+            fragmentListItemLayoutId)
     }
 }

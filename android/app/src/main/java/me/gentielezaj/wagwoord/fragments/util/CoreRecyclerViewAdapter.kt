@@ -21,27 +21,24 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
 
-open class CoreRecyclerViewAdapter<TModel : IEntity>() :
-    RecyclerView.Adapter<MyViewHolder>() {
+abstract class BaseRecyclerViewAdapter<TModel : IEntity, TViewHolder: MyViewHolder<TModel>>(dataSet: List<TModel>, listItemFragmentId: Int = R.layout.fragment_core_list_item) :
+    RecyclerView.Adapter<TViewHolder>() {
 
-    protected lateinit var dataSet: List<TModel>
+    protected var dataSet: MutableList<TModel>
     private var listItemFragmentId: Int = 0
-    private var viewValueMap: List<ViewValueMap<*>>? = null
 
-    constructor(dataSet: List<TModel>, listItemFragmentId: Int, viewValueMap: List<ViewValueMap<*>>): this(dataSet, listItemFragmentId) {
-        this.viewValueMap = viewValueMap
-    }
-
-    constructor(dataSet: List<TModel>, listItemFragmentId: Int) : this() {
+    init {
         this.dataSet = dataSet.toMutableList()
         this.listItemFragmentId = listItemFragmentId
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val listItem = layoutInflater.inflate(listItemFragmentId, parent, false)
-        return MyViewHolder(listItem)
+        return newViewHolder(listItem)
     }
+
+    abstract fun newViewHolder(listItem: View) : TViewHolder
 
     override fun getItemCount(): Int {
         return  dataSet.size
@@ -49,7 +46,7 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
 
     protected open fun mapBindView (item: TModel) : Map<ListDataTypes, String> = getListDataText(item)
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TViewHolder, position: Int) {
         val item = dataSet[position]
         var map = mapBindView(item)
         holder.findViewById<TextView>(R.id.core_list_item_subject).text = map[ListDataTypes.Subject]
@@ -86,19 +83,14 @@ open class CoreRecyclerViewAdapter<TModel : IEntity>() :
     }
 
     fun updateData(data: List<TModel>) {
-        dataSet = data
+        dataSet = data.toMutableList()
         notifyDataSetChanged()
     }
 
 }
 
-data class ViewValueMap<TView: View>(val viewId: Int, val viewType: Class<TView>, val property: String) {
-    fun getView(holder: MyViewHolder) : TView {
-        return holder.findViewById<TView>(viewId)
-    }
-}
 
-class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class MyViewHolder<TEntity: IIdEntity>(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun findViewById(id: Int) : View {
         return itemView.findViewById(id)
     }
@@ -112,11 +104,15 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         view.visibility = if(view.visibility == View.GONE) View.VISIBLE else View.GONE
     }
 
-    fun bind(item: IIdEntity) {
+    open fun bind(item: TEntity) {
         itemView.setOnClickListener {
             val intent = Intent(itemView.context, GenericViewActivity::class.java)
             intent.putExtra("id", item.id)
             itemView.context.startActivity(intent)
         }
     }
+}
+
+open class CoreRecyclerViewAdapter<TModel : IEntity>(dataSet: List<TModel>, listItemFragmentId: Int = R.layout.fragment_core_list_item) : BaseRecyclerViewAdapter<TModel, MyViewHolder<TModel>>(dataSet, listItemFragmentId) {
+    override fun newViewHolder(listItem: View): MyViewHolder<TModel> = MyViewHolder(listItem)
 }

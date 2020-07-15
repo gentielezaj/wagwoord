@@ -16,11 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import me.gentielezaj.wagwoord.MainActivity
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.fragments.BaseFragmentList
 import me.gentielezaj.wagwoord.fragments.CoreFragmentList
 import me.gentielezaj.wagwoord.fragments.CoreFragment
+import me.gentielezaj.wagwoord.fragments.creditcards.CreditCardRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.passwords.PasswordViewModel
+import me.gentielezaj.wagwoord.fragments.util.BaseRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
+import me.gentielezaj.wagwoord.models.entities.CreditCard
 import me.gentielezaj.wagwoord.models.entities.Password
 import me.gentielezaj.wagwoord.models.entities.Totp
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
@@ -39,10 +43,12 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TotpListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TotpListFragment : CoreFragmentList<Totp>() {
+class TotpListFragment : BaseFragmentList<Totp, TotpViewHolder>() {
 
     override val entityService: CoreEntityService<Totp> by injectEntityService<Totp>()
     override val viewModel: TotpViewModel by activityViewModels()
+
+    override fun adapter(): BaseRecyclerViewAdapter<Totp, TotpViewHolder> = TotpRecyclerViewAdapter(dataSet)
 
     companion object {
         /**

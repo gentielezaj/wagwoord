@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.CoreFragmentList
+import me.gentielezaj.wagwoord.fragments.util.BaseRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.CreditCard
@@ -30,7 +31,7 @@ class CreditCardListFragment : CoreFragmentList<CreditCard>() {
     protected override val entityService: CoreEntityService<CreditCard> by injectEntityService<CreditCard>()
     protected override val viewModel: CreditCardViewModel by activityViewModels()
 
-    override fun adapter(): CoreRecyclerViewAdapter<CreditCard> = CreditCardRecyclerViewAdapter(dataSet)
+    override fun adapter(): BaseRecyclerViewAdapter<CreditCard, MyViewHolder<CreditCard>> = CreditCardRecyclerViewAdapter(dataSet)
 
     companion object {
         /**

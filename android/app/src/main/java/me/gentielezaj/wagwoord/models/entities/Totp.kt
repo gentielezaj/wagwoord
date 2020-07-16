@@ -14,6 +14,7 @@ import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
 import org.apache.commons.codec.binary.Base32
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.round
 
 @Table
 class Totp : CoreEntity() {
@@ -46,7 +47,7 @@ class Totp : CoreEntity() {
     @ListData(ListDataTypes.ExpandSecondary)
     val timeLeft: Int
         get() {
-            val seconds = Calendar.getInstance().get(Calendar.SECOND);
-            return if(seconds > 30) 60 - seconds else 30 - seconds
+            val s = (System.currentTimeMillis() / 1000).toDouble();
+            return round(step - round(s) % step).toInt() - 1;
         }
 }

@@ -1,18 +1,16 @@
 package me.gentielezaj.wagwoord.fragments.totp
 
-import android.annotation.SuppressLint
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.doOnDetach
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.util.BaseRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.Totp
-import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
 
 
 class TotpRecyclerViewAdapter (dataSet: List<Totp>) : BaseRecyclerViewAdapter<Totp, TotpViewHolder>(dataSet) {
@@ -22,22 +20,27 @@ class TotpRecyclerViewAdapter (dataSet: List<Totp>) : BaseRecyclerViewAdapter<To
 }
 
 class TotpViewHolder(itemView: View) : MyViewHolder<Totp>(itemView) {
+
+    var countDown : CountDownTimer? = null
+
     override fun bind(item: Totp) {
         super.bind(item)
-        LooperThread(item, itemView.findViewById<TextView>(R.id.core_list_item_expand_content_secondary), itemView.findViewById<TextView>(R.id.core_list_item_expand_content_primary)).start()
+
+        val primary = itemView.findViewById<TextView>(R.id.core_list_item_expand_content_primary);
+        val secondary = itemView.findViewById<TextView>(R.id.core_list_item_expand_content_secondary)
+        startCountDown(item, primary, secondary)
     }
 
-    internal class LooperThread(val item: Totp, val timeView: TextView, val codeView: TextView) : Thread() {
-        var mHandler: Handler? = null
-        override fun run() {
-            Looper.prepare()
-            mHandler = object : Handler() {
-                override fun handleMessage(msg: Message?) {
-                    timeView.text = "${item.timeLeft} s"
-                    codeView.text = item.code
-                }
+    fun startCountDown(item: Totp, code: TextView, time: TextView) {
+        countDown = object : CountDownTimer((item.timeLeft * 1000).toLong(), 100) {
+            override fun onTick(millisUntilFinished: Long) {
+                code.text = item.code
+                time.text = "${item.timeLeft} s"
             }
-            Looper.loop()
-        }
+
+            override fun onFinish() {
+                startCountDown(item, code, time)
+            }
+        }.start()
     }
 }

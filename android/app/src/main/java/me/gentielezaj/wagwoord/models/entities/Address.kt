@@ -13,10 +13,10 @@ import java.util.Date
 @Table
 open class Address : CoreEntityCount() {
     @Column(length = 64)
-    @ListData(ListDataTypes.Subject, showOnCopyList = true)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true)
     var firstName: String? = null;
 
-    @ListData(ListDataTypes.Subject, order = 1, showOnCopyList = true)
+    @ListData(ListDataTypes.Subject, order = 1, showOnCopyList = true, searchable = true)
     @Column(length = 64)
     var lastName: String? = null;
 
@@ -25,7 +25,7 @@ open class Address : CoreEntityCount() {
 
     @Column(length = 2048)
     @Encrypt
-    @ListData(ListDataTypes.Description, showOnCopyList = true)
+    @ListData(ListDataTypes.Description, showOnCopyList = true, searchable = true)
     var street: String? = null;
 
     @Column(length = 2048)
@@ -33,7 +33,7 @@ open class Address : CoreEntityCount() {
     var secundStreet: String? = null;
 
     @Column(length = 128)
-    @ListData(ListDataTypes.Description, prefix = ", ", order = 1)
+    @ListData(ListDataTypes.Description, prefix = ", ", order = 1, searchable = true)
     var city: String? = null;
 
     @Column(length = 128)
@@ -42,14 +42,16 @@ open class Address : CoreEntityCount() {
     var country: String? = null;
 
     @Column(length = 128)
-    @ListData(ListDataTypes.Subject, prefix = "- ", order = 2, showOnCopyList = true)
+    @ListData(ListDataTypes.Subject, prefix = "- ", order = 2, showOnCopyList = true, searchable = true)
     var username: String? = null;
 
     @Column(length = 128)
     var postalCode: String? = null;
     @Column(length = 128)
     var organization: String? = null;
+
     @Column(length = 128)
+    @ListData(ListDataTypes.None, searchable = true)
     var phone: String? = null;
 
     @Column(length = 6)

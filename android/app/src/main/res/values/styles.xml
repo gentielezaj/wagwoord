@@ -19,6 +19,7 @@
         <item name="android:navigationBarDividerColor">@color/colorPrimaryDark</item>
         <item name="android:backgroundSplit">@color/colorPrimaryDark</item>
         <item name="editTextStyle">@style/EditText</item>
+        <item name="searchViewStyle">@style/EditText</item>
     </style>
 
     <!-- Base application theme. -->

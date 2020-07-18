@@ -1,9 +1,12 @@
 package me.gentielezaj.wagwoord.services.entity
 
 import android.content.Context
+import me.gentielezaj.sqldroid.IQueryBuilder
 import me.gentielezaj.sqldroid.RepositoryAsync
 import me.gentielezaj.sqldroid.models.TableInfo
+import me.gentielezaj.sqldroid.query.ICriteria
 import me.gentielezaj.sqldroid.query.Restriction
+import me.gentielezaj.sqldroid.query.Restriction.Companion.contains
 import me.gentielezaj.sqldroid.query.Where
 import me.gentielezaj.sqldroid.query.eq
 import me.gentielezaj.wagwoord.common.LogData
@@ -12,6 +15,8 @@ import me.gentielezaj.wagwoord.common.empty
 import me.gentielezaj.wagwoord.database.Database
 import me.gentielezaj.wagwoord.models.annotations.Encrypt
 import me.gentielezaj.wagwoord.models.annotations.Identifier
+import me.gentielezaj.wagwoord.models.annotations.ListData
+import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.common.SaveErrorCodes
 import me.gentielezaj.wagwoord.models.common.SaveResult
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
@@ -23,6 +28,7 @@ import me.gentielezaj.wagwoord.services.encryption.EncryptionService
 import me.gentielezaj.wagwoord.services.proxy.ProxyService
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
@@ -61,7 +67,20 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
 
     // region get
 
-    suspend fun list() : List<T> = repository.toList()
+    suspend fun list(text: String? = String.empty) : List<T> {
+        if(text.isNullOrEmpty() || text.isNullOrBlank()) return repository.toList()
+
+        val properties = type.memberProperties.filter { it.findAnnotation<ListData>()?.searchable?:false }
+
+        if(properties.isEmpty()) return repository.toList()
+
+        var query = mutableListOf<ICriteria<T>>()
+        for(property in properties) {
+            query.add(property contains text)
+        }
+
+        return repository.toList(Where.OR(query))
+    }
 
     // endregion get
 

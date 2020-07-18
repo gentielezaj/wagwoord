@@ -90,7 +90,7 @@ data class Restriction<T: Any> internal constructor(val tableInfo: TableInfo, va
         // endregion
 
         // region strings
-        infix fun <T: Any, P: Any?> KProperty1<T, String>.contains(value: P?) : ICriteria<T> = create(this, "like", "%$value%")
+        infix fun <T: Any, P: Any?> KProperty1<T, *>.contains(value: P?) : ICriteria<T> = create(this, "like", "%$value%")
         infix fun <T: Any, P: Any?> KProperty1<T, String>.endWith(value: P?) : ICriteria<T> = create(this, "like", "$value%")
         infix fun <T: Any, P: Any?> KProperty1<T, String>.startWith(value: P?) : ICriteria<T> = create(this, "like", "%$value")
         infix fun <T: Any, P: Any?> KProperty1<T, String>.like(value: P?) : ICriteria<T> = create(this, "like", value)

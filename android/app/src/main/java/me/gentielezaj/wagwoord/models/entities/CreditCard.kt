@@ -48,6 +48,7 @@ class CreditCardTypeConverter : ColumnConverter() {
     }
 
     override fun write(value: Any?): Any? {
+        if(value != null && value is String) return value;
         if(value == null || value !is CreditCardType) throw NullPointerException()
         return  value.value
     }
@@ -56,10 +57,11 @@ class CreditCardTypeConverter : ColumnConverter() {
 @Table
 class CreditCard : CoreEntityCount() {
     @Column(length = 254)
-    @ListData(ListDataTypes.Subject, showOnCopyList = true)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true)
     lateinit var name: String;
 
     @Column(type = ColumnType.TEXT, length = 254, converter = CreditCardTypeConverter::class)
+    @ListData(ListDataTypes.None, searchable = true)
     var cardType: CreditCardType = CreditCardType.Unknown
 
     @Column(nullable = Nullable.NOT_NULL)
@@ -69,7 +71,7 @@ class CreditCard : CoreEntityCount() {
     @Unique
     @Encrypt
     @Column(length = 64)
-    @ListData(ListDataTypes.Description, showOnCopyList = true)
+    @ListData(ListDataTypes.Description, showOnCopyList = true, searchable = true)
     lateinit var cardNumber: String;
 
     @Column(nullable = Nullable.NOT_NULL)
@@ -81,7 +83,7 @@ class CreditCard : CoreEntityCount() {
     var cvv: String? = null;
 
     @Column
-    @ListData(ListDataTypes.Subject, "(", ")", 1)
+    @ListData(ListDataTypes.Subject, "(", ")", 1, searchable = true)
     var bank: String? = null;
 
     @Column

@@ -22,12 +22,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import me.gentielezaj.wagwoord.MainActivity
 import me.gentielezaj.wagwoord.R
+import me.gentielezaj.wagwoord.common.AppUtil
 import me.gentielezaj.wagwoord.fragments.util.BaseRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
 import me.gentielezaj.wagwoord.viewModels.CoreViewModel
+import me.gentielezaj.wagwoord.viewModels.SearchViewModel
 import java.lang.Exception
 
 // TODO: Rename parameter arguments, choose names that match
@@ -85,6 +87,8 @@ abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
         }
     }
 
+    open fun search(text: String){}
+
     override fun onDetach() {
         super.onDetach()
         listener = null
@@ -97,6 +101,7 @@ abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragme
     protected lateinit var viewManager: RecyclerView.LayoutManager
     protected lateinit var swipeRefreshLayout: SwipeRefreshLayout
     protected abstract val entityService: CoreEntityService<T>
+    protected val searchViewModel: SearchViewModel by activityViewModels<SearchViewModel>()
 
     protected abstract val viewModel: CoreViewModel<T>
     protected var dataSet: List<T> = listOf<T>()
@@ -114,7 +119,7 @@ abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragme
         swipeRefreshLayout.setOnRefreshListener {
             // refresh()
             run {
-                getData(true)
+                getData(null, true)
                 swipeRefreshLayout.isRefreshing = false;
             }
         };
@@ -138,6 +143,10 @@ abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragme
             updateData(data)
         })
 
+        searchViewModel.searchText.observe(this as LifecycleOwner, Observer { data ->
+            data(data, false)
+        })
+
         run {
             viewModel.setData(entityService.list())
         }
@@ -145,7 +154,9 @@ abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragme
         return view;
     }
 
-    protected suspend fun getData(sync: Boolean) {
+    fun data(searchText: String?, sync: Boolean = false) = AppUtil.launch { getData(searchText, sync) }
+
+    protected suspend fun getData(searchText: String?, sync: Boolean) {
         if(sync && entityService.hasInternetConnectionAndServerSet()) {
             if(entityService.syncLocal()) {
                 Toast.makeText(context, getString(R.string.data_updated), Toast.LENGTH_SHORT).show()
@@ -154,7 +165,8 @@ abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragme
             }
         }
 
-        viewModel.setData(entityService.list())
+        val d = entityService.list(searchText)
+        viewModel.setData(d)
     }
 
     abstract fun adapter() : BaseRecyclerViewAdapter<T, TViewHodler>

@@ -1,16 +1,12 @@
 package me.gentielezaj.wagwoord.fragments.totp
 
-import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.view.View
 import android.widget.TextView
-import androidx.core.view.doOnDetach
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.util.BaseRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.Totp
+import java.util.*
 
 
 class TotpRecyclerViewAdapter (dataSet: List<Totp>) : BaseRecyclerViewAdapter<Totp, TotpViewHolder>(dataSet) {
@@ -21,7 +17,7 @@ class TotpRecyclerViewAdapter (dataSet: List<Totp>) : BaseRecyclerViewAdapter<To
 
 class TotpViewHolder(itemView: View) : MyViewHolder<Totp>(itemView) {
 
-    var countDown : CountDownTimer? = null
+    var countDown : Timer = Timer()
 
     override fun bind(item: Totp) {
         super.bind(item)
@@ -32,15 +28,15 @@ class TotpViewHolder(itemView: View) : MyViewHolder<Totp>(itemView) {
     }
 
     fun startCountDown(item: Totp, code: TextView, time: TextView) {
-        countDown = object : CountDownTimer((item.timeLeft * 1000).toLong(), 100) {
-            override fun onTick(millisUntilFinished: Long) {
+        countDown.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
                 code.text = item.code
                 time.text = "${item.timeLeft} s"
             }
+        }, 0, 100)
+    }
 
-            override fun onFinish() {
-                startCountDown(item, code, time)
-            }
-        }.start()
+    fun onDestroy() {
+        countDown.cancel()
     }
 }

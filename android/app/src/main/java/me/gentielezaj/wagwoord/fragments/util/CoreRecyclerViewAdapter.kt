@@ -20,7 +20,6 @@ import me.gentielezaj.wagwoord.ui.ListMenuBottomSheetDialog
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
-
 abstract class BaseRecyclerViewAdapter<TModel : IEntity, TViewHolder: MyViewHolder<TModel>>(dataSet: List<TModel>, listItemFragmentId: Int = R.layout.fragment_core_list_item) :
     RecyclerView.Adapter<TViewHolder>() {
 

@@ -18,9 +18,9 @@ import kotlin.math.round
 
 @Table
 class Totp : CoreEntity() {
-    @ListData(ListDataTypes.Subject, showOnCopyList = true)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true)
     @Column var issuer: String = ""
-    @ListData(ListDataTypes.Description, showOnCopyList = true)
+    @ListData(ListDataTypes.Description, showOnCopyList = true, searchable = true)
     @Column var username: String = ""
 
     @Column

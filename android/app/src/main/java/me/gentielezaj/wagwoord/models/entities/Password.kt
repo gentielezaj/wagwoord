@@ -13,19 +13,19 @@ import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntityCount
 class Password: CoreEntityCount() {
 
     @Column(length = 128)
-    @ListData(ListDataTypes.Description)
+    @ListData(ListDataTypes.Description, searchable = true)
     var name: String? = null
 
     @Column
     @Identifier
-    @ListData(ListDataTypes.None, showOnCopyList = true)
+    @ListData(ListDataTypes.None, showOnCopyList = true, searchable = true)
     @Unique("domain_username")
     lateinit var domain: String;
 
     @Column(length = 128)
     @Identifier
     @Unique("domain_username")
-    @ListData(ListDataTypes.Subject, showOnCopyList = true)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true)
     var username: String? = null;
 
     @Column

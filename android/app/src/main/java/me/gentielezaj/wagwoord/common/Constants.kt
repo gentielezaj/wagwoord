@@ -1,5 +1,6 @@
 package me.gentielezaj.wagwoord.common
 
+import android.Manifest
 import android.content.Context
 
 class Constants {
@@ -18,6 +19,14 @@ class Constants {
     class PermissionResponse(val value:Int) {
         companion object {
             val INTERNET = 1
+            val AUTOFILL = 2
+
+            val permissionsCodes = mapOf(
+                Manifest.permission.INTERNET to INTERNET,
+                Manifest.permission.BIND_AUTOFILL_SERVICE to AUTOFILL
+            )
+
+            fun get(permission: String) : Int = permissionsCodes[permission]?: error("Unknown permission code")
         }
     }
 

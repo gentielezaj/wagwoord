@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.KeyEvent
 import android.view.View
 import android.view.animation.Animation
@@ -92,14 +93,12 @@ class LoginActivity : CoreActivity() {
         errorMessageTextView.text = String.empty;
         btnLogin.startAnimation()
         if (!url.text.toString().isNullOrEmpty()) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
-                requestPermission()
-            else
+            if (requestPermissionIfNeeded(Manifest.permission.INTERNET, Constants.PermissionResponse.INTERNET))
                 sendRequest()
         }
     }
 
-    fun sendRequest() {
+    private fun sendRequest() {
         setHepText(getString(R.string.connecting_to_server))
         launch {
             try {
@@ -128,24 +127,6 @@ class LoginActivity : CoreActivity() {
     }
 
     // region permission
-
-    fun requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.INTERNET
-            )
-        ) {
-            // Show an explanation to the user *asynchronously* -- don't block
-            // this thread waiting for the user's response! After the user
-            // sees the explanation, try again to request the permission.
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.INTERNET),
-                Constants.PermissionResponse.INTERNET
-            )
-        }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

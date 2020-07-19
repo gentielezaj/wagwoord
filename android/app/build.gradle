@@ -47,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.wear:wear:1.0.0'
+    compileOnly 'com.google.android.wearable:wearable:2.5.0'
     def fragment_version = "1.2.5"
     def lifecycle_livedata_version = "2.2.0"
     def activity_ktx_version = "1.1.0"

@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.gentielezaj.wagwoord">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BIND_AUTOFILL_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.views.generic.GenericViewActivity"></activity>
+        <activity
+            android:name=".activities.auth.RequestAutofillPermissionActivity"
+            android:label="@string/request_autofill_permission">
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
+        <activity android:name=".activities.views.generic.GenericViewActivity" />
         <activity
             android:name=".activities.settings.SettingsActivity"
             android:label="@string/settings" />
@@ -27,6 +41,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".managers.autofill.AppAutofillService"
+            android:label="Wagwoord Autofill Service"
+            android:permission="android.permission.BIND_AUTOFILL_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.autofill.AutofillService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.autofill"
+                android:resource="@xml/autofill" />
+        </service>
     </application>
 
 </manifest>

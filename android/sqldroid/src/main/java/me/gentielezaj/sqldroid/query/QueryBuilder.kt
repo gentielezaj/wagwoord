@@ -96,7 +96,7 @@ abstract class CoreQueryBuilder<T: Any, TResult: Any, TAll: Any, TMap: Any>() : 
 
     internal fun whereToSqlString() : String {
         val sql = where.toSqlString(alias)
-        return if(sql.isNotEmpty()) "WHERE $sql" else ""
+        return if(sql.isNotEmpty() && sql != "()") "WHERE $sql" else ""
     }
     // endregion where
 

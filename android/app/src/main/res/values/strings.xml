@@ -24,7 +24,6 @@
     <string name="open_settings">Open settings</string>
     <!-- endregion permission -->
 
-
     <!-- region Clipboard -->
     <string name="copy_to_clipboard">Copy to Clipboard</string>
     <string name="copy" tools:override="true">Copy</string>
@@ -86,4 +85,18 @@
     <!-- region crud item -->
     <string name="deleted">Item deleted</string>
     <!-- endregion  -->
+
+    <!--region settings-->
+    <string name="settings_category_server">Server</string>
+    <string name="settings_category_server_change_login_title">Change or login</string>
+    <string name="settings_category_server_change_login_summary">Change or login to server</string>
+
+    <string name="settings_category_security">Security</string>
+    <string name="settings_category_security_autofill_title">Open autofill settings</string>
+    <string name="settings_category_security_autofill_summary_denied">Wagwoord is not set as default</string>
+    <string name="settings_category_security_autofill_summary_granted">Wagwoord is set as default</string>
+    <string name="settings_category_security_encryptLocal_title">Encrypt data locally</string>
+    <string name="settings_category_security_encryptLocal_summary">Save data as encrypted on this device</string>
+
+    <!--endregion settings-->
 </resources>

@@ -6,14 +6,26 @@ import android.util.Base64.decode
 import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.common.LocalStorage
 import me.gentielezaj.wagwoord.common.empty
+import me.gentielezaj.wagwoord.services.BaseService
 import org.apache.commons.codec.digest.DigestUtils
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
 
-class EncryptionService(val context: Context) {
+class EncryptionService(context: Context) : BaseService(context) {
 
     private var _encryptionKey: String? = null
+    private var _encryptionLocal: Boolean? = false
+
+    var encryptLocal: Boolean
+        get() {
+            if(_encryptionLocal == null) _encryptionLocal = localStorage.get<Boolean>(Constants.LocalStorageKeys.ENCRYPT_LOCAL)
+            return _encryptionLocal?:false
+        }
+        set(value) {
+            localStorage.set(Constants.LocalStorageKeys.ENCRYPT_LOCAL, value)
+            _encryptionLocal = value
+        }
 
     var encryptionKey: String?
         get() {

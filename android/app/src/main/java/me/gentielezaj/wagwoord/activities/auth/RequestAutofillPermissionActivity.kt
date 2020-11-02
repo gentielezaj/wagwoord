@@ -9,11 +9,11 @@ import android.view.View
 import android.widget.TextView
 import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.activities.CoreActivity
+import me.gentielezaj.wagwoord.activities.settings.SettingsActivity
 import me.gentielezaj.wagwoord.common.Notificaiton
 import me.gentielezaj.wagwoord.services.bindView
 
 class RequestAutofillPermissionActivity : CoreActivity() {
-    private val SETTINGS_AUTOFILL_REQUEST: Int = 1
     private var continueToLogin = false
 
     private val textViewStatus: TextView by bindView(R.id.request_autofill_permission_status)
@@ -34,19 +34,19 @@ class RequestAutofillPermissionActivity : CoreActivity() {
         if (!isPermissionGranted(android.Manifest.permission.BIND_AUTOFILL_SERVICE)) {
             val intent = Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
             intent.data = Uri.parse("package:me.gentielezaj.wagwoord")
-            startActivityForResult(intent, SETTINGS_AUTOFILL_REQUEST)
+            startActivityForResult(intent, SettingsActivity.SETTINGS_AUTOFILL_REQUEST)
         } else if(continueToLogin) startActivity(Intent(this, LoginActivity::class.java))
     }
 
     fun openPermission(view: View) {
         val intent = Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE)
         intent.data = Uri.parse("package:me.gentielezaj.wagwoord")
-        startActivityForResult(intent, SETTINGS_AUTOFILL_REQUEST)
+        startActivityForResult(intent, SettingsActivity.SETTINGS_AUTOFILL_REQUEST)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val text = if (requestCode == SETTINGS_AUTOFILL_REQUEST && resultCode == Activity.RESULT_OK) R.string.permission_granted
+        val text = if (requestCode == SettingsActivity.SETTINGS_AUTOFILL_REQUEST && resultCode == Activity.RESULT_OK) R.string.permission_granted
             else R.string.permission_denied
 
         textViewStatus.text = getString(text)

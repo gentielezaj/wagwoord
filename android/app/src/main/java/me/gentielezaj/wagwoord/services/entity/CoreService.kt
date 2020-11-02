@@ -4,19 +4,13 @@ import android.content.Context
 import me.gentielezaj.sqldroid.IQueryBuilder
 import me.gentielezaj.sqldroid.RepositoryAsync
 import me.gentielezaj.sqldroid.models.TableInfo
-import me.gentielezaj.sqldroid.query.ICriteria
-import me.gentielezaj.sqldroid.query.Restriction
+import me.gentielezaj.sqldroid.query.*
 import me.gentielezaj.sqldroid.query.Restriction.Companion.contains
-import me.gentielezaj.sqldroid.query.Where
-import me.gentielezaj.sqldroid.query.eq
 import me.gentielezaj.wagwoord.common.LogData
 import me.gentielezaj.wagwoord.common.ServerStatus
 import me.gentielezaj.wagwoord.common.empty
 import me.gentielezaj.wagwoord.database.Database
-import me.gentielezaj.wagwoord.models.annotations.Encrypt
-import me.gentielezaj.wagwoord.models.annotations.Identifier
-import me.gentielezaj.wagwoord.models.annotations.ListData
-import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
+import me.gentielezaj.wagwoord.models.annotations.*
 import me.gentielezaj.wagwoord.models.common.SaveErrorCodes
 import me.gentielezaj.wagwoord.models.common.SaveResult
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
@@ -68,18 +62,20 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
     // region get
 
     suspend fun list(text: String? = String.empty) : List<T> {
-        if(text.isNullOrEmpty() || text.isNullOrBlank()) return repository.toList()
-
-        val properties = type.memberProperties.filter { it.findAnnotation<ListData>()?.searchable?:false }
+        val properties = type.memberProperties.filter { it.findAnnotation<ListData>() != null }
 
         if(properties.isEmpty()) return repository.toList()
 
-        var query = mutableListOf<ICriteria<T>>()
+        val query = repository.queryBuilder;
+        val criteria = mutableListOf<ICriteria<T>>()
         for(property in properties) {
-            query.add(property contains text)
+            var listData = property.findAnnotation<ListData>()!!
+            if(listData.searchable) criteria.add(property contains text)
+            if(listData.orderBy != ListDataOrderDirection.None) query.orderBy(Order.By(property, orderDirection(listData.orderBy)!!))
         }
 
-        return repository.toList(Where.OR(query))
+        if(criteria.any()) query.where(Where.OR(criteria))
+        return repository.toList(query)
     }
 
     // endregion get

@@ -1,10 +1,23 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Server">
+    <PreferenceCategory app:title="@string/settings_category_server">
 
-        <Preference app:title="Open login"
+        <Preference app:title="@string/settings_category_server_change_login_title"
             app:key="open_login"
-            app:summary="To change or login"/>
+            app:summary="@string/settings_category_server_change_login_summary"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/settings_category_security">
+
+        <Preference app:title="@string/settings_category_security_autofill_title"
+            app:key="settings_open_autofill"
+            app:summary="@string/settings_category_security_autofill_summary_denied"/>
+
+        <SwitchPreferenceCompat
+            app:key="settings_encrypt_data_locally"
+            app:summary="@string/settings_category_security_encryptLocal_summary"
+            app:title="@string/settings_category_security_encryptLocal_title" />
 
     </PreferenceCategory>
 

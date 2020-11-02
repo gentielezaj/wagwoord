@@ -1,5 +1,7 @@
 package me.gentielezaj.wagwoord.models.annotations
 
+import me.gentielezaj.sqldroid.query.Order
+import me.gentielezaj.sqldroid.query.OrderDirections
 import me.gentielezaj.wagwoord.common.empty
 import java.security.KeyPair
 import kotlin.reflect.KProperty
@@ -15,7 +17,29 @@ enum class ListDataTypes {
     None
 }
 
-annotation class ListData(val dataFor: ListDataTypes, val prefix:String = "", val sufix: String = "", val order:Int = 0, val showOnCopyList: Boolean = false, val searchable: Boolean = false)
+annotation class ListData(val dataFor: ListDataTypes,
+                          val prefix:String = "",
+                          val sufix: String = "",
+                          val order:Int = 0,
+                          val showOnCopyList: Boolean = false,
+                          val searchable: Boolean = false,
+                          val orderBy: ListDataOrderDirection = ListDataOrderDirection.None) {
+}
+
+enum class ListDataOrderDirection {
+    None,
+    ASC,
+    DESC
+}
+
+
+fun orderDirection(orderBy: ListDataOrderDirection) : OrderDirections? {
+    return when(orderBy) {
+        ListDataOrderDirection.ASC -> OrderDirections.ASC
+        ListDataOrderDirection.DESC -> OrderDirections.DESC
+        else -> null
+    }
+}
 
 fun getListDataText(item: Any, type: ListDataTypes) : String {
     val prop = item.javaClass.kotlin.memberProperties.find { it.findAnnotation<ListData>()?.dataFor == type }

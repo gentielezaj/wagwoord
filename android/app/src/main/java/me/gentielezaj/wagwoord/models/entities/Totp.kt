@@ -9,6 +9,7 @@ import me.gentielezaj.sqldroid.models.annotations.column.Unique
 import me.gentielezaj.sqldroid.models.annotations.table.Table
 import me.gentielezaj.wagwoord.models.annotations.Encrypt
 import me.gentielezaj.wagwoord.models.annotations.ListData
+import me.gentielezaj.wagwoord.models.annotations.ListDataOrderDirection
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
 import org.apache.commons.codec.binary.Base32
@@ -18,7 +19,7 @@ import kotlin.math.round
 
 @Table
 class Totp : CoreEntity() {
-    @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true)
+    @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true, orderBy = ListDataOrderDirection.ASC)
     @Column var issuer: String = ""
     @ListData(ListDataTypes.Description, showOnCopyList = true, searchable = true)
     @Column var username: String = ""

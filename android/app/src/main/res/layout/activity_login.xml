@@ -43,7 +43,6 @@
             android:layout_weight="1"
             android:ems="15"
             android:text="mut01046"
-            android:inputType="textPassword"
             android:hint="@string/password" />
 
         <br.com.simplepass.loadingbutton.customViews.CircularProgressButton

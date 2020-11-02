@@ -11,6 +11,7 @@ class Constants {
             val SERVER_URL = "ww_server_url"
             val SERVER_HEADERS = "ww_headers"
             val ENCRYPTION_KEY = "ww_encryption_key"
+            val ENCRYPT_LOCAL = "ww_encryption_local"
             val ENCRYPTION_HASH = "ww_encryption_hash"
             val SERVER_STATUS = "server-status"
         }

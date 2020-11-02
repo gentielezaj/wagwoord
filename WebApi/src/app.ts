@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { Server } from "./server";
 import { createConnection, ConnectionOptions } from "typeorm";
 import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions";
-import { PostgresConnectionCredentialsOptions } from "typeorm/driver/postgres/PostgresConnectionCredentialsOptions";
 import { AppLogger } from "./utils/appLogger";
 
 // #region prototypes

@@ -36,7 +36,6 @@ export class AppLogger implements Logger {
 
     private static writeToFile(type: LogType, ...message: Array<any>) {
         if ((message?.length ?? 0) <= 0) return;
-        debugger;
         let msg = message.join('\n');
         const dir = __dirname + "/../logs/";
         if (!fs.existsSync(dir)) {

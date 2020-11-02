@@ -4,7 +4,7 @@ declare interface String {
 }
 
 String.prototype.isNullOrEmpty = function (this: string): boolean {
-    return typeof this == 'string' && !this || this.trim() == ''; 
+    return typeof this == 'string' && (!this || this.trim() == ''); 
 };
 
 String.prototype.equals = function (this: string, value: string, ignoreCaseSensitive?: boolean): boolean {

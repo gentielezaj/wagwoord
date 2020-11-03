@@ -27,7 +27,7 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
-        <activity android:name=".activities.views.generic.GenericViewActivity" />
+        <activity android:name=".activities.views.generic.TotpViewActivity" />
         <activity
             android:name=".activities.settings.SettingsActivity"
             android:label="@string/settings" />

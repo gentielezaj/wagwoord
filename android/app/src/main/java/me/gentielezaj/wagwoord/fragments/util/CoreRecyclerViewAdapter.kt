@@ -14,6 +14,7 @@ import me.gentielezaj.wagwoord.activities.views.generic.GenericViewActivity
 import me.gentielezaj.wagwoord.models.annotations.ListData
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.annotations.getListDataText
+import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
 import me.gentielezaj.wagwoord.ui.ListMenuBottomSheetDialog
@@ -89,7 +90,7 @@ abstract class BaseRecyclerViewAdapter<TModel : IEntity, TViewHolder: MyViewHold
 }
 
 
-open class MyViewHolder<TEntity: IIdEntity>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class MyViewHolder<TEntity: IEntity>(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun findViewById(id: Int) : View {
         return itemView.findViewById(id)
     }
@@ -105,8 +106,7 @@ open class MyViewHolder<TEntity: IIdEntity>(itemView: View) : RecyclerView.ViewH
 
     open fun bind(item: TEntity) {
         itemView.setOnClickListener {
-            val intent = Intent(itemView.context, GenericViewActivity::class.java)
-            intent.putExtra("id", item.id)
+            val intent = GenericViewActivity.open(itemView.context, item.id, item.javaClass.kotlin)
             itemView.context.startActivity(intent)
         }
     }

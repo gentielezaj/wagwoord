@@ -78,6 +78,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
         return repository.toList(query)
     }
 
+    suspend fun item(id : Int) : T? = repository.get(id)
     // endregion get
 
     // region save

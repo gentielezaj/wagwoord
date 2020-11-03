@@ -3,7 +3,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 
-abstract class CoreViewModel<T: IEntity>() : ViewModel(), IViewModel<T> {
+abstract class CoreListViewModel<T: IEntity>() : ViewModel(), IListViewModel<T> {
     override var data: MutableLiveData<MutableList<T>> = MutableLiveData<MutableList<T>>()
 
     override fun addData(list: List<T>) {

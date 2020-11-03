@@ -1,9 +1,7 @@
 package me.gentielezaj.wagwoord.fragments
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,9 +26,8 @@ import me.gentielezaj.wagwoord.fragments.util.CoreRecyclerViewAdapter
 import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
-import me.gentielezaj.wagwoord.viewModels.CoreViewModel
+import me.gentielezaj.wagwoord.viewModels.CoreListViewModel
 import me.gentielezaj.wagwoord.viewModels.SearchViewModel
-import java.lang.Exception
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -103,7 +100,7 @@ abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragme
     protected abstract val entityService: CoreEntityService<T>
     protected val searchViewModel: SearchViewModel by activityViewModels<SearchViewModel>()
 
-    protected abstract val viewModel: CoreViewModel<T>
+    protected abstract val viewModel: CoreListViewModel<T>
     protected var dataSet: List<T> = listOf<T>()
 
     override fun onCreateView(

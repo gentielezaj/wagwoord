@@ -13,12 +13,12 @@ import me.gentielezaj.wagwoord.models.annotations.ListDataOrderDirection
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
 import org.apache.commons.codec.binary.Base32
-import java.util.*
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit
 import kotlin.math.round
 
 @Table
-class Totp : CoreEntity() {
+class Totp : CoreEntity(), Serializable {
     @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true, orderBy = ListDataOrderDirection.ASC)
     @Column var issuer: String = ""
     @ListData(ListDataTypes.Description, showOnCopyList = true, searchable = true)

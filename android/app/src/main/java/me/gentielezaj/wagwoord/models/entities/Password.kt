@@ -5,9 +5,10 @@ import me.gentielezaj.sqldroid.models.annotations.column.Unique
 import me.gentielezaj.sqldroid.models.annotations.table.Table
 import me.gentielezaj.wagwoord.models.annotations.*
 import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntityCount
+import java.io.Serializable
 
 @Table
-class Password: CoreEntityCount() {
+class Password: CoreEntityCount(), Serializable {
 
     @Column(length = 128)
     @ListData(ListDataTypes.Description, searchable = true,  orderBy = ListDataOrderDirection.ASC)

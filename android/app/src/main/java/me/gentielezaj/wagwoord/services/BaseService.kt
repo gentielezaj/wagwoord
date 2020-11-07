@@ -1,13 +1,9 @@
 package me.gentielezaj.wagwoord.services
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.common.LocalStorage
-import me.gentielezaj.wagwoord.common.ServerStatus
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
+import me.gentielezaj.wagwoord.services.dependencyInjection.DI
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
 import kotlin.reflect.KClass
 

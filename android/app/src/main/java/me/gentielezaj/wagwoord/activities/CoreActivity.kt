@@ -14,7 +14,7 @@ import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.common.AppUtil
 import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.common.LocalStorage
-import me.gentielezaj.wagwoord.services.bindView
+import me.gentielezaj.wagwoord.services.dependencyInjection.bindView
 
 abstract class CoreActivity : AppCompatActivity() {
     val localStorage = LocalStorage(this)

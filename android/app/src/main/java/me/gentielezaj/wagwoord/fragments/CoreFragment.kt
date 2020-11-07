@@ -31,24 +31,14 @@ import me.gentielezaj.wagwoord.viewModels.SearchViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
     // TODO: Rename and change types of parameters
     protected var param1: String? = null
     protected var param2: String? = null
     protected var listener: OnFragmentInteractionListener? = null
 
-    protected val mainActivity: MainActivity
-        get() = activity as MainActivity
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -59,32 +49,11 @@ abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
         return inflater.inflate(fragmentLayoutId, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        mainActivity.changeTitle()
-    }
-
     fun run(statement: suspend () -> Unit) {
         GlobalScope.launch(Dispatchers.Main) {
             statement()
         }
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
-
-    open fun search(text: String){}
 
     override fun onDetach() {
         super.onDetach()
@@ -92,7 +61,8 @@ abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
     }
 }
 
-abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragmentListLayoutId: Int = R.layout.fragment_core_list, val fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item) : CoreFragment(fragmentListLayoutId) {
+abstract class BaseFragmentList<T: IEntity, TViewHodler: MyViewHolder<T>>(fragmentListLayoutId: Int = R.layout.fragment_core_list, val fragmentListItemLayoutId: Int = R.layout.fragment_core_list_item)
+    : CoreFragment(fragmentListLayoutId) {
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var viewAdapter: BaseRecyclerViewAdapter<T, TViewHodler>
     protected lateinit var viewManager: RecyclerView.LayoutManager

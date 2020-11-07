@@ -1,8 +1,6 @@
 package me.gentielezaj.wagwoord.fragments.demo
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +15,6 @@ import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.fragments.CoreFragment
 import me.gentielezaj.wagwoord.services.BackgroundService
-import me.gentielezaj.wagwoord.services.inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

@@ -11,7 +11,7 @@ import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.activities.CoreActivity
 import me.gentielezaj.wagwoord.activities.settings.SettingsActivity
 import me.gentielezaj.wagwoord.common.Notificaiton
-import me.gentielezaj.wagwoord.services.bindView
+import me.gentielezaj.wagwoord.services.dependencyInjection.bindView
 
 class RequestAutofillPermissionActivity : CoreActivity() {
     private var continueToLogin = false

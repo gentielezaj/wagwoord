@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.view.KeyEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
@@ -13,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton
 import me.gentielezaj.wagwoord.MainActivity
@@ -21,9 +18,8 @@ import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.activities.CoreActivity
 import me.gentielezaj.wagwoord.common.*
 import me.gentielezaj.wagwoord.services.AuthService
-import me.gentielezaj.wagwoord.services.BackgroundService
-import me.gentielezaj.wagwoord.services.bindView
-import me.gentielezaj.wagwoord.services.inject
+import me.gentielezaj.wagwoord.services.dependencyInjection.bindView
+import me.gentielezaj.wagwoord.services.dependencyInjection.inject
 import me.gentielezaj.wagwoord.ui.ResizeAnimation
 
 class LoginActivity : CoreActivity() {

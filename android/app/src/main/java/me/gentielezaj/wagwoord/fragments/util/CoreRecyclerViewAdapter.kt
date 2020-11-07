@@ -1,25 +1,16 @@
 package me.gentielezaj.wagwoord.fragments.util
 
-import android.app.AlertDialog
-import android.content.*
 import android.view.*
-import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import me.gentielezaj.wagwoord.R
-import me.gentielezaj.wagwoord.activities.views.generic.GenericViewActivity
-import me.gentielezaj.wagwoord.models.annotations.ListData
+import me.gentielezaj.wagwoord.activities.views.ItemViewActivity
 import me.gentielezaj.wagwoord.models.annotations.ListDataTypes
 import me.gentielezaj.wagwoord.models.annotations.getListDataText
-import me.gentielezaj.wagwoord.models.entities.coreEntities.CoreEntity
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
-import me.gentielezaj.wagwoord.models.entities.coreEntities.IIdEntity
 import me.gentielezaj.wagwoord.ui.ListMenuBottomSheetDialog
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.memberProperties
 
 abstract class BaseRecyclerViewAdapter<TModel : IEntity, TViewHolder: MyViewHolder<TModel>>(dataSet: List<TModel>, listItemFragmentId: Int = R.layout.fragment_core_list_item) :
     RecyclerView.Adapter<TViewHolder>() {
@@ -48,7 +39,7 @@ abstract class BaseRecyclerViewAdapter<TModel : IEntity, TViewHolder: MyViewHold
 
     override fun onBindViewHolder(holder: TViewHolder, position: Int) {
         val item = dataSet[position]
-        var map = mapBindView(item)
+        val map = mapBindView(item)
         holder.findViewById<TextView>(R.id.core_list_item_subject).text = map[ListDataTypes.Subject]
         holder.findViewById<TextView>(R.id.core_list_item_description).text = map[ListDataTypes.Description]
 
@@ -62,10 +53,10 @@ abstract class BaseRecyclerViewAdapter<TModel : IEntity, TViewHolder: MyViewHold
                 holder.toggle()
             }
 
-            holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnLongClickListener(OnLongClickListener { view ->
+            holder.findViewById<ImageView>(R.id.core_list_item_expand).setOnLongClickListener { view ->
                 createDialog(view, item, position)
                 true
-            })
+            }
         } else {
             holder.findViewById<ImageView>(R.id.core_list_item_expand).visibility = View.GONE
         }
@@ -91,11 +82,12 @@ abstract class BaseRecyclerViewAdapter<TModel : IEntity, TViewHolder: MyViewHold
 
 
 open class MyViewHolder<TEntity: IEntity>(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun findViewById(id: Int) : View {
+    private fun findViewById(id: Int) : View {
         return itemView.findViewById(id)
     }
 
     fun <T> findViewById(id: Int) : T {
+        @Suppress("UNCHECKED_CAST")
         return  this.findViewById(id) as T
     }
 
@@ -106,7 +98,7 @@ open class MyViewHolder<TEntity: IEntity>(itemView: View) : RecyclerView.ViewHol
 
     open fun bind(item: TEntity) {
         itemView.setOnClickListener {
-            val intent = GenericViewActivity.open(itemView.context, item.id, item.javaClass.kotlin)
+            val intent = ItemViewActivity.open(itemView.context, item.id, item.javaClass.kotlin)
             itemView.context.startActivity(intent)
         }
     }

@@ -251,7 +251,7 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
 }
 
 
-abstract class CoreEntityCountService<T>(context: Context, type: KClass<T>) : CoreEntityService<T>(context, type) where T: IEntityCount {
+open class CoreEntityCountService<T>(context: Context, type: KClass<T>) : CoreEntityService<T>(context, type) where T: IEntityCount {
     constructor(context: Context, type: KClass<T>, controller: String?) : this(context, type) {
         this.controller = controller
     }

@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 
 class LocalStorage(val context: Context) {
 
-    protected val sharedPref: SharedPreferences
+    val sharedPref: SharedPreferences
         get() =  context.getSharedPreferences(Constants.LocalStorageKeys.SHARED_PREFERENCES, Context.MODE_PRIVATE)
 
 

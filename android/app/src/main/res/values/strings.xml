@@ -97,6 +97,8 @@
     <string name="settings_category_security_autofill_summary_granted">Wagwoord is set as default</string>
     <string name="settings_category_security_encryptLocal_title">Encrypt data locally</string>
     <string name="settings_category_security_encryptLocal_summary">Save data as encrypted on this device</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--endregion settings-->
 </resources>

@@ -3,7 +3,6 @@ package me.gentielezaj.wagwoord
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -30,14 +29,13 @@ import me.gentielezaj.wagwoord.common.Constants
 import me.gentielezaj.wagwoord.common.LogData
 import me.gentielezaj.wagwoord.common.ServerStatus
 import me.gentielezaj.wagwoord.common.empty
-import me.gentielezaj.wagwoord.fragments.OnFragmentInteractionListener
 import me.gentielezaj.wagwoord.services.BackgroundService
-import me.gentielezaj.wagwoord.services.bindView
-import me.gentielezaj.wagwoord.services.inject
+import me.gentielezaj.wagwoord.services.dependencyInjection.bindView
+import me.gentielezaj.wagwoord.services.dependencyInjection.inject
 import me.gentielezaj.wagwoord.viewModels.SearchViewModel
 
 
-class MainActivity : CoreActivity(), OnFragmentInteractionListener {
+class MainActivity : CoreActivity() {
 
     private val appService: BackgroundService by inject()
     private val toolbar by bindView<Toolbar>(R.id.toolbar)
@@ -62,6 +60,10 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
 
         // region navigation
         navController = findNavController(R.id.nav_host_fragment)
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            changeTitle(destination.label.toString())
+        }
+
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_totp,
@@ -74,11 +76,12 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
 
         navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
+
         // endregion navigation
     }
 
-    fun changeTitle(): Boolean {
-        collapsingToolbarLayout.title = navView.menu.findItem(navView.selectedItemId).title
+    private fun changeTitle(title: String?): Boolean {
+        collapsingToolbarLayout.title = title ?: navView.menu.findItem(navView.selectedItemId).title
         appBar.setExpanded(true, true)
         return true
     }
@@ -97,10 +100,7 @@ class MainActivity : CoreActivity(), OnFragmentInteractionListener {
         } else startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    override fun onFragmentInteraction(uri: Uri) {}
-
     // region toolbar
-
 
     private fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
         LogData("height: ${appBarLayout.height}, bootom: ${appBarLayout.bottom}, offset: $verticalOffset, toolbar: ${toolbar.height}")

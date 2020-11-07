@@ -18,16 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.views.ItemViewActivity"></activity>
         <activity
             android:name=".activities.auth.RequestAutofillPermissionActivity"
-            android:label="@string/request_autofill_permission">
-        </activity>
+            android:label="@string/request_autofill_permission"></activity>
 
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
-        <activity android:name=".activities.views.generic.TotpViewActivity" />
         <activity
             android:name=".activities.settings.SettingsActivity"
             android:label="@string/settings" />

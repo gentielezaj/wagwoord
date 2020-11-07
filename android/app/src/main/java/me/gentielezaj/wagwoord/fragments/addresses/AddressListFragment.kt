@@ -1,16 +1,11 @@
 package me.gentielezaj.wagwoord.fragments.addresses
 
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.fragments.CoreFragmentList
-import me.gentielezaj.wagwoord.fragments.util.MyViewHolder
 import me.gentielezaj.wagwoord.models.entities.Address
 import me.gentielezaj.wagwoord.services.entity.CoreEntityService
-import me.gentielezaj.wagwoord.services.injectEntityService
+import me.gentielezaj.wagwoord.services.dependencyInjection.injectEntityService
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

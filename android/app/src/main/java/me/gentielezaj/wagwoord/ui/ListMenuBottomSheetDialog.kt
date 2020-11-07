@@ -15,7 +15,7 @@ import me.gentielezaj.wagwoord.models.annotations.Encrypt
 import me.gentielezaj.wagwoord.models.annotations.ListData
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.services.encryption.EncryptionService
-import me.gentielezaj.wagwoord.services.injectEntityService
+import me.gentielezaj.wagwoord.services.dependencyInjection.injectEntityService
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties

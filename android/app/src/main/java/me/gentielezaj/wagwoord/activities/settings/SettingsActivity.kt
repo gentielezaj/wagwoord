@@ -12,7 +12,7 @@ import me.gentielezaj.wagwoord.R
 import me.gentielezaj.wagwoord.activities.CoreActivity
 import me.gentielezaj.wagwoord.activities.auth.LoginActivity
 import me.gentielezaj.wagwoord.services.encryption.EncryptionService
-import me.gentielezaj.wagwoord.services.inject
+import me.gentielezaj.wagwoord.services.dependencyInjection.inject
 
 enum class SettingsPreferenceKeys(val value:String) {
     OPEN_LOGIN("open_login"),

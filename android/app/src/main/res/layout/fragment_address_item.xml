@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragments.totp.TotpItemFragment">
 
-    <data class=".databinding.TotpItemFragmentBinding">
-        <import type="me.gentielezaj.wagwoord.fragments.util.PartialCommonKt" />
+    <data class=".databinding.AddressItemFragmentBinding">
         <variable
             name="data"
-            type="me.gentielezaj.wagwoord.models.entities.Totp" />
+            type="me.gentielezaj.wagwoord.models.entities.Address" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -30,65 +29,67 @@
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Issuer`}"
+                    app:label="@{`Name`}"
                     app:type="@{`property`}"
-                    app:value="@{data.issuer}" />
+                    app:value="@{data.firstName + ' ' + data.lastName}" />
+
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{`Birthday`}"
+                    app:type="@{`property`}"
+                    app:value="@{data.birthDate.toLocaleString()}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
                     app:label="@{`Username`}"
                     app:type="@{`property`}"
                     app:value="@{data.username}" />
-
                 <include
-                    layout="@layout/partial_layout_property_password_view"
-                    app:model="@{PartialCommonKt.getPasswordModel(`Secret`, data.secret)}"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/colorMainLighter"
-                    android:padding="@dimen/inner_frame_layout_padding" />
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{`Phone`}"
+                    app:type="@{`property`}"
+                    app:value="@{data.callingCode + '-' + data.phone}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Digits`}"
+                    app:label="@{`Organization`}"
                     app:type="@{`property`}"
-                    app:value="@{data.digits}" />
+                    app:value="@{data.organization}" />
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{`Street`}"
+                    app:type="@{`property`}"
+                    app:value="@{data.street}" />
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{`Secund street`}"
+                    app:type="@{`property`}"
+                    app:value="@{data.secundStreet}" />
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{`City`}"
+                    app:type="@{`property`}"
+                    app:value="@{data.city}" />
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{`State`}"
+                    app:type="@{`property`}"
+                    app:value="@{data.state}" />
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{`Country`}"
+                    app:type="@{`property`}"
+                    app:value="@{data.country + ` - ` + data.countryAlpha2Code}" />
 
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Step`}"
+                    app:label="@{`Postal code`}"
                     app:type="@{`property`}"
-                    app:value="@{data.step}" />
+                    app:value="@{data.postalCode}" />
 
                 <include
-                    layout="@layout/partial_layout_property_view"
-                    app:label="@{`Encoding`}"
-                    app:type="@{`property`}"
-                    app:value="@{data.encoding}" />
-
-                <include
-                    layout="@layout/partial_layout_property_view"
-                    app:label="@{`Algorithm`}"
-                    app:type="@{`property`}"
-                    app:value="@{data.algorithm}" />
-
-                <include
-                    layout="@layout/partial_layout_property_view"
-                    app:label="@{`Window`}"
-                    app:type="@{`property`}"
-                    app:value="@{data.window}" />
-
-                <include
-                    layout="@layout/partial_layout_property_view"
-                    app:label="@{`Epoch`}"
-                    app:type="@{`property`}"
-                    app:value="@{data.epoch}" />
-
-                <include
-                    layout="@layout/partial_layout_core_entity_properties"
+                    layout="@layout/partial_layout_core_entity_count_properties"
                     app:data="@{data}"/>
 
             </LinearLayout>

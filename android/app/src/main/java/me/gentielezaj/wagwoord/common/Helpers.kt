@@ -47,14 +47,20 @@ public class AppUtil {
             return bitmap
         }
 
-        fun copyToClipBoard(context: Context, text: String, hideNotification: Boolean = false) {
-            val clipboard: ClipboardManager? = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
-            val clip = android.content.ClipData.newPlainText("Copied Text", text);
-            clipboard!!.setPrimaryClip(clip);
+        fun copyToClipBoard(context: Context, text: String?, hideNotification: Boolean = false) {
+            if(text.isNullOrEmpty()) {
+                Toast.makeText(context, context.getString(R.string.copy_to_clipboard_no_value), Toast.LENGTH_SHORT).show()
+            } else {
 
-            if(!hideNotification) {
-                var copiedText = context.getString(R.string.copy_to_clipboard_copied)
-                Toast.makeText(context, copiedText, Toast.LENGTH_SHORT).show()
+                val clipboard: ClipboardManager? =
+                    context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager?
+                val clip = android.content.ClipData.newPlainText("Copied Text", text);
+                clipboard!!.setPrimaryClip(clip);
+
+                if (!hideNotification) {
+                    var copiedText = context.getString(R.string.copy_to_clipboard_copied)
+                    Toast.makeText(context, copiedText, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

@@ -31,7 +31,8 @@ import me.gentielezaj.wagwoord.viewModels.SearchViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
+abstract class CoreFragment(val fragmentLayoutId: Int?) : Fragment() {
+    constructor() : this(null)
     // TODO: Rename and change types of parameters
     protected var param1: String? = null
     protected var param2: String? = null
@@ -45,8 +46,10 @@ abstract class CoreFragment(val fragmentLayoutId: Int) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(fragmentLayoutId, container, false)
+        if(fragmentLayoutId != null)
+            return inflater.inflate(fragmentLayoutId, container, false)
+
+        return null;
     }
 
     fun run(statement: suspend () -> Unit) {

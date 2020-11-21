@@ -4,8 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.annotation.IdRes
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import me.gentielezaj.wagwoord.common.LogData
+import me.gentielezaj.wagwoord.fragments.CoreFragment
+import me.gentielezaj.wagwoord.fragments.core.CoreItemFragment
+import me.gentielezaj.wagwoord.fragments.core.ICoreItemFragment
 import me.gentielezaj.wagwoord.models.entities.Address
 import me.gentielezaj.wagwoord.models.entities.CreditCard
 import me.gentielezaj.wagwoord.models.entities.Password
@@ -18,6 +22,8 @@ import me.gentielezaj.wagwoord.services.entity.*
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import kotlin.reflect.KClass
+import kotlin.reflect.full.companionObject
+import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
 
 
@@ -45,6 +51,11 @@ class DI {
     @Suppress("PROTECTED_CALL_FROM_PUBLIC_INLINE")
     companion object {
         val registry = DIRegistry.list;
+
+        fun <T: DIModel> get(key: String) : T = registry.first {it.key == key} as T;
+
+        fun view(key: String, itemId: Int) : CoreItemFragment<out IEntity, out ViewDataBinding> = get<DIEntityModel>(key).itemFragment.primaryConstructor!!.call(itemId)
+
         inline fun <reified T : BaseService> resolve(context: Context): T {
             return try {
                 val type: TypeLiteral<T> = object : TypeLiteral<T>() {}
@@ -86,14 +97,26 @@ inline fun <reified T : BaseService> Fragment.inject(): Lazy<T> {
     return lazy { DI.resolve(requireContext()) }
 }
 
+
+inline fun <reified T : IEntity> Context.injectEntityService(): Lazy<CoreEntityService<T>> {
+    @Suppress("UNCHECKED_CAST")
+    return lazy { DI.resolveEntity(this, T::class) }
+}
+
+fun <T : IEntity> Context.injectEntityService(entity: KClass<T>): Lazy<CoreEntityService<T>> {
+    @Suppress("UNCHECKED_CAST")
+    return lazy { DI.resolveEntity(this, entity) }
+}
+
+
 inline fun <reified T : IEntity> Fragment.injectEntityService(): Lazy<CoreEntityService<T>> {
     @Suppress("UNCHECKED_CAST")
     return lazy { DI.resolveEntity(requireContext(), T::class) }
 }
 
-fun <T : IEntity> Context.injectEntityService(entity: KClass<T>): Lazy<CoreEntityService<T>> {
+fun <T : IEntity> Fragment.injectEntityService(entity: KClass<T>): Lazy<CoreEntityService<T>> {
     @Suppress("UNCHECKED_CAST")
     return lazy {
-        DI.resolveEntity(this, entity)
+        DI.resolveEntity(requireContext(), entity)
     }
 }

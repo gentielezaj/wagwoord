@@ -1,12 +1,18 @@
 package me.gentielezaj.wagwoord.services.dependencyInjection
 
 import android.content.Context
+import androidx.databinding.ViewDataBinding
+import me.gentielezaj.wagwoord.fragments.addresses.AddressItemFragment
+import me.gentielezaj.wagwoord.fragments.core.CoreItemFragment
+import me.gentielezaj.wagwoord.fragments.core.ICoreItemFragment
+import me.gentielezaj.wagwoord.fragments.creditcards.CreditcardItemFragment
+import me.gentielezaj.wagwoord.fragments.passwords.PasswordItemFragment
+import me.gentielezaj.wagwoord.fragments.totp.TotpItemFragment
 import me.gentielezaj.wagwoord.models.entities.Address
 import me.gentielezaj.wagwoord.models.entities.CreditCard
 import me.gentielezaj.wagwoord.models.entities.Password
 import me.gentielezaj.wagwoord.models.entities.Totp
 import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
-import me.gentielezaj.wagwoord.models.entities.settings.Settings
 import me.gentielezaj.wagwoord.services.AuthService
 import me.gentielezaj.wagwoord.services.BackgroundService
 import me.gentielezaj.wagwoord.services.BaseService
@@ -14,7 +20,7 @@ import me.gentielezaj.wagwoord.services.entity.*
 import kotlin.reflect.KClass
 
 
-public open class DIModel internal constructor(
+open class DIModel internal constructor(
     val key: String,
     val service: KClass<out BaseService>,
     val registedServices: List<KClass<out BaseService>>,
@@ -26,8 +32,11 @@ class DIEntityModel internal constructor(
     val entity: KClass<out IEntity>,
     service: KClass<out CoreService<out IEntity>>,
     registedServices: List<KClass<out CoreService<out IEntity>>>,
-    resolver: (context: Context) -> CoreService<out IEntity>
-) : DIModel(key, service, registedServices, resolver)
+    val itemFragment: KClass<out CoreItemFragment<out IEntity, out ViewDataBinding>>,
+    resolver: (context: Context) -> CoreService<out IEntity>,
+) : DIModel(key, service, registedServices, resolver) {
+    fun <T: IEntity> entity() = entity as KClass<T>
+}
 
 class DIRegistry {
     companion object {
@@ -45,31 +54,34 @@ class DIRegistry {
                 KEY_TOTP,
                 Totp::class,
                 TotpService::class,
-                listOf(CoreService::class, CoreEntityService::class)
+                listOf(CoreService::class, CoreEntityService::class),
+                TotpItemFragment::class
             ) { TotpService(it) },
             DIEntityModel(
                 KEY_ADDRESS,
                 Address::class,
                 CoreEntityCountService::class,
-                listOf(CoreService::class, CoreEntityService::class, CoreEntityCountService::class)
+                listOf(CoreService::class, CoreEntityService::class, CoreEntityCountService::class),
+                AddressItemFragment::class
             ) { CoreEntityCountService(it, Address::class) },
             DIEntityModel(
                 KEY_CREDITCARD, CreditCard::class, CoreEntityCountService::class, listOf(
                     CoreService::class, CoreEntityService::class, CoreEntityCountService::class
-                )
+                ),
+                CreditcardItemFragment::class
             ) { CoreEntityCountService(it, CreditCard::class) },
             DIEntityModel(
                 KEY_PASSWORD,
                 Password::class,
                 CoreEntityCountService::class,
-                listOf(CoreService::class, CoreEntityService::class, CoreEntityCountService::class)
+                listOf(CoreService::class, CoreEntityService::class, CoreEntityCountService::class),
+                PasswordItemFragment::class
             ) { CoreEntityCountService(it, Password::class) },
-            DIEntityModel(
+            DIModel(
                 KEY_SETTINGS,
-                Settings::class,
                 SettingsService::class,
                 listOf(CoreService::class, CoreEntityService::class)
-            ) { CoreEntityService(it, Settings::class) },
+            ) { SettingsService(it) },
             DIModel(
                 KEY_AUTH,
                 AuthService::class,

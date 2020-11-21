@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragments.totp.TotpItemFragment">
+
+    <data>
+        <variable
+            name="data"
+            type="me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity" />
+    </data>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorMainLighter"
+            android:padding="@dimen/inner_frame_layout_padding" />
+
+        <include
+            layout="@layout/partial_layout_property_view"
+            app:label="@{`sync`}"
+            app:type="@{`property`}"
+            app:value="@{data.sync}" />
+
+        <include
+            layout="@layout/partial_layout_property_view"
+            app:label="@{`LastModified`}"
+            app:type="@{`property`}"
+            app:value="@{data.lastModified}" />
+
+        <include
+            layout="@layout/partial_layout_property_view"
+            app:label="@{`ServerId`}"
+            app:type="@{`property`}"
+            app:value="@{data.serverId}" />
+        <include
+            layout="@layout/partial_layout_property_view"
+            app:label="@{`Id`}"
+            app:type="@{`property`}"
+            app:value="@{data.id}" />
+    </LinearLayout>
+</layout>

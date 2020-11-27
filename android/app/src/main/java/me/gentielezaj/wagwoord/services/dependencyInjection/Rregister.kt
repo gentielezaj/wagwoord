@@ -16,6 +16,7 @@ import me.gentielezaj.wagwoord.models.entities.coreEntities.IEntity
 import me.gentielezaj.wagwoord.services.AuthService
 import me.gentielezaj.wagwoord.services.BackgroundService
 import me.gentielezaj.wagwoord.services.BaseService
+import me.gentielezaj.wagwoord.services.encryption.EncryptionService
 import me.gentielezaj.wagwoord.services.entity.*
 import kotlin.reflect.KClass
 
@@ -47,6 +48,7 @@ class DIRegistry {
         const val KEY_SETTINGS = "settings"
         const val KEY_AUTH = "auth"
         const val KEY_BACKGROUND = "background"
+        const val KEY_ENCRYPTION = "encryption"
 
 
         val list = listOf(
@@ -92,6 +94,11 @@ class DIRegistry {
                 BackgroundService::class,
                 listOf(BackgroundService::class, BaseService::class)
             ) { BackgroundService(it) },
+            DIModel(
+                KEY_ENCRYPTION,
+                EncryptionService::class,
+                listOf(EncryptionService::class, BaseService::class)
+            ) { EncryptionService(it) },
         )
     }
 }

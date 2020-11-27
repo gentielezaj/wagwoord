@@ -91,6 +91,11 @@ inline fun <reified T : BaseService> Activity.inject(): Lazy<T> {
     return lazy { DI.resolve(this) }
 }
 
+inline fun <reified T : BaseService> Activity.inject(key: String): Lazy<T> {
+    @Suppress("UNCHECKED_CAST")
+    return lazy { DI.resolve(this, key) }
+}
+
 
 inline fun <reified T : BaseService> Fragment.inject(): Lazy<T> {
     @Suppress("UNCHECKED_CAST")

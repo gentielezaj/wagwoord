@@ -1,6 +1,7 @@
 package me.gentielezaj.wagwoord.services.entity
 
 import android.content.Context
+import android.location.Criteria
 import me.gentielezaj.sqldroid.IQueryBuilder
 import me.gentielezaj.sqldroid.RepositoryAsync
 import me.gentielezaj.sqldroid.models.TableInfo
@@ -36,47 +37,45 @@ abstract class CoreService<T>(context: Context) : BaseService(context)  where T:
     abstract suspend fun syncLocal() : Boolean
 }
 
-open class CoreEntityService<T: IEntity>(context: Context, protected val type: KClass<T>) : CoreService<T>(context) {
-    protected var controller: String? = null
+open class CoreEntityService<T: IEntity>(context: Context, protected val type: KClass<T>, private val controller: String? = null) : CoreService<T>(context) {
     private val encryptionService = EncryptionService(context)
 
     private val localStorageDeleteKey = type.simpleName + "DeletedEntities"
     private val lastModifiedKey
         get() = type.simpleName + "LastModified"
 
-    constructor(context: Context, type: KClass<T>, controller: String?) : this(context, type) {
-        this.controller = controller
-    }
-
     private val proxy = ProxyService(context, getControllerName())
     private val db = Database(context)
-    private val repository = RepositoryAsync(db, type, context)
+    protected val repository = RepositoryAsync(db, type, context)
     private val classType: Class<T> get() { return type.java  }
     private val tableInfo = TableInfo.create(type)
 
-    protected open fun getControllerName() : String {
+    private fun getControllerName() : String {
         if(!controller.isNullOrEmpty()) return controller!!
         return classType.simpleName.replace("Entity", "")
     }
 
     // region get
 
-    suspend fun list(text: String? = String.empty) : List<T> {
+    suspend fun list(text: String? = String.empty) : List<T> = coreList(text)
+
+    protected open suspend fun coreList(text: String?) : List<T> {
         val properties = type.memberProperties.filter { it.findAnnotation<ListData>() != null }
 
         if(properties.isEmpty()) return repository.toList()
 
-        val query = repository.queryBuilder;
+        val query = repository.queryBuilder
         val criteria = mutableListOf<ICriteria<T>>()
         for(property in properties) {
-            var listData = property.findAnnotation<ListData>()!!
-            if(listData.searchable) criteria.add(property contains text)
+            val listData = property.findAnnotation<ListData>()!!
+            if(listData.searchable && !text.isNullOrEmpty()) criteria.add(property contains text)
             if(listData.orderBy != ListDataOrderDirection.None) query.orderBy(Order.By(property, orderDirection(listData.orderBy)!!))
         }
 
         if(criteria.any()) query.where(Where.OR(criteria))
         return repository.toList(query)
     }
+
 
     suspend fun item(id : Int) : T? = repository.get(id)
     // endregion get
@@ -230,18 +229,17 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
 
     private fun decryptData(item: T) : T {
         if(!item.encrypted) return item
-        var cryptoProperties = type.memberProperties.filter { it.findAnnotation<Encrypt>() != null }
+        val cryptoProperties = type.memberProperties.filter { it.findAnnotation<Encrypt>() != null }
         if(cryptoProperties.isEmpty()) {
             item.encrypted = false
             return item
         }
 
-        var data = item;
         for (property in cryptoProperties) {
-            val value: Any? = property.get(data) ?: continue
+            val value: Any? = property.get(item) ?: continue
             val dData = encryptionService.decrypt(value.toString())
-            val m = property as KMutableProperty1<T, String>
-            m.set(data, dData)
+            @Suppress("UNCHECKED_CAST") val m = property as KMutableProperty1<T, String>
+            m.set(item, dData)
         }
 
         item.encrypted = false
@@ -251,8 +249,4 @@ open class CoreEntityService<T: IEntity>(context: Context, protected val type: K
 }
 
 
-open class CoreEntityCountService<T>(context: Context, type: KClass<T>) : CoreEntityService<T>(context, type) where T: IEntityCount {
-    constructor(context: Context, type: KClass<T>, controller: String?) : this(context, type) {
-        this.controller = controller
-    }
-}
+open class CoreEntityCountService<T>(context: Context, type: KClass<T>, controller: String? = null) : CoreEntityService<T>(context, type, controller) where T: IEntityCount

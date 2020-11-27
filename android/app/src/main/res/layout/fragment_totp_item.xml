@@ -5,7 +5,7 @@
     tools:context=".fragments.totp.TotpItemFragment">
 
     <data class=".databinding.TotpItemFragmentBinding">
-        <import type="me.gentielezaj.wagwoord.fragments.util.PartialCommonKt" />
+        <import type="me.gentielezaj.wagwoord.fragments.util.PartialModelType" />
         <variable
             name="data"
             type="me.gentielezaj.wagwoord.models.entities.Totp" />
@@ -27,22 +27,21 @@
                 android:orientation="vertical"
                 android:padding="@dimen/inner_frame_layout_padding">
 
-
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Issuer`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_issuer}"
                     app:value="@{data.issuer}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Username`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_username}"
                     app:value="@{data.username}" />
 
                 <include
-                    layout="@layout/partial_layout_property_password_view"
-                    app:model="@{PartialCommonKt.getPasswordModel(`Secret`, data.secret)}"/>
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{@string/property_secret}"
+                    app:type="@{PartialModelType.Password}"
+                    app:value="@{data.secret}" />
 
                 <View
                     android:layout_width="match_parent"
@@ -52,44 +51,38 @@
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Digits`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_digits}"
                     app:value="@{data.digits}" />
 
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Step`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_step}"
                     app:value="@{data.step}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Encoding`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_encoding}"
                     app:value="@{data.encoding}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Algorithm`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_algorithm}"
                     app:value="@{data.algorithm}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Window`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_window}"
                     app:value="@{data.window}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Epoch`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_epoch}"
                     app:value="@{data.epoch}" />
 
                 <include
                     layout="@layout/partial_layout_core_entity_properties"
-                    app:data="@{data}"/>
+                    app:data="@{data}" />
 
             </LinearLayout>
         </ScrollView>

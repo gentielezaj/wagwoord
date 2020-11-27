@@ -14,7 +14,7 @@ class RepositoryAsync<TDatabase : SqlDroidConfiguration, TEntity : Any>(
     val entity: KClass<TEntity>,
     val context: Context
 ) {
-    val queryBuilder: QueryBuilder<TEntity>
+    val queryBuilder: IQueryBuilder<TEntity>
         get() = QueryBuilder.create<TEntity>(entity)
 
     private val repository = Repository<TDatabase, TEntity>(db, entity, context)

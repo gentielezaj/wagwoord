@@ -19,8 +19,7 @@
 
         <include
             layout="@layout/partial_layout_property_view"
-            app:label="@{`Count`}"
-            app:type="@{`property`}"
+            app:label="@{@string/property_count}"
             app:value="@{data.count}" />
     </LinearLayout>
 </layout>

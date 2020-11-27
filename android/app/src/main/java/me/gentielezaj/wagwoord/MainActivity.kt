@@ -136,7 +136,7 @@ class MainActivity : CoreActivity() {
         searchView = searchMenuItem.actionView as SearchView
         //searchView.maxWidth = Int.MAX_VALUE
         //searchView.setOnCloseListener { true }
-        val searchPlate = searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
+        val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
         searchPlate.hint = "Search"
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

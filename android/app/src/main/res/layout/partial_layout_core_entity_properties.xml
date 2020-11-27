@@ -22,25 +22,21 @@
 
         <include
             layout="@layout/partial_layout_property_view"
-            app:label="@{`sync`}"
-            app:type="@{`property`}"
+            app:label="@{@string/property_sync}"
             app:value="@{data.sync}" />
 
         <include
             layout="@layout/partial_layout_property_view"
-            app:label="@{`LastModified`}"
-            app:type="@{`property`}"
+            app:label="@{@string/property_last_modified}"
             app:value="@{data.lastModified}" />
 
         <include
             layout="@layout/partial_layout_property_view"
-            app:label="@{`ServerId`}"
-            app:type="@{`property`}"
+            app:label="@{@string/property_server_id}"
             app:value="@{data.serverId}" />
         <include
             layout="@layout/partial_layout_property_view"
-            app:label="@{`Id`}"
-            app:type="@{`property`}"
+            app:label="@{@string/property_id}"
             app:value="@{data.id}" />
     </LinearLayout>
 </layout>

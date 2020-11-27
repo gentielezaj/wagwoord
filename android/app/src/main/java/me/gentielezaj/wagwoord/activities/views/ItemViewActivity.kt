@@ -43,6 +43,7 @@ class ItemViewActivity<T: IEntity> : CoreActivity() {
         if(id == 0 || key.isNullOrEmpty()) startActivity(Intent(this, MainActivity::class.java))
 
         supportFragmentManager.beginTransaction().add(R.id.fragment_container_view_item_view, DI.view(key, id), "item").commit()
+        title = key
     }
 
     companion object {

@@ -99,9 +99,19 @@ data class Restriction<T: Any> internal constructor(val tableInfo: TableInfo, va
 }
 
 data class Where<T: Any> internal constructor(var condition: WhereConditions?, var criteria: MutableCollection<ICriteria<T>>) : ICriteria<T> {
+
+    fun add(vararg criteria: ICriteria<T>) : Where<T> {
+        for (c in criteria) this.criteria.add(c)
+        return this
+    }
+
+    fun empty() : Boolean {
+        return !criteria.any()
+    }
+
     override fun toSqlString(alias: String?): String {
         if(criteria.isEmpty()) return ""
-        var sql = mutableListOf<String>()
+        val sql = mutableListOf<String>()
         for(cr in criteria) {
             val sqlString = when (cr) {
                 is Where<T> -> "(${cr.toSqlString(alias)})"
@@ -114,8 +124,8 @@ data class Where<T: Any> internal constructor(var condition: WhereConditions?, v
     }
 
     companion object {
-        fun <T: Any> OR(criteria: MutableCollection<ICriteria<T>> = mutableListOf()) :  Where<T> = Where(WhereConditions.OR, criteria)
-        fun <T: Any> AND(criteria: MutableCollection<ICriteria<T>> = mutableListOf()) :  Where<T> = Where(WhereConditions.AND, criteria)
+        fun <T: Any> OR(criteria: Collection<ICriteria<T>> = listOf()) :  Where<T> = Where(WhereConditions.OR, criteria.toMutableList())
+        fun <T: Any> AND(criteria: Collection<ICriteria<T>> = listOf()) :  Where<T> = Where(WhereConditions.AND, criteria.toMutableList())
         fun <T: Any> OR(vararg criteria: ICriteria<T>) :  Where<T>  = Where(WhereConditions.OR, criteria.toMutableList())
         fun <T: Any> AND(vararg criteria: ICriteria<T>) :  Where<T>  = Where(WhereConditions.AND, criteria.toMutableList())
     }

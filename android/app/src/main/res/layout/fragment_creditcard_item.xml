@@ -5,7 +5,7 @@
     tools:context=".fragments.totp.TotpItemFragment">
 
     <data class=".databinding.CreditcardItemFragmentBinding">
-        <import type="me.gentielezaj.wagwoord.fragments.util.PartialCommonKt" />
+        <import type="me.gentielezaj.wagwoord.fragments.util.PartialModelType" />
 
         <variable
             name="data"
@@ -31,20 +31,19 @@
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Name`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_name}"
                     app:value="@{data.name}" />
+
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Card number`}"
-                    app:type="@{`password`}"
+                    app:label="@{@string/property_card_number}"
+                    app:type="@{PartialModelType.Creditcard}"
                     app:value="@{data.cardNumber}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Expires in`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_expires_in}"
                     app:value="@{data.expiredMonth + `/` + data.expiredYear}" />
 
                 <View
@@ -54,16 +53,30 @@
                     android:padding="@dimen/inner_frame_layout_padding" />
 
                 <include
-                    layout="@layout/partial_layout_property_password_view"
-                    app:model="@{PartialCommonKt.getPasswordModel(`CVV`, data.cvv)}"/>
-                <include
-                    layout="@layout/partial_layout_property_password_view"
-                    app:model="@{PartialCommonKt.getPasswordModel(`Pin`, data.pin)}"/>
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{@string/property_cvv}"
+                    app:type="@{PartialModelType.Password}"
+                    app:value="@{data.cvv}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`NFC`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_pin}"
+                    app:type="@{PartialModelType.Password}"
+                    app:value="@{data.pin}" />
+
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{@string/property_card_type}"
+                    app:value="@{data.cardType}" />
+
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{@string/property_bank}"
+                    app:value="@{data.bank}" />
+
+                <include
+                    layout="@layout/partial_layout_property_view"
+                    app:label="@{@string/property_nfc}"
                     app:value="@{data.nfc}" />
 
                 <include

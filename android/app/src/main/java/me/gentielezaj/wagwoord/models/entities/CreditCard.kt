@@ -48,7 +48,7 @@ class CreditCardTypeConverter : ColumnConverter() {
     }
 
     override fun write(value: Any?): Any? {
-        if(value != null && value is String) return value;
+        if(value != null && value is String) return value
         if(value == null || value !is CreditCardType) throw NullPointerException()
         return  value.value
     }
@@ -58,39 +58,41 @@ class CreditCardTypeConverter : ColumnConverter() {
 class CreditCard : CoreEntityCount() {
     @Column(length = 254)
     @ListData(ListDataTypes.Subject, showOnCopyList = true, searchable = true)
-    lateinit var name: String;
+    lateinit var name: String
 
     @Column(type = ColumnType.TEXT, length = 254, converter = CreditCardTypeConverter::class)
     @ListData(ListDataTypes.None, searchable = true)
     var cardType: CreditCardType = CreditCardType.Unknown
 
     @Column(nullable = Nullable.NOT_NULL)
-    var expiredMonth: Int = 0;
+    @ListData(ListDataTypes.ExpandPrimary, prefix = "Expires in:", order = 0, showOnCopyList = true, )
+    var expiredMonth: Int = 0
 
     @Identifier
     @Unique
     @Encrypt
     @Column(length = 64)
     @ListData(ListDataTypes.Description, showOnCopyList = true, searchable = true)
-    lateinit var cardNumber: String;
+    lateinit var cardNumber: String
 
     @Column(nullable = Nullable.NOT_NULL)
-    var expiredYear: Int = 0;
+    @ListData(ListDataTypes.ExpandPrimary, " / ", showOnCopyList = true, order = 1)
+    var expiredYear: Int = 0
 
     @Column
     @Encrypt
-    @ListData(ListDataTypes.ExpandPrimary, "CVS: ", showOnCopyList = true)
-    var cvv: String? = null;
+    @ListData(ListDataTypes.None, showOnCopyList = true)
+    var cvv: String? = null
 
     @Column
     @ListData(ListDataTypes.Subject, "(", ")", 1, searchable = true)
-    var bank: String? = null;
+    var bank: String? = null
 
     @Column
     @Encrypt
-    @ListData(ListDataTypes.ExpandSecondary, "PIN: ", showOnCopyList = true)
-    var pin: String? = null;
+    @ListData(ListDataTypes.None, showOnCopyList = true)
+    var pin: String? = null
 
     @Column(default = "0")
-    var nfc: Boolean = false;
+    var nfc: Boolean = false
 }

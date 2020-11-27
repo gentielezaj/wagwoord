@@ -101,4 +101,41 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--endregion settings-->
+
+    <!-- region properties -->
+    <string name="property_name">Name</string>
+    <string name="property_card_number">Card number</string>
+    <string name="property_expires_in">Expires in</string>
+    <string name="property_cvv">CVV</string>
+    <string name="property_pin">Pin</string>
+    <string name="property_bank">Bank</string>
+    <string name="property_card_type">Card type</string>
+    <string name="property_nfc">NFC</string>
+    <string name="property_count">Count</string>
+    <string name="property_sync">Sync</string>
+    <string name="property_id">Id</string>
+    <string name="property_server_id">Server Id</string>
+    <string name="property_last_modified">Last modified</string>
+    <string name="property_birthday">Birthday</string>
+    <string name="property_username">Username</string>
+    <string name="property_phone">Phone</string>
+    <string name="property_organization">Organization</string>
+    <string name="property_street">Street</string>
+    <string name="property_second_street">Second street</string>
+    <string name="property_city">City</string>
+    <string name="property_state">State</string>
+    <string name="property_country">Country</string>
+    <string name="property_postal_code">Postal code</string>
+    <string name="property_domain">Url</string>
+    <string name="property_password">Password</string>
+    <string name="property_issuer">Issuer</string>
+    <string name="property_secret">Secret</string>
+    <string name="property_digits">Digits</string>
+    <string name="property_step">Step</string>
+    <string name="property_encoding">Encoding</string>
+    <string name="property_algorithm">Algorithm</string>
+    <string name="property_window">Window</string>
+    <string name="property_epoch">Epoch</string>
+
+    <!-- endregion properties -->
 </resources>

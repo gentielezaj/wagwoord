@@ -41,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="13dp"
                     android:onClick="openSearch"
+                    android:padding="@dimen/menu_item_padding"
                     android:contentDescription="@string/search"
                     app:srcCompat="@drawable/ic_search" />
 
@@ -49,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="13dp"
                     android:onClick="openSettings"
+                    android:padding="@dimen/menu_item_padding"
                     android:contentDescription="@string/settings"
                     app:srcCompat="@drawable/ic_settings" />
             </LinearLayout>

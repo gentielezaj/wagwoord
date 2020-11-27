@@ -73,10 +73,10 @@ class DIRegistry {
             DIEntityModel(
                 KEY_PASSWORD,
                 Password::class,
-                CoreEntityCountService::class,
+                PasswordService::class,
                 listOf(CoreService::class, CoreEntityService::class, CoreEntityCountService::class),
                 PasswordItemFragment::class
-            ) { CoreEntityCountService(it, Password::class) },
+            ) { PasswordService(it) },
             DIModel(
                 KEY_SETTINGS,
                 SettingsService::class,

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="me.gentielezaj.wagwoord.fragments.util.PartialModelType" />
+        <import type="android.view.View" />
+        <variable name="model" type="me.gentielezaj.wagwoord.fragments.util.PartialModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/inner_frame_layout_padding">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorMainLighter"
+                android:paddingHorizontal="@dimen/inner_frame_layout_padding"
+                android:paddingVertical="@dimen/inner_frame_layout_padding_half"
+                android:text="@{model.label}" />
+
+            <TextView
+                android:id="@+id/partial_layout_password_view_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/inner_frame_layout_padding"
+                android:paddingVertical="@dimen/inner_frame_layout_padding_half"
+                android:text="@{model.displayValue()}"
+                android:textSize="@dimen/font_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end|center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/colorTransparent"
+                android:clickable="true"
+                android:visibility="@{model.isHiddenValue() ? View.VISIBLE : View.GONE}"
+                android:contentDescription="@string/view"
+                android:onClick="@{(v) -> model.changeVisibility(v)}"
+                android:paddingHorizontal="@dimen/inner_frame_layout_padding"
+                android:src="@drawable/ic_eye" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/inner_frame_layout_padding"
+                android:background="@color/colorTransparent"
+                android:clickable="true"
+                android:contentDescription="@string/copy_to_clipboard"
+                android:onClick="@{(v) -> model.copy(v)}"
+                android:paddingHorizontal="@dimen/inner_frame_layout_padding"
+                android:src="@drawable/ic_copy_24" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

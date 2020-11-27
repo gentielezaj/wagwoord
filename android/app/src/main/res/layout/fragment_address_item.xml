@@ -29,63 +29,51 @@
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Name`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_name}"
                     app:value="@{data.firstName + ' ' + data.lastName}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Birthday`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_birthday}"
                     app:value="@{data.birthDate.toLocaleString()}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Username`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_username}"
                     app:value="@{data.username}" />
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Phone`}"
-                    app:type="@{`property`}"
-                    app:value="@{data.callingCode + '-' + data.phone}" />
+                    app:label="@{@string/property_phone}"
+                    app:value="@{data.callingCode + '/' + data.phone}" />
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Organization`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_organization}"
                     app:value="@{data.organization}" />
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Street`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_street}"
                     app:value="@{data.street}" />
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Secund street`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_second_street}"
                     app:value="@{data.secundStreet}" />
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`City`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_city}"
                     app:value="@{data.city}" />
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`State`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_state}"
                     app:value="@{data.state}" />
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Country`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_country}"
                     app:value="@{data.country + ` - ` + data.countryAlpha2Code}" />
-
 
                 <include
                     layout="@layout/partial_layout_property_view"
-                    app:label="@{`Postal code`}"
-                    app:type="@{`property`}"
+                    app:label="@{@string/property_postal_code}"
                     app:value="@{data.postalCode}" />
 
                 <include

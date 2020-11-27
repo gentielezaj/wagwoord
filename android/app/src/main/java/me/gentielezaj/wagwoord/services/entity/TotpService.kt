@@ -4,6 +4,4 @@ import android.content.Context
 import me.gentielezaj.sqldroid.query.Order
 import me.gentielezaj.wagwoord.models.entities.Totp
 
-class TotpService(context: Context) : CoreEntityService<Totp>(context, Totp::class) {
-    override fun getControllerName(): String = "codegenerator"
-}
+class TotpService(context: Context) : CoreEntityService<Totp>(context, Totp::class, "codegenerator")
